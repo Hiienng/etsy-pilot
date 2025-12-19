@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node generate-pages.js:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(for file in chapter*.html index.html)",
+      "Bash(do sed -i 's|<link rel=\"\"stylesheet\"\" href=\"\"styles.css\"\">|<link rel=\"\"stylesheet\"\" href=\"\"styles.css\"\">\\\\n  <link rel=\"\"stylesheet\"\" href=\"\"custom-styles.css\"\">|' \"$file\")",
+      "Bash(done)",
+      "Bash(do sed -i 's|<link rel=\"\"stylesheet\"\" href=\"\"custom-styles.css\"\">|<link rel=\"\"stylesheet\"\" href=\"\"custom-styles.css\"\">\\\\n  <link rel=\"\"stylesheet\"\" href=\"\"nav-styles.css\"\">|' \"$file\")",
+      "Bash(do sed -i 's|<script src=\"\"navigation.js\"\"></script>|<script src=\"\"navigation.js\"\"></script>\\\\n<script src=\"\"navigation-collapsible.js\"\"></script>|' \"$file\")",
+      "Bash(do sed -i 's|<script src=\"\"navigation.js\"\"></script>|<script src=\"\"navigation.js\"\"></script>\\\\n<script src=\"\"navigation-collapsible.js\"\"></script>\\\\n<script src=\"\"math-config.js\"\"></script>\\\\n<script src=\"\"https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js\"\"></script>|' \"$file\")",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)"
+    ]
+  }
+}

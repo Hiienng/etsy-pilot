@@ -1,0 +1,158 @@
+/* Custom Styles - Larger Font & Math Formulas */
+
+/* Increase base font size by 1.5x */
+body {
+  font-size: 18px !important; /* 16px * 1.5 ≈ 24px, scaled to 22px for balance */
+}
+
+.content-wrapper {
+  width: 100%;        /* Chiếm toàn bộ chiều ngang màn hình nhỏ */
+  max-width: 2000px;  /* Cố định không vượt quá 2000px trên màn hình lớn */
+  margin: 0 auto;     /* Căn giữa container */
+  box-sizing: border-box; /* Bao gồm padding trong width */
+}
+
+.main-content {
+  display: flex;
+  justify-content: center;
+}
+
+/* Increase paragraph font size */
+p {
+  font-size: 0.9em !important;
+  line-height: 1.8 !important;
+}
+
+/* Increase list font size */
+li {
+  font-size: 1.0em !important;
+  line-height: 1.8 !important;
+}
+
+/* Math formulas - 2x larger */
+.content-wrapper code,
+.content-wrapper pre,
+div[style*="monospace"],
+div[style*="font-family: monospace"] {
+  font-size: 2em !important; /* 2x size for formulas */
+  line-height: 1.6 !important;
+  padding: 20px !important;
+}
+
+/* Inline math/code */
+code {
+  font-size: 1.2em !important;
+  padding: 4px 8px !important;
+}
+
+/* Math blocks */
+.math-formula,
+[style*="monospace"] {
+  font-size: 1.8em !important;
+  font-weight: 500;
+}
+
+/* Headers larger */
+h1 {
+  font-size: 1.8em !important; /* Larger headings */
+}
+
+h2 {
+  font-size: 1.6em !important;
+}
+
+h3 {
+  font-size: 1.4em !important;
+}
+
+h4 {
+  font-size: 1.2em !important;
+}
+
+/* Table text larger */
+table {
+  font-size: 0.9em !important;
+}
+
+td, th {
+  padding: 15px !important;
+  font-size: 1.0em !important;
+}
+
+/* Increase spacing for readability */
+.chapter {
+  padding: 40px 60px !important;
+}
+
+/* Center content boxes */
+.chapter > div {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Sidebar text */
+.sidebar {
+  font-size: 0.9em !important; /* Keep sidebar normal size */
+}
+
+.sidebar a {
+  font-size: 0.9em !important;
+}
+
+/* Navigation */
+nav {
+  font-size: 1em !important;
+}
+
+/* ChatGPT cards */
+.chatgpt-card p,
+.chatgpt-embed p {
+  font-size: 1.2em !important;
+}
+
+/* Buttons */
+.nav-button,
+.chatgpt-link-btn,
+.chatgpt-open-btn {
+  font-size: 1.3em !important;
+  padding: 18px 35px !important;
+}
+
+/* Home page cards */
+.part-card {
+  font-size: 1.1em !important;
+}
+
+.part-card a {
+  font-size: 1.05em !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  body {
+    font-size: 18px !important;
+  }
+
+  h1 {
+    font-size: 2.2em !important;
+  }
+
+  h2 {
+    font-size: 1.8em !important;
+  }
+
+  code, .math-formula {
+    font-size: 1.5em !important;
+  }
+}
+
+/* Ensure content is centered and readable */
+.content-wrapper > * {
+  max-width: 100%;
+}
+
+/* Better spacing for formulas */
+div[style*="background-color: #f4f4f4"] {
+  margin: 25px auto !important;
+  max-width: 100%;
+}

@@ -1,0 +1,29 @@
+# Ignore personal files
+*.docx
+*.doc
+.env
+*.pdf
+
+# Ignore backup files
+*_old.html
+*_backup.*
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignore logs
+*.log
+npm-debug.log*
+
+# Ignore temporary files
+*.tmp
+*.temp
+~*

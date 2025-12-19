@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mathematical Dictionary - ML Mathematics</title>
+  <link rel="stylesheet" href="../ml_book_shared-assets/styles.css">
+  <link rel="stylesheet" href="../ml_book_shared-assets/custom-styles.css">
+  <link rel="stylesheet" href="../ml_book_shared-assets/nav-styles.css">
+  <link rel="stylesheet" href="../ml_book_shared-assets/chatgpt-styles.css">
+</head>
+
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1 id="bookTitle">Machine Learning Mathematics</h1>
+</div>
+
+<!-- Sidebar Navigation -->
+<div class="sidebar" id="sidebar">
+  <!-- populated by navigation.js -->
+</div>
+
+<button class="toggle-sidebar" id="toggleSidebar">☰ Menu</button>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="content-wrapper">
+
+    <h1>📘 Mathematical Dictionary</h1>
+    <!-- <p style="font-size: 1.1em; line-height: 1.8;">
+      Trang này đóng vai trò như một <strong>từ điển khái niệm</strong>, giải thích
+      các thuật ngữ toán học thường xuyên xuất hiện trong
+      <strong>Probability, Statistics và Machine Learning</strong>.
+    </p> -->
+
+    <hr>
+
+    <!-- ======================= -->
+    <h2 id="bernoulli">Bernoulli Trial</h2>
+
+    <p>
+      <strong>Bernoulli trial</strong> là một phép thử ngẫu nhiên chỉ có
+      <strong>hai kết quả khả dĩ</strong>:
+      thành công (success) hoặc thất bại (failure).
+    </p>
+
+    <div class="definition-box">
+      <p><strong>Notation:</strong></p>
+      <p>
+        X ∼ Bernoulli(p)
+      </p>
+      <p>
+        P(X = 1) = p, &nbsp;
+        P(X = 0) = 1 − p
+      </p>
+    </div>
+
+    <div class="example-box">
+      <p><strong>Examples:</strong></p>
+      <ul>
+        <li>Tung đồng xu: ngửa = 1, sấp = 0</li>
+        <li>Email là spam (1) hoặc không spam (0)</li>
+        <li>User click vào quảng cáo hay không</li>
+      </ul>
+    </div>
+
+    <div class="ml-box">
+      <strong>ML Connection:</strong>
+      <ul>
+        <li>Binary classification labels</li>
+        <li>Logistic Regression giả định target ∼ Bernoulli</li>
+        <li>Cross-entropy loss xuất phát từ Bernoulli likelihood</li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <!-- ======================= -->
+    <h2 id="binomial">Binomial Distribution</h2>
+
+    <p>
+      <strong>Binomial distribution</strong> mô tả số lần thành công trong
+      <strong>n Bernoulli trials độc lập</strong>.
+    </p>
+
+    <div class="definition-box">
+      <p><strong>Notation:</strong></p>
+      <p>
+        X ∼ Binomial(n, p)
+      </p>
+      <p>
+        P(X = x) = C(n, x) p<sup>x</sup> (1 − p)<sup>n − x</sup>
+      </p>
+    </div>
+
+    <div class="example-box">
+      <ul>
+        <li>Số mặt ngửa khi tung n đồng xu</li>
+        <li>Số user click trong n lượt hiển thị</li>
+      </ul>
+    </div>
+
+    <div class="ml-box">
+      <strong>ML Connection:</strong>
+      <ul>
+        <li>Model đánh giá tỉ lệ conversion</li>
+        <li>A/B testing</li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <!-- ======================= -->
+    <h2 id="rv">Random Variable</h2>
+
+    <p>
+      <strong>Random Variable (RV)</strong> là một hàm ánh xạ từ
+      không gian mẫu Ω vào tập số thực ℝ.
+    </p>
+
+    <div class="definition-box">
+      <p>
+        X : Ω → ℝ
+      </p>
+    </div>
+
+    <div class="example-box">
+      <ul>
+        <li>X = số email spam trong ngày</li>
+        <li>X = giá nhà</li>
+        <li>X = label của dữ liệu</li>
+      </ul>
+    </div>
+
+    <div class="ml-box">
+      <strong>ML Connection:</strong>
+      <ul>
+        <li>Feature = random variable</li>
+        <li>Target variable = random variable</li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <!-- ======================= -->
+    <h2 id="iid">IID (Independent and Identically Distributed)</h2>
+
+    <p>
+      Các biến ngẫu nhiên được gọi là <strong>IID</strong> nếu:
+    </p>
+
+    <ul>
+      <li>Độc lập với nhau (Independent)</li>
+      <li>Có cùng phân phối (Identically Distributed)</li>
+    </ul>
+
+    <div class="definition-box">
+      <p>
+        X₁, X₂, ..., Xₙ ∼ P
+      </p>
+    </div>
+
+    <div class="ml-box">
+      <strong>ML Connection:</strong>
+      <ul>
+        <li>Hầu hết thuật toán ML giả định dữ liệu IID</li>
+        <li>Violation → data leakage, concept drift</li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <!-- ======================= -->
+    <h2 id="likelihood">Likelihood</h2>
+
+    <p>
+      <strong>Likelihood</strong> đo mức độ "hợp lý" của tham số
+      khi quan sát dữ liệu.
+    </p>
+
+    <div class="definition-box">
+      <p>
+        L(θ | x) = P(x | θ)
+      </p>
+    </div>
+
+    <div class="example-box">
+      <p>
+        Với Bernoulli:
+      </p>
+      <p>
+        L(p | x) = p<sup>x</sup>(1 − p)<sup>1 − x</sup>
+      </p>
+    </div>
+
+    <div class="ml-box">
+      <strong>ML Connection:</strong>
+      <ul>
+        <li>Maximum Likelihood Estimation (MLE)</li>
+        <li>Loss function = − log likelihood</li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <!-- ======================= -->
+    <h2 id="expectation">Expectation</h2>
+
+    <p>
+      <strong>Expectation</strong> là giá trị trung bình kỳ vọng của
+      một biến ngẫu nhiên.
+    </p>
+
+    <div class="definition-box">
+      <p>
+        E[X] = Σ x P(X=x) &nbsp; (discrete)
+      </p>
+      <p>
+        E[X] = ∫ x f(x) dx &nbsp; (continuous)
+      </p>
+    </div>
+
+    <div class="ml-box">
+      <strong>ML Connection:</strong>
+      <ul>
+        <li>Expected loss</li>
+        <li>Risk minimization</li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <!-- ======================= -->
+    <h2 id="variance">Variance</h2>
+
+    <p>
+      <strong>Variance</strong> đo độ phân tán quanh kỳ vọng.
+    </p>
+
+    <div class="definition-box">
+      <p>
+        Var(X) = E[(X − E[X])²]
+      </p>
+    </div>
+
+    <div class="ml-box">
+      <strong>ML Connection:</strong>
+      <ul>
+        <li>Bias–Variance tradeoff</li>
+        <li>Model stability</li>
+      </ul>
+    </div>
+
+    <!-- Page Navigation -->
+    <div class="page-navigation" id="pageNavigation"></div>
+
+  </div>
+</div>
+
+<script src="../ml_book_shared-assets/navigation.js"></script>
+<script src="../ml_book_shared-assets/navigation-collapsible.js"></script>
+<script src="../ml_book_shared-assets/math-config.js"></script>
+<script src="../ml_book_shared-assets/navigation-collapsible.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+</body>
+</html>
