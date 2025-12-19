@@ -195,3 +195,50 @@ img {
     width: 240px !important;  /* Even narrower for small phones */
   }
 }
+
+/* Fix #15: Bottom navigation buttons responsive */
+@media (max-width: 768px) {
+  .nav-buttons,
+  .chapter-navigation,
+  [style*="display: flex"][style*="justify-content: space-between"] {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  .nav-buttons a,
+  .chapter-navigation a,
+  .prev-chapter,
+  .next-chapter,
+  .home-link {
+    font-size: 0.9em !important;
+    padding: 8px 12px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 45% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-buttons a,
+  .chapter-navigation a,
+  .prev-chapter,
+  .next-chapter,
+  .home-link {
+    font-size: 0.8em !important;
+    padding: 6px 10px !important;
+    max-width: 48% !important;
+  }
+
+  /* Stack navigation vertically on very small screens */
+  .nav-buttons,
+  .chapter-navigation {
+    flex-direction: column !important;
+  }
+
+  .nav-buttons a,
+  .chapter-navigation a {
+    max-width: 100% !important;
+    text-align: center !important;
+  }
+}
