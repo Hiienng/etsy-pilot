@@ -150,3 +150,48 @@ img {
     padding: 10px !important;
   }
 }
+
+/* Fix #13: Header title responsive - CRITICAL for mobile */
+@media (max-width: 768px) {
+  .header {
+    padding: 15px 20px !important;
+  }
+
+  .header h1 {
+    font-size: 1.5em !important;  /* Scale down from 2.5em */
+    line-height: 1.2 !important;
+    word-wrap: break-word !important;
+  }
+
+  .header p {
+    font-size: 0.9em !important;  /* Subtitle smaller */
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 12px 15px !important;
+  }
+
+  .header h1 {
+    font-size: 1.2em !important;  /* Even smaller for phones */
+    line-height: 1.3 !important;
+  }
+
+  .header p {
+    font-size: 0.8em !important;
+  }
+}
+
+/* Fix #14: Sidebar width adjustment on mobile */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 260px !important;  /* Slightly narrower */
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 240px !important;  /* Even narrower for small phones */
+  }
+}
