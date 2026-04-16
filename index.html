@@ -63,6 +63,38 @@
       height: 60px;
     }
 
+    /* Tabs integrated into nav bar */
+    .nav-tabs {
+      display: flex;
+      align-items: stretch;
+      height: 100%;
+    }
+
+    .nav-tabs .hub-tab {
+      height: 60px;
+      padding: 0 18px;
+      border-radius: 0;
+      font-size: 0.90rem;
+      font-weight: 400;
+      color: var(--stone);
+      background: transparent !important;
+      border: none;
+      border-bottom: 2px solid transparent;
+      box-shadow: none !important;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .nav-tabs .hub-tab:hover {
+      color: var(--near-black);
+      border-bottom-color: var(--warm-sand);
+    }
+
+    .nav-tabs .hub-tab.active {
+      color: var(--near-black);
+      font-weight: 500;
+      border-bottom: 2px solid var(--terracotta);
+    }
+
     .nav-brand {
       font-family: var(--font-serif);
       font-size: 1.06rem;
@@ -143,47 +175,17 @@
       max-width: 520px;
     }
 
-    /* ─── Hub Tab Bar ─────────────────────────────────────────── */
+    /* ─── Hub ────────────────────────────────────────────────── */
     .hub-wrapper {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 40px 100px;
-    }
-
-    .hub-tabs {
-      display: flex;
-      gap: 4px;
-      background: var(--warm-sand);
-      border-radius: 16px;
-      padding: 4px;
-      width: fit-content;
-      margin-bottom: 40px;
-      box-shadow: 0px 0px 0px 1px var(--ring-warm);
+      padding: 32px 40px 100px;
     }
 
     .hub-tab {
       font-family: var(--font-sans);
-      font-size: 0.94rem;
-      font-weight: 500;
-      color: var(--stone);
-      padding: 8px 20px;
-      border-radius: 12px;
-      border: none;
-      background: transparent;
       cursor: pointer;
-      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
       white-space: nowrap;
-    }
-
-    .hub-tab:hover {
-      color: var(--charcoal);
-      background: var(--ivory);
-    }
-
-    .hub-tab.active {
-      background: var(--ivory);
-      color: var(--near-black);
-      box-shadow: 0px 0px 0px 1px var(--ring-warm), rgba(0,0,0,0.05) 0px 2px 8px;
     }
 
     /* ─── Hub Panels ─────────────────────────────────────────── */
@@ -538,16 +540,16 @@
     }
 
     @media (max-width: 640px) {
-      .nav { padding: 0 20px; }
-      .hero { padding: 48px 20px 40px; }
-      .hub-wrapper { padding: 0 20px 60px; }
+      .nav { padding: 0 16px; height: auto; flex-wrap: wrap; gap: 0; }
+      .nav-brand { padding: 14px 0; }
+      .nav-tabs { order: 3; width: 100%; border-top: 1px solid var(--border-cream); overflow-x: auto; }
+      .nav-tabs .hub-tab { height: 44px; padding: 0 14px; font-size: 0.82rem; }
+      .nav-links { padding: 14px 0; }
+      .hub-wrapper { padding: 20px 20px 60px; }
       .stat-grid   { grid-template-columns: 1fr; }
       .card-grid   { grid-template-columns: 1fr; }
       .card-grid-2 { grid-template-columns: 1fr; }
       .three-col   { grid-template-columns: 1fr; }
-      .hub-tabs    { width: 100%; justify-content: center; flex-wrap: wrap; }
-      .hero-title  { font-size: 1.6rem; }
-      .hero-sub    { font-size: 1rem; }
     }
 
     /* ─── Hub Section Label ─────────────────────────────────── */
@@ -821,30 +823,19 @@
   <!-- ── Navigation ─────────────────────────────────── -->
   <nav class="nav">
     <a href="#" class="nav-brand">Etsy - Internal portal<span>.</span></a>
-    <ul class="nav-links">
-      <!-- <li><a href="#">About</a></li>
-      <li><a href="#">Publications</a></li>
-      <li><a href="#">Blog</a></li> -->
-      <li><a href="mailto:" class="nav-cta">Sign out</a></li>
-    </ul>
-  </nav>
-
-  <!-- ── Hero ───────────────────────────────────────── -->
-  <header class="hero">
-    <!-- <p class="hero-overline">Findatasolution · Ho Chi Minh City</p> -->
-    <!-- <h1 class="hero-title">Turning financial data into decisions that compound.</h1> -->
-  </header>
-
-  <!-- ── Hub Section ────────────────────────────────── -->
-  <main class="hub-wrapper">
-
-    <!-- Tab Bar -->
-    <div class="hub-tabs" role="tablist">
+    <div class="nav-tabs" role="tablist">
       <button class="hub-tab active" role="tab" data-tab="performance">Performance Hub</button>
       <button class="hub-tab"        role="tab" data-tab="intelligence">Intelligence Hub</button>
       <button class="hub-tab"        role="tab" data-tab="analytics">Analytics Hub</button>
       <button class="hub-tab"        role="tab" data-tab="research">Research Hub</button>
     </div>
+    <ul class="nav-links">
+      <li><a href="mailto:" class="nav-cta">Sign out</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Hub Section ────────────────────────────────── -->
+  <main class="hub-wrapper">
 
     <!-- ── Panel 1: Performance Hub ───────────────── -->
     <section class="hub-panel active" id="tab-performance" role="tabpanel">
