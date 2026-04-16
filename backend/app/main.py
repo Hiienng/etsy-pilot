@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .core.config import get_settings
 from .core.database import create_tables
-from .api.routes import listings, optimize
+from .api.routes import listings, optimize, market
 
 settings = get_settings()
 
@@ -30,6 +30,7 @@ app.add_middleware(
 
 app.include_router(listings.router, prefix="/api/v1")
 app.include_router(optimize.router, prefix="/api/v1")
+app.include_router(market.router, prefix="/api/v1")
 
 
 @app.get("/health")

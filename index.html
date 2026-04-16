@@ -973,7 +973,6 @@
           <button class="perf-pill"        data-perf="improvement">Listing Improvement</button>
           <button class="perf-pill"        data-perf="scaleup">Listing Scale Up</button>
         </div>
-        <a href="performance-data-dictionary.html" target="_blank" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none;border:1px solid var(--terracotta);border-radius:6px;padding:4px 10px;white-space:nowrap;opacity:0.85;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.85'">? Data Dictionary</a>
       </div>
 
       <!-- ── Sub-panel: Listing Performance ─────── -->
@@ -1625,99 +1624,11 @@
     </section>
 
     <!-- ── Panel 2: Intelligence Hub ──────────────── -->
-    <!-- <section class="hub-panel" id="tab-intelligence" role="tabpanel">
+    <section class="hub-panel" id="tab-intelligence" role="tabpanel">
 
-      <h2 class="section-heading">AI &amp; Machine Learning Projects</h2>
+      <h2 class="section-heading">Under Development ...</h2>
 
-      <div class="model-grid" style="margin-bottom:32px">
-        <div class="model-card">
-          <p class="model-name">FinBERT+</p>
-          <p class="model-desc">Fine-tuned language model for Vietnamese financial news sentiment classification. Trained on 200k+ articles from VNDirect and Bloomberg feeds.</p>
-          <div class="card-footer">
-            <span class="badge">NLP</span>
-            <span class="badge">PyTorch</span>
-            <span class="badge">Production</span>
-          </div>
-        </div>
-        <div class="model-card">
-          <p class="model-name">VolSurface</p>
-          <p class="model-desc">Neural SDE-based implied volatility surface model for VN30 index options. Outperforms SVI parametrisation by 18% on out-of-sample smile fitting.</p>
-          <div class="card-footer">
-            <span class="badge">Quant</span>
-            <span class="badge">JAX</span>
-            <span class="badge">Research</span>
-          </div>
-        </div>
-        <div class="model-card">
-          <p class="model-name">CreditLens</p>
-          <p class="model-desc">Gradient-boosted model for SME credit scoring using transaction behavioural features. Gini coefficient of 0.71 on holdout set.</p>
-          <div class="card-footer">
-            <span class="badge">Credit Risk</span>
-            <span class="badge">XGBoost</span>
-            <span class="badge">Production</span>
-          </div>
-        </div>
-      </div>
-
-      <hr class="section-divider">
-
-      <h2 class="section-heading">Methodology Toolkit</h2>
-      <div class="card-grid">
-        <div class="card">
-          <span class="card-tag">Forecasting</span>
-          <p class="card-title">Temporal Fusion Transformer</p>
-          <p class="card-body">Multi-horizon probabilistic forecasting with interpretable attention weights. Applied to VND/USD exchange rate prediction.</p>
-        </div>
-        <div class="card">
-          <span class="card-tag">Causal Inference</span>
-          <p class="card-title">Double ML Framework</p>
-          <p class="card-body">Heterogeneous treatment effect estimation for policy evaluation in credit limit assignment experiments.</p>
-        </div>
-        <div class="card">
-          <span class="card-tag">Optimisation</span>
-          <p class="card-title">Hierarchical Risk Parity</p>
-          <p class="card-body">Graph-theoretic portfolio construction using single-linkage clustering on asset correlation matrices.</p>
-        </div>
-        <div class="card">
-          <span class="card-tag">Anomaly Detection</span>
-          <p class="card-title">Isolation Forest + SHAP</p>
-          <p class="card-body">Real-time fraud detection pipeline with explainability layer for operations team review queues.</p>
-        </div>
-        <div class="card">
-          <span class="card-tag">NLP</span>
-          <p class="card-title">Earnings Call Mining</p>
-          <p class="card-body">Automated extraction of forward guidance signals from quarterly earnings transcripts using entity-relation extraction.</p>
-        </div>
-        <div class="card">
-          <span class="card-tag">Simulation</span>
-          <p class="card-title">Monte Carlo Stress Testing</p>
-          <p class="card-body">Copula-based scenario generation for portfolio tail-risk estimation under correlated market shocks.</p>
-        </div>
-      </div>
-
-      <hr class="section-divider">
-
-      <h2 class="section-heading">Open Source Contributions</h2>
-      <div class="timeline">
-        <div class="timeline-item">
-          <span class="timeline-date">2025</span>
-          <div class="timeline-content">
-            <p class="card-title">vnfinance-data — Python library</p>
-            <p class="card-body">Unified data connector for VNDirect, HOSE, and SSI APIs. 1.2k GitHub stars. Used in academic research and retail quant tools.</p>
-            <div class="card-footer"><span class="badge">Python</span><span class="badge">Open Source</span></div>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <span class="timeline-date">2024</span>
-          <div class="timeline-content">
-            <p class="card-title">ML Mathematics Book — Web Edition</p>
-            <p class="card-body">Interactive multi-chapter ebook covering probability, linear algebra, and optimisation for machine learning practitioners.</p>
-            <div class="card-footer"><span class="badge">Education</span><span class="badge">HTML</span></div>
-          </div>
-        </div>
-      </div>
-
-    </section> -->
+    </section>
 
     <!-- ── Panel 3: Analytics Hub ──────────────────── -->
     <section class="hub-panel" id="tab-analytics" role="tabpanel">
@@ -2638,7 +2549,7 @@
         document.getElementById('perf-sub-scaleup').style.display      = target === 'scaleup'      ? '' : 'none';
         if (target === 'improvement' && !window._imprRendered) {
           window._imprRendered = true;
-          renderImprTable();
+          loadMarketSamples().then(() => renderImprTable());
         }
         if (target === 'scaleup' && !window._scaleupRendered) {
           window._scaleupRendered = true;
@@ -2668,15 +2579,14 @@
       fix_roas:  { label: 'Metrics tốt nhưng margin mỏng',                 cls: 'badge-roas', priority: 'high',     pCls: 'pri-high' },
       fix_ctr:   { label: 'Listing yếu toàn diện — cần tái cấu trúc',     cls: 'badge-all',  priority: 'critical', pCls: 'pri-crit' },
     };
-    // Sample links từ bảng market_listing (listing_link field — null nếu chưa input)
-    const MARKET_SAMPLES = {
-      'baby blanket': null, 'baby onesie': null, 'baby romper': null,
-      'baby bodysuit': null, 'baby comforter': null, 'baby lovey': null,
-      'waffle baby blanket': null, 'woven blanket': null, 'photo blanket': null,
-      'luxury baby blanket': null, 'checkered blanket': null, 'memory blanket': null,
-      'milestone blanket': null, 'baby jumpsuit': null, 'baby outfit': null,
-      'matching family shirts': null, 'sweatshirt': null,
-    };
+    // Sample links — fetch từ API /api/v1/market/samples (Neon market_listing.listing_link)
+    let MARKET_SAMPLES = {};
+    async function loadMarketSamples() {
+      try {
+        const res = await fetch('/api/v1/market/samples');
+        if (res.ok) MARKET_SAMPLES = await res.json();
+      } catch (e) { console.warn('[market/samples] fetch failed', e); }
+    }
     const PROD_COLOR = { 'baby blanket': 'chip-neu', 'baby onesie': 'badge-qw', 'baby romper': 'chip-ok' };
 
     function renderImprTable() {
