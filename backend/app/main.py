@@ -2,8 +2,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .core.config import get_settings
-from .core.database import create_tables
-from .api.routes import listings, optimize, market
+from .core.database import create_tables, AsyncSessionLocal
+from .api.routes import listings, optimize, market, performance
+from .models import scenario  # noqa: F401 — registers scenarios_rules with Base
+from .services import performance_service
 
 settings = get_settings()
 
@@ -11,6 +13,8 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await create_tables()
+    async with AsyncSessionLocal() as session:
+        await performance_service.seed_scenarios(session)
     yield
 
 
@@ -31,6 +35,7 @@ app.add_middleware(
 app.include_router(listings.router, prefix="/api/v1")
 app.include_router(optimize.router, prefix="/api/v1")
 app.include_router(market.router, prefix="/api/v1")
+app.include_router(performance.router, prefix="/api/v1")
 
 
 @app.get("/health")
