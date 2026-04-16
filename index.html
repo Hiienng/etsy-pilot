@@ -850,286 +850,411 @@
     <section class="hub-panel active" id="tab-performance" role="tabpanel">
 
       <h2 class="section-heading" style="margin-bottom:6px">Listing Performance</h2>
-      <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone);margin-bottom:28px">
+      <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone);margin-bottom:24px">
         Nguồn: <code style="font-family:var(--font-mono);font-size:0.88rem;background:var(--warm-sand);padding:1px 6px;border-radius:4px">internal_listing</code>
         · 128 listings · 3 sản phẩm · cập nhật 2026-04-16
       </p>
 
-      <!-- KPI row -->
-      <div class="mini-stat-row">
-        <div class="mini-stat">
-          <div class="mini-stat-value">128</div>
-          <div class="mini-stat-label">Tổng Listings</div>
-          <div class="mini-stat-note">3 product types</div>
+      <!-- ── 01: Hero scorecard CTR / CR / ROAS ─── -->
+      <p class="hub-section-label">01 — Tổng quan hiệu quả</p>
+
+      <!-- 3 hero metric cards -->
+      <div class="three-col" style="margin-bottom:16px">
+
+        <!-- CTR card -->
+        <div class="chart-card" style="border-left:3px solid #b53333">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+            <div>
+              <p style="font-family:var(--font-sans);font-size:0.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--stone);margin-bottom:4px">CTR — Click Through Rate</p>
+              <p style="font-family:var(--font-serif);font-size:2.2rem;font-weight:500;line-height:1;color:#b53333">1.59<span style="font-size:1.1rem">%</span></p>
+              <p style="font-family:var(--font-sans);font-size:0.82rem;color:var(--stone);margin-top:3px">Mục tiêu ≥ 2%</p>
+            </div>
+            <div style="text-align:right">
+              <p style="font-family:var(--font-serif);font-size:1.5rem;color:#b53333;font-weight:500">20<span style="font-size:0.9rem;color:var(--stone)">/128</span></p>
+              <p style="font-family:var(--font-sans);font-size:0.75rem;color:var(--stone)">listings đạt ngưỡng</p>
+            </div>
+          </div>
+          <div style="background:var(--warm-sand);border-radius:4px;height:6px;margin-bottom:12px">
+            <div style="background:#b53333;border-radius:4px;height:6px;width:15.6%"></div>
+          </div>
+          <p style="font-family:var(--font-sans);font-size:0.82rem;color:var(--charcoal);line-height:1.5;border-top:1px solid var(--border-cream);padding-top:10px">
+            <strong>Blanket 0/56</strong> đạt ngưỡng — vấn đề cấu trúc thumbnail/title trên toàn bộ nhóm sản phẩm này.
+          </p>
         </div>
-        <div class="mini-stat">
-          <div class="mini-stat-value" style="color:#b53333">0</div>
-          <div class="mini-stat-label">Active</div>
-          <div class="mini-stat-note" style="color:#b53333">Không có listing nào live</div>
+
+        <!-- CR card -->
+        <div class="chart-card" style="border-left:3px solid #4a8c60">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+            <div>
+              <p style="font-family:var(--font-sans);font-size:0.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--stone);margin-bottom:4px">CR — Conversion Rate</p>
+              <p style="font-family:var(--font-serif);font-size:2.2rem;font-weight:500;line-height:1;color:#4a8c60">4.16<span style="font-size:1.1rem">%</span></p>
+              <p style="font-family:var(--font-sans);font-size:0.82rem;color:var(--stone);margin-top:3px">Mục tiêu ≥ 4%</p>
+            </div>
+            <div style="text-align:right">
+              <p style="font-family:var(--font-serif);font-size:1.5rem;color:#4a8c60;font-weight:500">65<span style="font-size:0.9rem;color:var(--stone)">/128</span></p>
+              <p style="font-family:var(--font-sans);font-size:0.75rem;color:var(--stone)">listings đạt ngưỡng</p>
+            </div>
+          </div>
+          <div style="background:var(--warm-sand);border-radius:4px;height:6px;margin-bottom:12px">
+            <div style="background:#4a8c60;border-radius:4px;height:6px;width:50.8%"></div>
+          </div>
+          <p style="font-family:var(--font-sans);font-size:0.82rem;color:var(--charcoal);line-height:1.5;border-top:1px solid var(--border-cream);padding-top:10px">
+            Avg CR trên ngưỡng — buyer intent tốt. <strong>54 listings</strong> CR≥4% nhưng CTR thấp: đây là quick win lớn nhất.
+          </p>
         </div>
-        <div class="mini-stat">
-          <div class="mini-stat-value">128</div>
-          <div class="mini-stat-label">Closed</div>
-          <div class="mini-stat-note">100% danh mục</div>
+
+        <!-- ROAS card -->
+        <div class="chart-card" style="border-left:3px solid var(--stone)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+            <div>
+              <p style="font-family:var(--font-sans);font-size:0.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--stone);margin-bottom:4px">ROAS — Return on Ad Spend</p>
+              <p style="font-family:var(--font-serif);font-size:2.2rem;font-weight:500;line-height:1;color:var(--charcoal)">1.61<span style="font-size:1.1rem">x</span></p>
+              <p style="font-family:var(--font-sans);font-size:0.82rem;color:var(--stone);margin-top:3px">Break-even chưa xác định</p>
+            </div>
+            <div style="text-align:right">
+              <p style="font-family:var(--font-serif);font-size:1.5rem;color:var(--charcoal);font-weight:500">32<span style="font-size:0.9rem;color:var(--stone)">/128</span></p>
+              <p style="font-family:var(--font-sans);font-size:0.75rem;color:var(--stone)">listings ≥ 2.0x</p>
+            </div>
+          </div>
+          <div style="background:var(--warm-sand);border-radius:4px;height:6px;margin-bottom:12px">
+            <div style="background:var(--stone);border-radius:4px;height:6px;width:25%"></div>
+          </div>
+          <p style="font-family:var(--font-sans);font-size:0.82rem;color:var(--charcoal);line-height:1.5;border-top:1px solid var(--border-cream);padding-top:10px">
+            Onesie avg ROAS 1.22x — <strong>0/42 đạt ngưỡng 2x</strong>. Cần xác định break-even thực để kết luận lời/lỗ.
+          </p>
         </div>
-        <div class="mini-stat">
-          <div class="mini-stat-value">56</div>
-          <div class="mini-stat-label">Baby Blanket</div>
-          <div class="mini-stat-note">44% portfolio</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-value">30</div>
-          <div class="mini-stat-label">Baby Romper</div>
-          <div class="mini-stat-note">23% portfolio</div>
-        </div>
+
       </div>
 
-      <!-- Alert banner -->
-      <div style="background:rgba(181,51,51,0.06);border:1px solid rgba(181,51,51,0.20);border-left:3px solid #b53333;border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:28px;display:flex;align-items:flex-start;gap:12px">
-        <span style="font-size:1rem;margin-top:1px">⚠️</span>
-        <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--charcoal);line-height:1.60">
-          <strong>Toàn bộ 128 listings đang ở trạng thái Closed</strong> — không có sản phẩm nào đang live trên platform.
-          Cần review và reactivate để khôi phục visibility trước khi phân tích hiệu quả thực chiến.
+      <!-- Signal banner -->
+      <div style="background:rgba(74,140,96,0.06);border:1px solid rgba(74,140,96,0.20);border-left:3px solid #4a8c60;border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:28px">
+        <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--charcoal);line-height:1.65">
+          <strong>Tín hiệu quan trọng:</strong> CR trung bình 4.16% — buyer đang muốn mua khi vào được listing.
+          Rào cản chính là <strong>CTR</strong>: chỉ 15.6% listings thu hút được click ban đầu.
+          <strong>54 listings có CR tốt nhưng CTR yếu</strong> — cải thiện thumbnail/title là đòn bẩy lớn nhất hiện tại,
+          không cần thay đổi sản phẩm hay giá.
         </p>
       </div>
 
-      <!-- ── 01: Phân bổ danh mục ──────────────────── -->
-      <p class="hub-section-label">01 — Phân bổ danh mục listing</p>
+      <!-- ── 02: Listing nổi bật & cơ hội ─────────── -->
+      <p class="hub-section-label">02 — Listing tốt nhất & cơ hội cải thiện</p>
 
       <div class="two-col" style="margin-bottom:24px">
+
+        <!-- Best performers -->
         <div class="chart-card">
-          <p class="chart-card-title">Cơ cấu portfolio theo sản phẩm</p>
-          <p class="chart-card-sub">Baby blanket chiếm 44% — nhiều nhất nhưng hot rate thấp nhất trên thị trường (50%). Baby romper ít nhất (23%) dù market đang cần nhiều nhất.</p>
-          <div class="chart-wrap chart-wrap-md">
-            <canvas id="perfChartPortfolio"></canvas>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#4a8c60;flex-shrink:0"></span>
+            <p class="chart-card-title" style="margin:0">Listing tốt nhất — đạt cả 3 chỉ số</p>
           </div>
+          <p class="chart-card-sub" style="margin-bottom:16px">CTR ≥ 2% · CR ≥ 4% · ROAS ≥ 2x · Tổng: <strong>3 listings</strong> (tất cả baby romper)</p>
+          <table class="shop-table">
+            <thead>
+              <tr>
+                <th>Listing</th>
+                <th style="text-align:right">CTR</th>
+                <th style="text-align:right">CR</th>
+                <th style="text-align:right">ROAS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="max-width:200px">
+                  <span style="font-size:0.72rem;background:rgba(74,140,96,0.10);color:#4a8c60;padding:1px 6px;border-radius:4px;font-weight:500">baby romper</span><br>
+                  <span style="font-size:0.82rem;color:var(--charcoal)">Sage custom name embroidered zip romper…</span>
+                </td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">2.18%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">5.65%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">2.07x</td>
+              </tr>
+              <tr>
+                <td style="max-width:200px">
+                  <span style="font-size:0.72rem;background:rgba(74,140,96,0.10);color:#4a8c60;padding:1px 6px;border-radius:4px;font-weight:500">baby romper</span><br>
+                  <span style="font-size:0.82rem;color:var(--charcoal)">Baby hospital outfit, custom baby zip romper…</span>
+                </td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">2.13%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">5.61%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">2.05x</td>
+              </tr>
+              <tr>
+                <td style="max-width:200px">
+                  <span style="font-size:0.72rem;background:rgba(74,140,96,0.10);color:#4a8c60;padding:1px 6px;border-radius:4px;font-weight:500">baby romper</span><br>
+                  <span style="font-size:0.82rem;color:var(--charcoal)">Baby boy gifts, zip romper with embroidered name…</span>
+                </td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">2.10%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">4.46%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">2.01x</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);margin-top:10px;padding-top:10px;border-top:1px solid var(--border-cream)">
+            Baby romper là sản phẩm duy nhất có listing vượt cả 3 ngưỡng — đồng thời là sản phẩm market đang demand cao (hot rate 71%). Dùng các listing này làm template cho title/thumbnail.
+          </p>
         </div>
+
+        <!-- Opportunity listings -->
         <div class="chart-card">
-          <p class="chart-card-title">Số listing theo sản phẩm</p>
-          <p class="chart-card-sub">Phân bổ tuyệt đối: blanket 56, onesie 42, romper 30. Tất cả đều Closed.</p>
-          <div class="chart-wrap chart-wrap-md">
-            <canvas id="perfChartCount"></canvas>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--terracotta);flex-shrink:0"></span>
+            <p class="chart-card-title" style="margin:0">Quick win — CR tốt, CTR thấp</p>
           </div>
+          <p class="chart-card-sub" style="margin-bottom:16px">CR ≥ 4% nhưng CTR &lt; 2% · Tổng: <strong>54 listings</strong> · Chỉ cần cải thiện thumbnail/title</p>
+          <table class="shop-table">
+            <thead>
+              <tr>
+                <th>Listing</th>
+                <th style="text-align:right">CTR</th>
+                <th style="text-align:right">CR</th>
+                <th style="text-align:right">ROAS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="max-width:200px">
+                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:1px 6px;border-radius:4px;font-weight:500">baby onesie</span><br>
+                  <span style="font-size:0.82rem;color:var(--charcoal)">Embroidered custom baby onesie, personalized…</span>
+                </td>
+                <td style="text-align:right;color:#b53333">1.65%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">6.47%</td>
+                <td style="text-align:right">1.67x</td>
+              </tr>
+              <tr>
+                <td style="max-width:200px">
+                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:1px 6px;border-radius:4px;font-weight:500">baby onesie</span><br>
+                  <span style="font-size:0.82rem;color:var(--charcoal)">Embroidered custom baby onesie, baby shower…</span>
+                </td>
+                <td style="text-align:right;color:#b53333">1.60%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">6.28%</td>
+                <td style="text-align:right">1.15x</td>
+              </tr>
+              <tr>
+                <td style="max-width:200px">
+                  <span style="font-size:0.72rem;background:rgba(139,161,175,0.15);color:var(--stone);padding:1px 6px;border-radius:4px;font-weight:500">baby blanket</span><br>
+                  <span style="font-size:0.82rem;color:var(--charcoal)">Baby boy gift, birth announcement blue blankets…</span>
+                </td>
+                <td style="text-align:right;color:#b53333">1.28%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">6.27%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">2.01x</td>
+              </tr>
+              <tr>
+                <td style="max-width:200px">
+                  <span style="font-size:0.72rem;background:rgba(139,161,175,0.15);color:var(--stone);padding:1px 6px;border-radius:4px;font-weight:500">baby blanket</span><br>
+                  <span style="font-size:0.82rem;color:var(--charcoal)">Baby girl gift, birth announcement blankets…</span>
+                </td>
+                <td style="text-align:right;color:#b53333">1.35%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">6.22%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">2.59x</td>
+              </tr>
+              <tr>
+                <td style="max-width:200px">
+                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:1px 6px;border-radius:4px;font-weight:500">baby romper</span><br>
+                  <span style="font-size:0.82rem;color:var(--charcoal)">Baby home coming outfit, custom baby romper…</span>
+                </td>
+                <td style="text-align:right;color:#b53333">1.74%</td>
+                <td style="text-align:right;color:#4a8c60;font-weight:500">6.23%</td>
+                <td style="text-align:right">1.05x</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);margin-top:10px;padding-top:10px;border-top:1px solid var(--border-cream)">
+            Còn 49 listing tương tự chưa hiển thị. Ưu tiên xử lý onesie (market hot rate 100%) và blanket có ROAS cao trước.
+          </p>
         </div>
+
       </div>
 
-      <!-- ── 02: Internal vs Market gap ───────────────  -->
-      <p class="hub-section-label">02 — Portfolio vs nhu cầu thị trường</p>
-
-      <div class="chart-card" style="margin-bottom:24px">
-        <p class="chart-card-title">Trọng số internal vs hot rate thị trường</p>
-        <p class="chart-card-sub">
-          So sánh % listing chúng ta đang có với % hot rate từ <code style="font-family:var(--font-mono);font-size:0.82em;background:var(--warm-sand);padding:1px 5px;border-radius:3px">market_listing</code>.
-          Đường càng xa nhau = mức độ lệch pha càng lớn.
-        </p>
-        <div class="chart-wrap chart-wrap-md">
-          <canvas id="perfChartGap"></canvas>
-        </div>
-      </div>
-
-      <!-- ── 03: Chi tiết từng sản phẩm ─────────────── -->
-      <p class="hub-section-label">03 — Chân dung từng sản phẩm</p>
+      <!-- ── 03: Chi tiết theo sản phẩm ─────────────── -->
+      <p class="hub-section-label">03 — Phân tích chi tiết theo sản phẩm</p>
 
       <div class="three-col" style="margin-bottom:24px">
 
+        <!-- Baby Blanket card -->
         <div class="chart-card">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
             <div>
               <p class="chart-card-title" style="margin-bottom:2px">Baby Blanket</p>
               <span style="font-family:var(--font-sans);font-size:0.75rem;color:var(--stone)">56 listings · 44% portfolio</span>
             </div>
-            <span style="font-family:var(--font-sans);font-size:0.75rem;font-weight:500;background:rgba(181,51,51,0.08);color:#b53333;padding:3px 8px;border-radius:6px">Closed</span>
+            <span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:500;background:rgba(181,51,51,0.08);color:#b53333;padding:3px 8px;border-radius:6px">CTR 0/56 ⚠</span>
           </div>
           <div class="skill-list">
             <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">Market hot rate</span><span class="skill-pct">50%</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:50%;background:var(--stone)"></div></div>
+              <div class="skill-meta"><span class="skill-name">CTR avg 1.41%</span><span class="skill-pct" style="color:#b53333">0/56 pass</span></div>
+              <div class="skill-bar"><div class="skill-fill" style="width:70.5%;background:#b53333"></div></div>
             </div>
             <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">Portfolio weight</span><span class="skill-pct">44%</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:44%"></div></div>
+              <div class="skill-meta"><span class="skill-name">CR avg 4.28%</span><span class="skill-pct" style="color:#4a8c60">29/56 pass</span></div>
+              <div class="skill-bar"><div class="skill-fill" style="width:51.8%;background:#4a8c60"></div></div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-meta"><span class="skill-name">ROAS avg 1.88x</span><span class="skill-pct">24/56 pass</span></div>
+              <div class="skill-bar"><div class="skill-fill" style="width:42.9%"></div></div>
             </div>
           </div>
-          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-cream)">
-            <p style="font-family:var(--font-sans);font-size:0.82rem;color:var(--olive);line-height:1.5">
-              Avg market price <strong>$92</strong> · avg reviews 5,403<br>
-              Over-indexed so với market demand
-            </p>
-          </div>
+          <p style="font-family:var(--font-sans);font-size:0.80rem;color:var(--olive);margin-top:12px;padding-top:12px;border-top:1px solid var(--border-cream);line-height:1.5">
+            Buyer vào listing thì mua (CR ok) nhưng không click vào ban đầu. Thumbnail/title chưa đủ hấp dẫn trong feed.
+          </p>
         </div>
 
+        <!-- Baby Onesie card -->
         <div class="chart-card">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
             <div>
               <p class="chart-card-title" style="margin-bottom:2px">Baby Onesie</p>
               <span style="font-family:var(--font-sans);font-size:0.75rem;color:var(--stone)">42 listings · 33% portfolio</span>
             </div>
-            <span style="font-family:var(--font-sans);font-size:0.75rem;font-weight:500;background:rgba(181,51,51,0.08);color:#b53333;padding:3px 8px;border-radius:6px">Closed</span>
+            <span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:500;background:rgba(181,51,51,0.08);color:#b53333;padding:3px 8px;border-radius:6px">ROAS 0/42 ⚠</span>
           </div>
           <div class="skill-list">
             <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">Market hot rate</span><span class="skill-pct" style="color:var(--terracotta)">100%</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:100%"></div></div>
+              <div class="skill-meta"><span class="skill-name">CTR avg 1.75%</span><span class="skill-pct">11/42 pass</span></div>
+              <div class="skill-bar"><div class="skill-fill" style="width:87.5%"></div></div>
             </div>
             <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">Portfolio weight</span><span class="skill-pct">33%</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:33%"></div></div>
+              <div class="skill-meta"><span class="skill-name">CR avg 3.75%</span><span class="skill-pct" style="color:#b53333">18/42 pass</span></div>
+              <div class="skill-bar"><div class="skill-fill" style="width:43.75%;background:#b53333"></div></div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-meta"><span class="skill-name">ROAS avg 1.22x</span><span class="skill-pct" style="color:#b53333">0/42 pass</span></div>
+              <div class="skill-bar"><div class="skill-fill" style="width:0%;background:#b53333"></div></div>
             </div>
           </div>
-          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-cream)">
-            <p style="font-family:var(--font-sans);font-size:0.82rem;color:var(--olive);line-height:1.5">
-              Avg market price <strong>$62</strong> · avg reviews 1,292<br>
-              Cân bằng — cần reactivate
-            </p>
-          </div>
+          <p style="font-family:var(--font-sans);font-size:0.80rem;color:var(--olive);margin-top:12px;padding-top:12px;border-top:1px solid var(--border-cream);line-height:1.5">
+            ROAS thấp nhất nhóm — cần xem lại giá và chi phí quảng cáo. Market hot rate 100%, có room tăng giá.
+          </p>
         </div>
 
-        <div class="chart-card" style="border-color:rgba(201,100,66,0.30);box-shadow:0 0 0 1px rgba(201,100,66,0.15),rgba(0,0,0,0.05) 0px 4px 24px">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <!-- Baby Romper card -->
+        <div class="chart-card" style="border-color:rgba(74,140,96,0.30);box-shadow:0 0 0 1px rgba(74,140,96,0.12),rgba(0,0,0,0.05) 0px 4px 24px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
             <div>
               <p class="chart-card-title" style="margin-bottom:2px">Baby Romper</p>
               <span style="font-family:var(--font-sans);font-size:0.75rem;color:var(--stone)">30 listings · 23% portfolio</span>
             </div>
-            <span style="font-family:var(--font-sans);font-size:0.75rem;font-weight:500;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:3px 8px;border-radius:6px">Cần đẩy mạnh</span>
+            <span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:500;background:rgba(74,140,96,0.10);color:#4a8c60;padding:3px 8px;border-radius:6px">Best performer</span>
           </div>
           <div class="skill-list">
             <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">Market hot rate</span><span class="skill-pct" style="color:var(--terracotta)">71%</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:71%"></div></div>
+              <div class="skill-meta"><span class="skill-name">CTR avg 1.71%</span><span class="skill-pct" style="color:#4a8c60">9/30 pass</span></div>
+              <div class="skill-bar"><div class="skill-fill" style="width:85.5%;background:#4a8c60"></div></div>
             </div>
             <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">Portfolio weight</span><span class="skill-pct">23%</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:23%;background:var(--stone)"></div></div>
+              <div class="skill-meta"><span class="skill-name">CR avg 4.53%</span><span class="skill-pct" style="color:#4a8c60">18/30 pass</span></div>
+              <div class="skill-bar"><div class="skill-fill" style="width:60%;background:#4a8c60"></div></div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-meta"><span class="skill-name">ROAS avg 1.64x</span><span class="skill-pct">8/30 pass</span></div>
+              <div class="skill-bar"><div class="skill-fill" style="width:26.7%"></div></div>
             </div>
           </div>
-          <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-cream)">
-            <p style="font-family:var(--font-sans);font-size:0.82rem;color:var(--olive);line-height:1.5">
-              Avg market price <strong>$58</strong> · avg reviews 6,110<br>
-              Under-indexed — gap lớn nhất cần cải thiện
-            </p>
-          </div>
+          <p style="font-family:var(--font-sans);font-size:0.80rem;color:var(--olive);margin-top:12px;padding-top:12px;border-top:1px solid var(--border-cream);line-height:1.5">
+            Duy nhất có listing đạt cả 3 chỉ số. Market hot rate 71% — under-indexed (23% portfolio). Đây là sản phẩm cần đầu tư mạnh nhất.
+          </p>
         </div>
 
       </div>
 
-      <!-- ── 03b: CTR / CR / ROAS metrics ─────────────── -->
-      <p class="hub-section-label">03b — Hiệu quả listing: CTR · CR · ROAS</p>
-
-      <!-- Threshold KPI row -->
-      <div class="mini-stat-row" style="margin-bottom:24px">
-        <div class="mini-stat">
-          <div class="mini-stat-value" style="color:#b53333">20<span style="font-size:1rem;color:var(--stone)">/128</span></div>
-          <div class="mini-stat-label">CTR ≥ 2%</div>
-          <div class="mini-stat-note" style="color:#b53333">108 listings dưới ngưỡng</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-value">65<span style="font-size:1rem;color:var(--stone)">/128</span></div>
-          <div class="mini-stat-label">CR ≥ 4%</div>
-          <div class="mini-stat-note">63 listings cần cải thiện</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-value">32<span style="font-size:1rem;color:var(--stone)">/128</span></div>
-          <div class="mini-stat-label">ROAS ≥ 2</div>
-          <div class="mini-stat-note">96 listings chưa đạt</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-value">1.59<span style="font-size:0.85rem;color:var(--stone)">%</span></div>
-          <div class="mini-stat-label">Avg CTR</div>
-          <div class="mini-stat-note">Mục tiêu: ≥ 2%</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-value">1.61</div>
-          <div class="mini-stat-label">Avg ROAS</div>
-          <div class="mini-stat-note">Cần xác định break-even</div>
-        </div>
-      </div>
-
+      <!-- CTR/CR/ROAS charts -->
       <div class="three-col" style="margin-bottom:24px">
-
         <div class="chart-card">
-          <p class="chart-card-title">CTR theo sản phẩm</p>
-          <p class="chart-card-sub">Ngưỡng: 2% — listing hấp dẫn hay không. Baby blanket <strong>0/56</strong> đạt ngưỡng.</p>
-          <div class="chart-wrap chart-wrap-md">
-            <canvas id="perfCTR"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <p class="chart-card-title">CR theo sản phẩm</p>
-          <p class="chart-card-sub">Ngưỡng: 4% — hình ảnh, keywords & giá đúng tệp chưa. Baby onesie avg CR 3.75% chưa đạt.</p>
-          <div class="chart-wrap chart-wrap-md">
-            <canvas id="perfCR"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <p class="chart-card-title">Avg ROAS theo sản phẩm</p>
-          <p class="chart-card-sub">Lời hay lỗ — cần xác định ROAS huề vốn từng sản phẩm để kết luận. Blanket cao nhất (1.88).</p>
-          <div class="chart-wrap chart-wrap-md">
-            <canvas id="perfROAS"></canvas>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="two-col" style="margin-bottom:24px">
-        <div class="chart-card">
-          <p class="chart-card-title">Listings đạt / chưa đạt CTR 2%</p>
-          <p class="chart-card-sub">Stacked bar — xanh = đạt, đỏ = cần cải thiện title/thumbnail.</p>
-          <div class="chart-wrap chart-wrap-sm">
-            <canvas id="perfCTRStack"></canvas>
-          </div>
+          <p class="chart-card-title">CTR trung bình theo sản phẩm</p>
+          <p class="chart-card-sub">Đường đỏ đứt = ngưỡng 2%. Blanket không có listing nào vượt qua.</p>
+          <div class="chart-wrap chart-wrap-md"><canvas id="perfCTR"></canvas></div>
         </div>
         <div class="chart-card">
-          <p class="chart-card-title">Listings đạt / chưa đạt CR 4%</p>
-          <p class="chart-card-sub">Stacked bar — xanh = đạt, đỏ = cần review hình, giá, keywords.</p>
-          <div class="chart-wrap chart-wrap-sm">
-            <canvas id="perfCRStack"></canvas>
-          </div>
+          <p class="chart-card-title">CR trung bình theo sản phẩm</p>
+          <p class="chart-card-sub">Đường đứt = ngưỡng 4%. Onesie 3.75% chưa đạt — cần cải thiện hình/tags.</p>
+          <div class="chart-wrap chart-wrap-md"><canvas id="perfCR"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <p class="chart-card-title">ROAS trung bình theo sản phẩm</p>
+          <p class="chart-card-sub">Đường đứt = ngưỡng tạm 2x. Onesie 1.22x cần xem lại bid/giá sản phẩm.</p>
+          <div class="chart-wrap chart-wrap-md"><canvas id="perfROAS"></canvas></div>
         </div>
       </div>
 
-      <!-- ── 04: Bảng cần cải thiện ─────────────────── -->
-      <p class="hub-section-label">04 — Hành động cần thực hiện</p>
+      <div class="two-col" style="margin-bottom:28px">
+        <div class="chart-card">
+          <p class="chart-card-title">Phân bổ listings đạt / chưa đạt CTR 2%</p>
+          <p class="chart-card-sub">Blanket toàn bộ màu đỏ — đây là vấn đề cần ưu tiên nhất.</p>
+          <div class="chart-wrap chart-wrap-sm"><canvas id="perfCTRStack"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <p class="chart-card-title">Phân bổ listings đạt / chưa đạt CR 4%</p>
+          <p class="chart-card-sub">Romper tỷ lệ tốt nhất (18/30). Onesie cần cải thiện landing page/giá.</p>
+          <div class="chart-wrap chart-wrap-sm"><canvas id="perfCRStack"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ── 04: Market context (secondary) ────────── -->
+      <p class="hub-section-label">04 — Bối cảnh thị trường</p>
+
+      <div class="two-col" style="margin-bottom:28px">
+        <div class="chart-card">
+          <p class="chart-card-title">Portfolio weight vs Market hot rate</p>
+          <p class="chart-card-sub">
+            Onesie under-indexed nặng nhất (33% portfolio vs 100% hot rate). Đây là gap chiến lược lớn nhất.
+          </p>
+          <div class="chart-wrap chart-wrap-md"><canvas id="perfChartGap"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <p class="chart-card-title">Cơ cấu 128 listings hiện tại</p>
+          <p class="chart-card-sub">Blanket chiếm 44% nhưng hiệu quả quảng cáo kém nhất. Cần cân bằng lại.</p>
+          <div class="chart-wrap chart-wrap-md"><canvas id="perfChartPortfolio"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ── 05: Hành động ──────────────────────────── -->
+      <p class="hub-section-label">05 — Hành động ưu tiên</p>
 
       <div class="chart-card">
-        <p class="chart-card-title">Checklist cải thiện theo sản phẩm</p>
-        <p class="chart-card-sub" style="margin-bottom:20px">Dựa trên trạng thái listing hiện tại và gap với nhu cầu thị trường</p>
+        <p class="chart-card-title">Ưu tiên cải thiện theo tác động</p>
+        <p class="chart-card-sub" style="margin-bottom:20px">Sắp xếp theo mức độ impact: quick win trước, chiến lược sau</p>
         <table class="shop-table">
           <thead>
             <tr>
-              <th>Sản phẩm</th>
-              <th style="text-align:right">Internal</th>
-              <th style="text-align:right">Market hot rate</th>
-              <th style="text-align:right">Gap</th>
-              <th style="text-align:center">Trạng thái</th>
+              <th style="width:28px">#</th>
               <th>Hành động</th>
+              <th style="text-align:center">Sản phẩm</th>
+              <th style="text-align:center">Impact</th>
+              <th>Lý do</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><strong>baby romper</strong></td>
-              <td style="text-align:right">30 listings (23%)</td>
-              <td style="text-align:right;color:var(--terracotta);font-weight:500">71%</td>
-              <td style="text-align:right;color:#b53333;font-weight:500">−48%</td>
-              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(181,51,51,0.08);color:#b53333;padding:2px 8px;border-radius:5px">Closed</span></td>
-              <td style="color:var(--charcoal)">Reactivate + tăng thêm listing mới</td>
+              <td style="color:var(--terracotta);font-weight:700">1</td>
+              <td><strong>Cải thiện thumbnail & title cho 54 listing CR tốt</strong></td>
+              <td style="text-align:center"><span style="font-size:0.72rem;background:var(--warm-sand);padding:1px 6px;border-radius:4px">tất cả</span></td>
+              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(74,140,96,0.10);color:#4a8c60;padding:2px 8px;border-radius:5px;font-weight:500">Quick win</span></td>
+              <td style="color:var(--charcoal);font-size:0.88rem">CR đã tốt — chỉ cần tăng CTR để chuyển thành doanh thu ngay</td>
             </tr>
             <tr>
-              <td><strong>baby onesie</strong></td>
-              <td style="text-align:right">42 listings (33%)</td>
-              <td style="text-align:right;color:var(--terracotta);font-weight:500">100%</td>
-              <td style="text-align:right;color:#b53333;font-weight:500">−67%</td>
-              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(181,51,51,0.08);color:#b53333;padding:2px 8px;border-radius:5px">Closed</span></td>
-              <td style="color:var(--charcoal)">Reactivate toàn bộ ngay</td>
+              <td style="color:var(--terracotta);font-weight:700">2</td>
+              <td><strong>Dùng 3 romper best-performer làm template</strong></td>
+              <td style="text-align:center"><span style="font-size:0.72rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:1px 6px;border-radius:4px;font-weight:500">romper</span></td>
+              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(74,140,96,0.10);color:#4a8c60;padding:2px 8px;border-radius:5px;font-weight:500">Quick win</span></td>
+              <td style="color:var(--charcoal);font-size:0.88rem">Nhân bản title/thumbnail pattern đã thành công sang listing khác</td>
             </tr>
             <tr>
-              <td><strong>baby blanket</strong></td>
-              <td style="text-align:right">56 listings (44%)</td>
-              <td style="text-align:right">50%</td>
-              <td style="text-align:right;color:var(--stone)">+6%</td>
-              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(181,51,51,0.08);color:#b53333;padding:2px 8px;border-radius:5px">Closed</span></td>
-              <td style="color:var(--charcoal)">Reactivate top performers, review pricing</td>
+              <td style="color:var(--stone);font-weight:600">3</td>
+              <td><strong>Xác định break-even ROAS từng sản phẩm</strong></td>
+              <td style="text-align:center"><span style="font-size:0.72rem;background:var(--warm-sand);padding:1px 6px;border-radius:4px">tất cả</span></td>
+              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(181,51,51,0.08);color:#b53333;padding:2px 8px;border-radius:5px">Cần dữ liệu</span></td>
+              <td style="color:var(--charcoal);font-size:0.88rem">Onesie avg ROAS 1.22x — chưa rõ lời hay lỗ nếu không có break-even</td>
+            </tr>
+            <tr>
+              <td style="color:var(--stone);font-weight:600">4</td>
+              <td><strong>Review giá onesie — nâng giá thử nghiệm</strong></td>
+              <td style="text-align:center"><span style="font-size:0.72rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:1px 6px;border-radius:4px;font-weight:500">onesie</span></td>
+              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:2px 8px;border-radius:5px">Chiến lược</span></td>
+              <td style="color:var(--charcoal);font-size:0.88rem">Market hot rate 100%, avg $62 — có room tăng giá để cải thiện ROAS</td>
+            </tr>
+            <tr>
+              <td style="color:var(--stone);font-weight:600">5</td>
+              <td><strong>Tăng listing romper — đang under-indexed</strong></td>
+              <td style="text-align:center"><span style="font-size:0.72rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:1px 6px;border-radius:4px;font-weight:500">romper</span></td>
+              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:2px 8px;border-radius:5px">Chiến lược</span></td>
+              <td style="color:var(--charcoal);font-size:0.88rem">23% portfolio vs 71% market hot rate — gap lớn nhất cần lấp dần</td>
             </tr>
           </tbody>
         </table>
@@ -1906,24 +2031,6 @@
       });
 
       // Count bar grouped by status (all Closed)
-      new Chart(document.getElementById('perfChartCount'), {
-        type: 'bar',
-        data: {
-          labels: ['baby blanket', 'baby onesie', 'baby romper'],
-          datasets: [{
-            label: 'Closed',
-            data: [56, 42, 30],
-            backgroundColor: [ST, CO, TC],
-            borderRadius: 6, borderSkipped: false
-          }]
-        },
-        options: {
-          plugins: { legend: { display: false } },
-          scales: { x: SCALE_X_CLEAN, y: SCALE_Y_CLEAN },
-          maintainAspectRatio: false
-        }
-      });
-
       // Gap chart: internal weight vs market hot rate
       new Chart(document.getElementById('perfChartGap'), {
         type: 'bar',
