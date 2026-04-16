@@ -9,7 +9,7 @@ engine = create_async_engine(
     echo=settings.APP_ENV == "development",
     pool_size=5,
     max_overflow=10,
-    connect_args={"ssl": True} if settings.DATABASE_URL else {},
+    connect_args={"ssl": True},
 )
 
 AsyncSessionLocal = async_sessionmaker(
