@@ -26,10 +26,14 @@ class Settings(BaseSettings):
 
     @property
     def async_db_url(self) -> str:
-        """Build Neon asyncpg URL from DB_TOKEN if DATABASE_URL not set."""
-        if self.DATABASE_URL:
-            return self.DATABASE_URL
-        return f"postgresql+asyncpg://{self.DB_TOKEN}?sslmode=require"
+        """Build asyncpg-compatible URL. asyncpg uses ssl=require, not sslmode=require."""
+        url = self.DATABASE_URL or f"postgresql+asyncpg://{self.DB_TOKEN}"
+        # Normalize driver prefix
+        url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        url = url.replace("postgres://", "postgresql+asyncpg://", 1)
+        # asyncpg rejects sslmode= — replace with ssl=
+        url = url.replace("sslmode=require", "ssl=require")
+        return url
 
     class Config:
         env_file = ".env"
