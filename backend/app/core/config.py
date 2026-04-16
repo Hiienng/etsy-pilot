@@ -26,13 +26,15 @@ class Settings(BaseSettings):
 
     @property
     def async_db_url(self) -> str:
-        """Build asyncpg-compatible URL. asyncpg uses ssl=require, not sslmode=require."""
+        """Build asyncpg-compatible URL. SSL is passed via connect_args, not URL param."""
+        import re
         url = self.DATABASE_URL or f"postgresql+asyncpg://{self.DB_TOKEN}"
         # Normalize driver prefix
         url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
         url = url.replace("postgres://", "postgresql+asyncpg://", 1)
-        # asyncpg rejects sslmode= — replace with ssl=
-        url = url.replace("sslmode=require", "ssl=require")
+        # Strip SSL params from URL — handled via connect_args in database.py
+        url = re.sub(r"[?&]sslmode=[^&]*", "", url)
+        url = re.sub(r"[?&]ssl=[^&]*", "", url)
         return url
 
     class Config:
