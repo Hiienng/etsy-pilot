@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     APP_ENV: str = "development"
     APP_HOST: str = "0.0.0.0"
     APP_PORT: int = 8000
-    SECRET_KEY: str
+    SECRET_KEY: str = ""
 
     # CORS
     ALLOWED_ORIGINS: str = "http://localhost:3000"
