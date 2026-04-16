@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Dictionary — market_listing</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --parchment:    #f5f4ed;
+      --ivory:        #faf9f5;
+      --warm-sand:    #e8e6dc;
+      --near-black:   #141413;
+      --charcoal:     #4d4c48;
+      --olive:        #5e5d59;
+      --stone:        #87867f;
+      --terracotta:   #c96442;
+      --border-cream: #f0eee6;
+      --border-warm:  #e8e6dc;
+      --font-serif: Georgia, 'Times New Roman', serif;
+      --font-sans:  system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+      --font-mono:  'Courier New', Courier, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--parchment);
+      color: var(--near-black);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--parchment);
+      border-bottom: 1px solid var(--border-cream);
+      padding: 0 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-brand {
+      font-family: var(--font-serif);
+      font-size: 1rem; font-weight: 500;
+      color: var(--near-black); text-decoration: none;
+    }
+
+    .nav-brand span { color: var(--terracotta); }
+
+    .nav-back {
+      font-family: var(--font-sans);
+      font-size: 0.88rem; color: var(--olive);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+      transition: color 0.15s;
+    }
+
+    .nav-back:hover { color: var(--near-black); }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 64px 40px 100px;
+    }
+
+    .overline {
+      font-family: var(--font-sans);
+      font-size: 0.63rem; font-weight: 400;
+      letter-spacing: 0.5px; text-transform: uppercase;
+      color: var(--stone); margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 2.3rem; font-weight: 500;
+      line-height: 1.20; color: var(--near-black);
+      margin-bottom: 12px;
+    }
+
+    .lead {
+      font-family: var(--font-sans);
+      font-size: 1rem; line-height: 1.60;
+      color: var(--olive); max-width: 680px;
+      margin-bottom: 48px;
+    }
+
+    .db-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--ivory);
+      border: 1px solid var(--border-cream);
+      border-radius: 8px; padding: 8px 14px;
+      margin-bottom: 40px;
+    }
+
+    .db-badge-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #5a7a5e;
+    }
+
+    .db-badge-text {
+      font-family: var(--font-mono);
+      font-size: 0.88rem; color: var(--charcoal);
+    }
+
+    .db-badge-sub {
+      font-family: var(--font-sans);
+      font-size: 0.88rem; color: var(--stone);
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 1.3rem; font-weight: 500;
+      color: var(--near-black); margin-bottom: 16px;
+    }
+
+    /* Field table */
+    .field-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--ivory);
+      border: 1px solid var(--border-cream);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 48px;
+    }
+
+    .field-table thead tr {
+      background: var(--warm-sand);
+    }
+
+    .field-table th {
+      font-family: var(--font-sans);
+      font-size: 0.75rem; font-weight: 500;
+      letter-spacing: 0.12px; text-transform: uppercase;
+      color: var(--stone); padding: 12px 20px;
+      text-align: left;
+    }
+
+    .field-table td {
+      font-family: var(--font-sans);
+      font-size: 0.94rem; color: var(--charcoal);
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-cream);
+      vertical-align: top;
+    }
+
+    .field-name {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      color: var(--terracotta);
+      white-space: nowrap;
+    }
+
+    .type-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      background: var(--warm-sand);
+      color: var(--charcoal);
+      padding: 2px 8px; border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .pk-pill {
+      display: inline-block;
+      font-family: var(--font-sans);
+      font-size: 0.68rem; font-weight: 500;
+      letter-spacing: 0.1px;
+      background: rgba(201,100,66,0.10);
+      color: var(--terracotta);
+      padding: 2px 7px; border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    td .desc { color: var(--olive); }
+    td .example {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--stone);
+      margin-top: 4px;
+    }
+
+    /* Insights box */
+    .insight-box {
+      background: var(--ivory);
+      border: 1px solid var(--border-cream);
+      border-left: 3px solid var(--terracotta);
+      border-radius: 0 12px 12px 0;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+
+    .insight-box-title {
+      font-family: var(--font-sans);
+      font-size: 0.88rem; font-weight: 500;
+      color: var(--near-black); margin-bottom: 4px;
+    }
+
+    .insight-box p {
+      font-family: var(--font-sans);
+      font-size: 0.94rem; line-height: 1.60;
+      color: var(--olive);
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border-warm);
+      margin: 40px 0;
+    }
+
+    @media (max-width: 640px) {
+      .nav { padding: 0 20px; }
+      .page { padding: 40px 20px 60px; }
+      h1 { font-size: 1.6rem; }
+      .field-table th, .field-table td { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-brand">hien<span>.</span></a>
+    <a href="index.html" class="nav-back">← Back to Dashboard</a>
+  </nav>
+
+  <main class="page">
+    <p class="overline">Database · Neon PostgreSQL</p>
+    <h1>market_listing</h1>
+    <p class="lead">
+      Top-recommended listings crawled from a major e-commerce marketplace using targeted search tags.
+      Each row represents one product surfaced by the platform's recommendation algorithm for a given keyword.
+      Data is collected in batches — earlier batches reflect stronger algorithmic promotion signals.
+    </p>
+
+    <div class="db-badge">
+      <span class="db-badge-dot"></span>
+      <span class="db-badge-text">neondb · public.market_listing</span>
+      <span class="db-badge-sub">— 180 rows · imported 2026-04-15</span>
+    </div>
+
+    <!-- Field Reference -->
+    <p class="section-title">Field Reference</p>
+    <table class="field-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Description &amp; Values</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="field-name">id</span></td>
+          <td><span class="type-pill">integer</span> <span class="pk-pill">PK</span></td>
+          <td>
+            <span class="desc">Auto-incremented primary key. Unique identifier for each listing row.</span>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">batch_id</span></td>
+          <td><span class="type-pill">text</span></td>
+          <td>
+            <span class="desc">
+              Order of the crawl batch — <strong>"1"</strong> = first batch crawled (products that appear earliest
+              in platform search results, strongest recommendation signal), <strong>"8"</strong> = last batch
+              (appears later in results, smaller audience reach). Lower batch_id = higher platform visibility.
+            </span>
+            <div class="example">Values: "1" – "8"</div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">source_screenshot</span></td>
+          <td><span class="type-pill">text</span></td>
+          <td>
+            <span class="desc">Filename of the screenshot used as the source for this row's data extraction.</span>
+            <div class="example">e.g. "keepsake_1.png"</div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">search_tag</span></td>
+          <td><span class="type-pill">text</span></td>
+          <td>
+            <span class="desc">The keyword searched on the platform that produced this listing in results.
+            Represents a target market segment.</span>
+            <div class="example">Values: "baby girl gift" · "baby keepsake" · "birth announcement" · "keepsake"</div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">etsy_best</span></td>
+          <td><span class="type-pill">text</span></td>
+          <td>
+            <span class="desc">Platform quality tier. Currently all crawled listings are <code style="font-family:var(--font-mono);font-size:0.85em;background:var(--warm-sand);padding:1px 5px;border-radius:3px">star_seller</code>,
+            meaning the shop meets the platform's highest seller standards (high ratings, on-time shipping, responsive).</span>
+            <div class="example">Values: "star_seller" (all current data)</div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">product_type</span></td>
+          <td><span class="type-pill">text</span></td>
+          <td>
+            <span class="desc">Normalized product category extracted from the listing title. Used to group and compare
+            similar products across different shops and search tags.</span>
+            <div class="example">e.g. "ring dish" · "jewelry dish" · "photo album" · "baby romper"</div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">title</span></td>
+          <td><span class="type-pill">text</span></td>
+          <td>
+            <span class="desc">Full listing title as shown on the platform. Often includes personalization keywords,
+            material, and occasion descriptors.</span>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">price</span></td>
+          <td><span class="type-pill">integer</span></td>
+          <td>
+            <span class="desc">Current (discounted) listing price, stored as an integer in platform units.
+            Divide by <strong>10,000</strong> to get USD. Formula: <code style="font-family:var(--font-mono);font-size:0.85em;background:var(--warm-sand);padding:1px 5px;border-radius:3px">price / 10000 = USD</code>.</span>
+            <div class="example">e.g. 111194 → $11.12 USD</div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">original_price</span></td>
+          <td><span class="type-pill">integer</span></td>
+          <td>
+            <span class="desc">Pre-discount listing price in the same platform units (÷10,000 for USD).
+            Relationship: <code style="font-family:var(--font-mono);font-size:0.85em;background:var(--warm-sand);padding:1px 5px;border-radius:3px">price ≈ original_price × (1 − discount/100)</code>.</span>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">discount</span></td>
+          <td><span class="type-pill">integer</span></td>
+          <td>
+            <span class="desc">Percentage discount applied to the listing (0–100). Note: 100% of current data
+            carries a discount — the platform strongly favors discounted listings in recommendations.</span>
+            <div class="example">Range: 5 – 70. Most common: 41–60%</div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">shop_name</span></td>
+          <td><span class="type-pill">text</span></td>
+          <td>
+            <span class="desc">Name of the seller shop on the platform.</span>
+            <div class="example">e.g. "TreasureBoxStudioLTD" · "LanahomeCraft"</div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">rating</span></td>
+          <td><span class="type-pill">real</span></td>
+          <td>
+            <span class="desc">Average star rating of the listing (1.0 – 5.0). All crawled listings score
+            ≥ 4.0, reflecting the platform's quality filter for top recommendations.</span>
+            <div class="example">Range in data: 4.0 – 5.0. Avg: 4.88</div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">review_count</span></td>
+          <td><span class="type-pill">integer</span></td>
+          <td>
+            <span class="desc">Total number of customer reviews on this listing. Strong proxy for market demand
+            and listing maturity. Used to distinguish <em>established</em> (1k+) from <em>emerging</em> (&lt;500) products.</span>
+            <div class="example">Range: 1 – 69,400. Median: ~530</div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">badge</span></td>
+          <td><span class="type-pill">text</span></td>
+          <td>
+            <span class="desc">Platform-assigned visibility badge on the listing. Indicates algorithmic promotion status
+            and demand signals. Null/empty = no special badge.</span>
+            <div class="example">Values: "Popular now" · "Bestseller" · "Etsy's Pick" · <em>null</em></div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">free_shipping</span></td>
+          <td><span class="type-pill">boolean</span></td>
+          <td>
+            <span class="desc">Whether the listing offers free shipping to buyers. Only 16% of top listings
+            offer free shipping — suggesting it is not a primary ranking factor for this category.</span>
+            <div class="example">true = 29 listings · false = 150 listings</div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">is_ad</span></td>
+          <td><span class="type-pill">boolean</span></td>
+          <td>
+            <span class="desc">Whether the listing is a paid promoted advertisement. Only 2 of 180 listings
+            are ads — confirming that top recommendations are overwhelmingly organic.</span>
+            <div class="example">true = 2 · false = 178</div>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="field-name">import_date</span></td>
+          <td><span class="type-pill">date</span></td>
+          <td>
+            <span class="desc">Date the row was imported into the database. Used for versioning and tracking
+            when market snapshots were taken.</span>
+            <div class="example">Current data: 2026-04-15</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <!-- Interpretation Guide -->
+    <p class="section-title">How to Read the Data</p>
+
+    <div class="insight-box">
+      <p class="insight-box-title">batch_id as a ranking proxy</p>
+      <p>Products in <strong>batch_id = "1"</strong> have the strongest organic visibility — they appear first in
+      search results. As batch_id increases, the platform shows these products to fewer users.
+      High price + high rating in later batches (5–8) suggests the algorithm surfaces premium niche products
+      at the end of its recommendation stack.</p>
+    </div>
+
+    <div class="insight-box">
+      <p class="insight-box-title">Price is always discounted</p>
+      <p>Every listing in this dataset carries a discount (1–70%). The platform's algorithm
+      systematically favors discounted listings. Setting an <code style="font-family:var(--font-mono);font-size:0.85em;background:var(--warm-sand);padding:1px 5px;border-radius:3px">original_price</code>
+      and applying a 40–60% discount is the dominant competitive strategy across all search tags.</p>
+    </div>
+
+    <div class="insight-box">
+      <p class="insight-box-title">Emerging vs. Established products</p>
+      <p>A product with <strong>rating ≥ 4.8 but review_count &lt; 500</strong> is an <em>emerging opportunity</em>
+      — quality is proven, but the market isn't yet saturated. Products with <strong>1,000+ reviews</strong>
+      represent <em>validated demand</em> but have high competition barriers.</p>
+    </div>
+
+    <div class="insight-box">
+      <p class="insight-box-title">Badge = platform momentum signal</p>
+      <p>"Popular now" indicates short-term demand spikes — the platform actively promotes these listings.
+      "Bestseller" reflects sustained historical sales volume. "Etsy's Pick" is editorial selection (rare, 3 total).
+      A product type with many "Popular now" badges is currently trending and worth entering quickly.</p>
+    </div>
+
+    <hr>
+
+    <p style="font-family:var(--font-sans);font-size:0.88rem;color:var(--stone)">
+      Last updated: 2026-04-15 · Source: market_listing (Neon PostgreSQL)
+    </p>
+  </main>
+
+</body>
+</html>

@@ -1,3 +1,6 @@
+# Ignore personal project folder
+mypersonalproject/
+
 # Ignore personal files
 *.docx
 *.doc
