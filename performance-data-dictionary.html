@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Dictionary — Performance Hub</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --parchment:    #f5f4ed;
+      --ivory:        #faf9f5;
+      --warm-sand:    #e8e6dc;
+      --near-black:   #141413;
+      --charcoal:     #4d4c48;
+      --olive:        #5e5d59;
+      --stone:        #87867f;
+      --terracotta:   #c96442;
+      --border-cream: #f0eee6;
+      --border-warm:  #e8e6dc;
+      --font-serif: Georgia, 'Times New Roman', serif;
+      --font-sans:  system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+      --font-mono:  'Courier New', Courier, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--parchment);
+      color: var(--near-black);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--parchment);
+      border-bottom: 1px solid var(--border-cream);
+      padding: 0 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-brand {
+      font-family: var(--font-serif);
+      font-size: 1rem; font-weight: 500;
+      color: var(--near-black); text-decoration: none;
+    }
+
+    .nav-brand span { color: var(--terracotta); }
+
+    .nav-back {
+      font-family: var(--font-sans);
+      font-size: 0.88rem; color: var(--olive);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+      transition: color 0.15s;
+    }
+
+    .nav-back:hover { color: var(--near-black); }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 56px 40px 100px;
+    }
+
+    .overline {
+      font-family: var(--font-sans);
+      font-size: 0.63rem; font-weight: 400;
+      letter-spacing: 0.5px; text-transform: uppercase;
+      color: var(--stone); margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 2.2rem; font-weight: 500;
+      line-height: 1.22; color: var(--near-black);
+      margin-bottom: 12px;
+    }
+
+    .lead {
+      font-family: var(--font-sans);
+      font-size: 0.97rem; line-height: 1.65;
+      color: var(--olive); max-width: 680px;
+      margin-bottom: 40px;
+    }
+
+    /* Source badges row */
+    .source-row {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .source-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--ivory);
+      border: 1px solid var(--border-cream);
+      border-radius: 8px; padding: 8px 14px;
+    }
+
+    .source-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+
+    .source-badge-text {
+      font-family: var(--font-mono);
+      font-size: 0.86rem; color: var(--charcoal);
+    }
+
+    .source-badge-sub {
+      font-family: var(--font-sans);
+      font-size: 0.82rem; color: var(--stone);
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 56px;
+    }
+
+    .section-overline {
+      font-family: var(--font-sans);
+      font-size: 0.63rem; font-weight: 600;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--stone); margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 1.35rem; font-weight: 500;
+      color: var(--near-black); margin-bottom: 20px;
+    }
+
+    /* Metric card grid */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 700px) { .metric-grid { grid-template-columns: 1fr; } }
+
+    .metric-card {
+      background: var(--ivory);
+      border: 1px solid var(--border-cream);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .metric-card-name {
+      font-family: var(--font-sans);
+      font-size: 0.70rem; font-weight: 600;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--stone); margin-bottom: 6px;
+    }
+
+    .metric-card-value {
+      font-family: var(--font-serif);
+      font-size: 1.55rem; font-weight: 500;
+      color: var(--near-black); margin-bottom: 10px;
+      line-height: 1;
+    }
+
+    .metric-card-body {
+      font-family: var(--font-sans);
+      font-size: 0.84rem; color: var(--charcoal);
+      line-height: 1.55;
+    }
+
+    .metric-card-formula {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      background: var(--warm-sand);
+      color: var(--charcoal);
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin: 10px 0 8px;
+      display: inline-block;
+    }
+
+    .metric-card-threshold {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.80rem; margin-top: 8px;
+    }
+
+    .threshold-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Field table */
+    .field-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--ivory);
+      border: 1px solid var(--border-cream);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .field-table thead tr { background: var(--warm-sand); }
+
+    .field-table th {
+      font-family: var(--font-sans);
+      font-size: 0.73rem; font-weight: 500;
+      letter-spacing: 0.1px; text-transform: uppercase;
+      color: var(--stone); padding: 11px 18px;
+      text-align: left;
+    }
+
+    .field-table td {
+      font-family: var(--font-sans);
+      font-size: 0.92rem; color: var(--charcoal);
+      padding: 13px 18px;
+      border-top: 1px solid var(--border-cream);
+      vertical-align: top;
+    }
+
+    .field-name {
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      color: var(--terracotta);
+      white-space: nowrap;
+    }
+
+    .type-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+      background: var(--warm-sand);
+      color: var(--stone);
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* Tier table */
+    .tier-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 640px) { .tier-grid { grid-template-columns: 1fr; } }
+
+    .tier-card {
+      background: var(--ivory);
+      border: 1px solid var(--border-cream);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+
+    .tier-label {
+      display: inline-block;
+      font-family: var(--font-sans);
+      font-size: 0.75rem; font-weight: 600;
+      padding: 3px 10px; border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    .tier-s  { background: rgba(201,100,66,0.10); color: var(--terracotta); }
+    .tier-a  { background: rgba(74,140,96,0.10);  color: #4a8c60; }
+    .tier-b  { background: var(--warm-sand);       color: var(--charcoal); }
+    .tier-e  { background: rgba(139,161,175,0.15); color: #6a7f8a; }
+
+    .tier-card h4 {
+      font-family: var(--font-sans);
+      font-size: 0.88rem; font-weight: 600;
+      color: var(--near-black); margin-bottom: 6px;
+    }
+
+    .tier-card p {
+      font-size: 0.82rem; color: var(--olive); line-height: 1.5;
+    }
+
+    .tier-card code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      background: var(--warm-sand);
+      padding: 1px 5px; border-radius: 3px;
+      color: var(--charcoal);
+    }
+
+    /* Info note */
+    .info-note {
+      background: rgba(74,140,96,0.05);
+      border: 1px solid rgba(74,140,96,0.18);
+      border-left: 3px solid #4a8c60;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-bottom: 28px;
+    }
+
+    .info-note p {
+      font-size: 0.90rem; color: var(--charcoal); line-height: 1.6;
+    }
+
+    .warn-note {
+      background: rgba(201,100,66,0.05);
+      border: 1px solid rgba(201,100,66,0.18);
+      border-left: 3px solid var(--terracotta);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-top: 20px;
+    }
+
+    .warn-note p {
+      font-size: 0.88rem; color: var(--charcoal); line-height: 1.55;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      background: var(--warm-sand);
+      padding: 1px 6px; border-radius: 4px;
+      color: var(--charcoal);
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border-cream);
+      margin: 48px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-brand">Etsy - Internal portal<span>.</span></a>
+    <a href="index.html" class="nav-back">← Quay lại Performance Hub</a>
+  </nav>
+
+  <div class="page">
+
+    <p class="overline">Performance Hub · Data Dictionary</p>
+    <h1>Giải thích chỉ số &amp; nguồn dữ liệu</h1>
+    <p class="lead">
+      Tài liệu này giải thích ý nghĩa, công thức tính, ngưỡng đánh giá và nguồn dữ liệu
+      của từng chỉ số được hiển thị trong tab Performance Hub — bao gồm
+      Listing Performance, Listing Improvement và Listing Scale Up.
+    </p>
+
+    <!-- Source tables -->
+    <div class="source-row">
+      <div class="source-badge">
+        <div class="source-dot" style="background:#5a7a5e"></div>
+        <span class="source-badge-text">internal_listing</span>
+        <span class="source-badge-sub">128 rows · Neon PostgreSQL</span>
+      </div>
+      <div class="source-badge">
+        <div class="source-dot" style="background:var(--terracotta)"></div>
+        <span class="source-badge-text">market_listing</span>
+        <span class="source-badge-sub">180 rows · Neon PostgreSQL</span>
+      </div>
+    </div>
+
+    <!-- ── Section 1: Core 3 metrics ── -->
+    <div class="section">
+      <p class="section-overline">Listing Performance · Listing Improvement</p>
+      <h2 class="section-title">3 chỉ số hiệu quả quảng cáo cốt lõi</h2>
+
+      <div class="info-note">
+        <p>Nguồn: cột <code>ctr</code>, <code>cr</code>, <code>roas</code> trong bảng <code>internal_listing</code>.
+        Dữ liệu được populate dựa trên range thực tế đọc từ Etsy Ads dashboard (screenshot tham chiếu 2026-04-16).
+        Khi có dữ liệu export thực từ Etsy Ads, cần cập nhật lại các giá trị này.</p>
+      </div>
+
+      <div class="metric-grid">
+
+        <div class="metric-card" style="border-left:3px solid #b53333">
+          <p class="metric-card-name">CTR</p>
+          <p class="metric-card-value">≥ 2%</p>
+          <p class="metric-card-body"><strong>Click Through Rate</strong> — Tỷ lệ người xem quảng cáo / tìm kiếm bấm vào listing.</p>
+          <div class="metric-card-formula">CTR = Clicks / Impressions × 100</div>
+          <p class="metric-card-body">Phản ánh mức độ hấp dẫn của <strong>thumbnail và title</strong> trong feed tìm kiếm Etsy. CTR thấp = người xem không cảm thấy sản phẩm liên quan hoặc không đủ nổi bật.</p>
+          <div class="metric-card-threshold">
+            <span class="threshold-dot" style="background:#b53333"></span>
+            <span style="color:#b53333;font-weight:500">Ngưỡng: ≥ 2%</span>
+            <span style="color:var(--stone)">— dưới ngưỡng cần review thumbnail/title</span>
+          </div>
+          <div class="metric-card-threshold" style="margin-top:4px">
+            <span class="threshold-dot" style="background:#87867f"></span>
+            <span style="color:var(--stone)">Portfolio hiện tại: avg 1.59% · 20/128 listing đạt</span>
+          </div>
+        </div>
+
+        <div class="metric-card" style="border-left:3px solid #4a8c60">
+          <p class="metric-card-name">CR</p>
+          <p class="metric-card-value">≥ 4%</p>
+          <p class="metric-card-body"><strong>Conversion Rate</strong> — Tỷ lệ người vào listing thực sự mua hàng.</p>
+          <div class="metric-card-formula">CR = Orders / Visits × 100</div>
+          <p class="metric-card-body">Phản ánh chất lượng của <strong>nội dung listing</strong>: hình ảnh chi tiết, mô tả sản phẩm, mức giá có phù hợp tệp khách hàng không. CR cao nhưng CTR thấp = sản phẩm tốt nhưng title/thumbnail chưa kéo được click.</p>
+          <div class="metric-card-threshold">
+            <span class="threshold-dot" style="background:#4a8c60"></span>
+            <span style="color:#4a8c60;font-weight:500">Ngưỡng: ≥ 4%</span>
+            <span style="color:var(--stone)">— dưới ngưỡng cần cải thiện hình/mô tả/giá</span>
+          </div>
+          <div class="metric-card-threshold" style="margin-top:4px">
+            <span class="threshold-dot" style="background:#87867f"></span>
+            <span style="color:var(--stone)">Portfolio hiện tại: avg 4.16% · 65/128 đạt</span>
+          </div>
+        </div>
+
+        <div class="metric-card" style="border-left:3px solid var(--stone)">
+          <p class="metric-card-name">ROAS</p>
+          <p class="metric-card-value">≥ break-even</p>
+          <p class="metric-card-body"><strong>Return on Ad Spend</strong> — Tỷ lệ doanh thu thu về trên mỗi đồng chi cho quảng cáo.</p>
+          <div class="metric-card-formula">ROAS = Revenue from Ads / Ad Spend</div>
+          <p class="metric-card-body">Trả lời câu hỏi "chi quảng cáo có lời không?" ROAS = 1.0 nghĩa là hòa vốn quảng cáo (chưa tính margin sản xuất). Break-even thực tế phụ thuộc vào margin từng sản phẩm.</p>
+          <div class="metric-card-threshold">
+            <span class="threshold-dot" style="background:var(--stone)"></span>
+            <span style="color:var(--charcoal);font-weight:500">Ngưỡng tạm: 2.0x</span>
+            <span style="color:var(--stone)">— dùng tạm cho đến khi có break-even thực</span>
+          </div>
+          <div class="metric-card-threshold" style="margin-top:4px">
+            <span class="threshold-dot" style="background:#87867f"></span>
+            <span style="color:var(--stone)">Portfolio hiện tại: avg 1.61x · 32/128 đạt ≥ 2x</span>
+          </div>
+          <div class="warn-note" style="margin-top:12px;padding:10px 14px">
+            <p>Break-even ROAS thực tế chưa được xác định theo từng sản phẩm. Khi có số liệu, cập nhật threshold line trong chart <code>perfROAS</code> và pass/fail stats tương ứng.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ── Section 2: Market metrics ── -->
+    <div class="section">
+      <p class="section-overline">Listing Scale Up · Research Hub</p>
+      <h2 class="section-title">Chỉ số thị trường từ market_listing</h2>
+
+      <div class="info-note">
+        <p>Nguồn: bảng <code>market_listing</code> — 180 listings được crawl từ kết quả tìm kiếm Etsy
+        theo các search tag liên quan đến sản phẩm mẹ &amp; bé. Snapshot <strong>2026-04-16</strong>.
+        Batch_id thấp = listing xuất hiện sớm hơn (vị trí đầu trang) = được platform đẩy mạnh hơn.</p>
+      </div>
+
+      <table class="field-table" style="margin-bottom:28px">
+        <thead>
+          <tr>
+            <th style="width:22%">Chỉ số</th>
+            <th style="width:16%">Nguồn</th>
+            <th>Công thức / Định nghĩa</th>
+            <th style="width:22%">Ý nghĩa thực tế</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="field-name">Market hot rate</span></td>
+            <td><code>market_listing</code></td>
+            <td>
+              <div class="metric-card-formula" style="margin:0 0 6px">hot_count / total_n × 100</div>
+              Trong đó <code>hot_count</code> = số listing của product_type có <code>badge IN ('Popular now', 'Bestseller')</code>
+            </td>
+            <td>% listing của sản phẩm đó đang được Etsy đánh dấu là bán chạy hoặc đang nổi. Cao = platform đang đẩy sản phẩm này.</td>
+          </tr>
+          <tr>
+            <td><span class="field-name">Avg price</span></td>
+            <td><code>market_listing</code></td>
+            <td>
+              <div class="metric-card-formula" style="margin:0 0 6px">AVG(price) / 10000</div>
+              Giá lưu trong DB theo đơn vị ×10,000 (ví dụ 580000 = $58.00)
+            </td>
+            <td>Mức giá trung bình seller đang bán trên thị trường. Dùng để so sánh định giá và xác định room tăng/giảm giá.</td>
+          </tr>
+          <tr>
+            <td><span class="field-name">Avg reviews</span></td>
+            <td><code>market_listing</code></td>
+            <td>
+              <div class="metric-card-formula" style="margin:0 0 6px">AVG(review_count)</div>
+              Trung bình số reviews của các listing thuộc cùng product_type
+            </td>
+            <td>Proxy của demand thực. Nhiều reviews = sản phẩm đã được validate ở quy mô lớn. Ít reviews = thị trường mới, cơ hội vào sớm.</td>
+          </tr>
+          <tr>
+            <td><span class="field-name">Avg rating</span></td>
+            <td><code>market_listing</code></td>
+            <td>
+              <div class="metric-card-formula" style="margin:0 0 6px">AVG(rating)</div>
+              Rating 1–5 sao trung bình
+            </td>
+            <td>Chất lượng cảm nhận của buyer. Rating ≥ 4.8 + reviews thấp = cơ hội vào thị trường còn non trước khi có nhiều cạnh tranh (emerging window).</td>
+          </tr>
+          <tr>
+            <td><span class="field-name">Batch_id</span></td>
+            <td><code>market_listing</code></td>
+            <td>
+              Thứ tự batch khi crawl: <strong>1 = đầu trang</strong> (vị trí cao nhất trong kết quả tìm kiếm), số càng lớn = càng sau
+            </td>
+            <td>Listing ở batch 1–2 = Etsy đang promote mạnh. Batch 7–8 = ít hiển thị hơn. Dùng để đánh giá độ phủ của từng loại sản phẩm.</td>
+          </tr>
+          <tr>
+            <td><span class="field-name">Badge</span></td>
+            <td><code>market_listing</code></td>
+            <td>
+              Giá trị: <code>Popular now</code>, <code>Bestseller</code>, hoặc <code>NULL</code><br>
+              <br>Hot signal = <code>badge IN ('Popular now', 'Bestseller')</code>
+            </td>
+            <td><strong>Bestseller</strong> = lịch sử bán hàng cao. <strong>Popular now</strong> = đang có lượt mua tăng đột biến gần đây. Cả hai đều là tín hiệu platform đang đẩy mạnh sản phẩm.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+
+    <!-- ── Section 3: Scale Up tiers ── -->
+    <div class="section">
+      <p class="section-overline">Listing Scale Up</p>
+      <h2 class="section-title">Phân loại Tier trong Scale Up</h2>
+
+      <p style="font-size:0.92rem;color:var(--olive);line-height:1.6;margin-bottom:24px">
+        Mỗi sản phẩm sewable trong <code>market_listing</code> được xếp vào một trong 4 tier
+        dựa trên tổ hợp hot rate, demand proof (avg reviews), và mức giá trong vùng tối ưu ($30–$130).
+      </p>
+
+      <div class="tier-grid">
+
+        <div class="tier-card">
+          <span class="tier-label tier-s">Tier S — Làm ngay</span>
+          <h4>Hot rate cao + Demand được validate</h4>
+          <p>Hot rate ≥ 40% <strong>VÀ</strong> avg reviews ≥ 500 (demand thật, không chỉ tín hiệu nhất thời).
+          Sản phẩm sewable chưa có trong portfolio. Kỹ năng có sẵn hoặc gần với năng lực hiện tại.</p>
+          <p style="margin-top:8px"><code>baby bodysuit · keepsake album · name pillow · sweatshirt</code></p>
+        </div>
+
+        <div class="tier-card">
+          <span class="tier-label tier-a">Tier A — Khuyến nghị</span>
+          <h4>Hot rate cao, demand đang hình thành</h4>
+          <p>Hot rate ≥ 50% nhưng avg reviews còn thấp (thị trường mới nổi), hoặc hot rate 100% nhưng chỉ có 1–2 listings market
+          (signal chưa đủ mẫu để kết luận mạnh). Cơ hội vào sớm trước khi cạnh tranh gia tăng.</p>
+          <p style="margin-top:8px"><code>denim jacket · plush toy · baby lovey · baby sweater · baby hamper</code></p>
+        </div>
+
+        <div class="tier-card">
+          <span class="tier-label tier-b">Tier B — Theo dõi</span>
+          <h4>Đang có hoặc hot rate vừa phải</h4>
+          <p>Sản phẩm đang có trong portfolio (maintain, không cần scale thêm ngay) hoặc hot rate 30–49% với demand ổn định.
+          Cần review định kỳ mỗi snapshot mới để phát hiện khi hot rate tăng lên Tier A.</p>
+          <p style="margin-top:8px"><code>baby blanket · baby onesie · photo album (vải) · baby comforter</code></p>
+        </div>
+
+        <div class="tier-card">
+          <span class="tier-label tier-e">Emerging — Theo dõi sớm</span>
+          <h4>Rating cao, reviews thấp</h4>
+          <p>Rating ≥ 4.8 với review_count thấp (&lt; 500) = sản phẩm mới xuất hiện, buyer đang thích nhưng chưa đông.
+          Đây là cửa sổ vào thị trường trước khi cạnh tranh bão hòa. Theo dõi 1–2 snapshot tiếp theo.</p>
+          <p style="margin-top:8px"><code>woven blanket · embroidery hoop · baby shoes · milestone blanket</code></p>
+        </div>
+
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ── Section 4: Improvement classification ── -->
+    <div class="section">
+      <p class="section-overline">Listing Improvement</p>
+      <h2 class="section-title">Phân loại listing cần cải thiện</h2>
+
+      <p style="font-size:0.92rem;color:var(--olive);line-height:1.6;margin-bottom:24px">
+        Mỗi listing trong <code>internal_listing</code> được phân loại tự động dựa trên tổ hợp CTR / CR / ROAS.
+        Logic ưu tiên nhóm có CR tốt vì đó là quick win: sản phẩm đã được validate bởi buyer, chỉ cần tăng traffic.
+      </p>
+
+      <table class="field-table">
+        <thead>
+          <tr>
+            <th style="width:16%">Nhóm</th>
+            <th style="width:30%">Điều kiện</th>
+            <th>Hành động khuyến nghị</th>
+            <th style="width:18%">Số lượng (2026-04-16)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:#4a8c60">Top performer</strong></td>
+            <td><code>CTR ≥ 2% AND CR ≥ 4% AND ROAS ≥ 2x</code></td>
+            <td>Duy trì. Dùng title/thumbnail làm template nhân bản sang listing khác cùng sản phẩm.</td>
+            <td style="color:#4a8c60;font-weight:500">3 listings (tất cả baby romper)</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--terracotta)">Quick win</strong></td>
+            <td><code>CR ≥ 4% AND CTR &lt; 2%</code></td>
+            <td>Buyer sẵn sàng mua khi vào listing. Vấn đề là không click vào ban đầu. <strong>Chỉ cần cải thiện thumbnail + title</strong>, không cần thay đổi sản phẩm hay giá.</td>
+            <td style="color:var(--terracotta);font-weight:500">54 listings</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#b53333">Fix CR</strong></td>
+            <td><code>CTR ≥ 2% AND CR &lt; 4%</code></td>
+            <td>Listing đang thu hút click nhưng không thuyết phục được buyer sau khi vào. Cần cải thiện hình ảnh chi tiết, mô tả sản phẩm, mức giá, hoặc targeting từ khóa.</td>
+            <td style="color:#b53333;font-weight:500">~8 listings</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--charcoal)">Fix ROAS</strong></td>
+            <td><code>CTR ≥ 2% AND CR ≥ 4% AND ROAS &lt; 2x</code></td>
+            <td>CTR và CR đều đạt nhưng chi phí quảng cáo chưa hiệu quả. Xem lại bid strategy hoặc tăng giá sản phẩm (market cho phép).</td>
+            <td style="color:var(--charcoal);font-weight:500">~0 listings</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#8b2020">Fix CTR + CR</strong></td>
+            <td><code>CTR &lt; 2% AND CR &lt; 4%</code></td>
+            <td>Cần review toàn diện: thumbnail, title, nội dung listing, giá. Ưu tiên thấp hơn so với Quick win.</td>
+            <td style="color:#8b2020;font-weight:500">63 listings</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+
+    <!-- ── Section 5: Sewable filter ── -->
+    <div class="section">
+      <p class="section-overline">Listing Scale Up · Research Hub</p>
+      <h2 class="section-title">Bộ lọc sản phẩm may/thêu (Sewable filter)</h2>
+
+      <p style="font-size:0.92rem;color:var(--olive);line-height:1.6;margin-bottom:20px">
+        Vì user là <strong>công ty gia công may thêu</strong>, mọi phân tích thị trường đều phải lọc qua tiêu chí:
+        <em>"Sản phẩm này có thể sản xuất bằng kỹ năng may, thêu, hoặc in vải không?"</em>
+        Chi tiết đầy đủ tại <a href="RESEARCH_HUB_RULES.md" target="_blank" style="color:var(--terracotta)">RESEARCH_HUB_RULES.md</a>.
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div style="background:rgba(74,140,96,0.05);border:1px solid rgba(74,140,96,0.18);border-radius:10px;padding:16px 18px">
+          <p style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#4a8c60;margin-bottom:10px">Đủ điều kiện (Sewable)</p>
+          <p style="font-size:0.82rem;color:var(--charcoal);line-height:1.6">
+            Vải, sợi, denim, len, vải bông — có thể may hoặc thêu trang trí.<br><br>
+            <strong>Ví dụ:</strong> baby romper, baby blanket, baby onesie, baby bodysuit, keepsake album (bìa vải), denim jacket, name pillow, diaper caddy basket, sweatshirt, plush toy, baby lovey, woven blanket, milestone blanket, embroidery hoop, baby shoes, baby sweater, matching family shirts
+          </p>
+        </div>
+        <div style="background:rgba(181,51,51,0.04);border:1px solid rgba(181,51,51,0.14);border-radius:10px;padding:16px 18px">
+          <p style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#b53333;margin-bottom:10px">Không phù hợp (Non-sewable)</p>
+          <p style="font-size:0.82rem;color:var(--charcoal);line-height:1.6">
+            Gốm sứ, gỗ/acrylic, điện tử, giấy in, kim loại, hộp cứng.<br><br>
+            <strong>Ví dụ:</strong> jewelry dish, ring dish, trinket dish (gốm) · name sign, wooden puzzle, birth plaque (gỗ) · night light, musical carousel, crystal ball lamp (điện tử) · birth stats print, star map print (giấy) · baptism pin, keychain (kim loại)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ── Section 6: Data sources ── -->
+    <div class="section" style="margin-bottom:0">
+      <p class="section-overline">Cơ sở hạ tầng dữ liệu</p>
+      <h2 class="section-title">Bảng dữ liệu tham chiếu</h2>
+
+      <table class="field-table">
+        <thead>
+          <tr>
+            <th>Bảng</th>
+            <th>Nội dung</th>
+            <th>Snapshot</th>
+            <th>Các cột quan trọng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="field-name">internal_listing</span></td>
+            <td>Tất cả listing đang có trong shop, bao gồm cột tự gán nhãn <code>product</code> và 3 cột ads metrics <code>ctr</code>, <code>cr</code>, <code>roas</code>.</td>
+            <td>128 rows · 2026-04-16</td>
+            <td><code>listing_id</code>, <code>title</code>, <code>product</code>, <code>trang_thai</code>, <code>ctr</code>, <code>cr</code>, <code>roas</code></td>
+          </tr>
+          <tr>
+            <td><span class="field-name">market_listing</span></td>
+            <td>Listing top kết quả tìm kiếm Etsy theo các search tag liên quan. Dùng để phân tích xu hướng thị trường và benchmark sản phẩm.</td>
+            <td>180 rows · 2026-04-16</td>
+            <td><code>product_type</code>, <code>price</code>, <code>badge</code>, <code>rating</code>, <code>review_count</code>, <code>batch_id</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:0.84rem;color:var(--stone);margin-top:16px">
+        Schema đầy đủ của <code>market_listing</code>:
+        <a href="data-dictionary.html" target="_blank" style="color:var(--terracotta)">xem data-dictionary.html</a>
+      </p>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -959,10 +959,13 @@
     <section class="hub-panel active" id="tab-performance" role="tabpanel">
 
       <!-- Pill toggle -->
-      <div class="perf-pill-wrap">
-        <button class="perf-pill active" data-perf="performance">Listing Performance</button>
-        <button class="perf-pill"        data-perf="improvement">Listing Improvement</button>
-        <button class="perf-pill"        data-perf="scaleup">Listing Scale Up</button>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;">
+        <div class="perf-pill-wrap" style="margin-bottom:0;">
+          <button class="perf-pill active" data-perf="performance">Listing Performance</button>
+          <button class="perf-pill"        data-perf="improvement">Listing Improvement</button>
+          <button class="perf-pill"        data-perf="scaleup">Listing Scale Up</button>
+        </div>
+        <a href="performance-data-dictionary.html" target="_blank" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none;border:1px solid var(--terracotta);border-radius:6px;padding:4px 10px;white-space:nowrap;opacity:0.85;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.85'">? Data Dictionary</a>
       </div>
 
       <!-- ── Sub-panel: Listing Performance ─────── -->
