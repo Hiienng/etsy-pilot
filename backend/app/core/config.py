@@ -3,12 +3,12 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    # Database (Neon PostgreSQL)
-    DB_TOKEN: str
+    # Database (Neon PostgreSQL) — set DATABASE_URL directly OR DB_TOKEN
+    DB_TOKEN: str = ""
     DATABASE_URL: str = ""
 
-    # Claude API
-    ANTHROPIC_API_KEY: str
+    # Claude API — optional if Claude features are not used
+    ANTHROPIC_API_KEY: str = ""
     CLAUDE_MODEL: str = "claude-sonnet-4-6"
 
     # App
