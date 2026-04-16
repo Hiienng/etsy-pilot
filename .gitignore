@@ -1,32 +1,54 @@
-# Ignore personal project folder
-mypersonalproject/
+# ─── Environment ─────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
 
-# Ignore personal files
+# ─── Python ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+venv/
+.venv/
+env/
+dist/
+build/
+*.egg-info/
+
+# ─── ML / Data ───────────────────────────────────────────────────────────────
+model/checkpoints/
+model/weights/
+*.pkl
+*.pt
+*.pth
+*.onnx
+data/processed/
+data/raw/*.png
+data/raw/done/
+
+# ─── Personal / Legacy ───────────────────────────────────────────────────────
+mypersonalproject/
 *.docx
 *.doc
-.env
 *.pdf
-
-# Ignore backup files
 *_old.html
 *_backup.*
 
-# Ignore OS files
+# ─── OS ──────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# Ignore IDE files
+# ─── IDEs ────────────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Ignore logs
+# ─── Logs / Temp ─────────────────────────────────────────────────────────────
 *.log
 npm-debug.log*
-
-# Ignore temporary files
 *.tmp
 *.temp
 ~*
+logs/
