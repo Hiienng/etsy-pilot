@@ -667,6 +667,12 @@
     .badge-qw    { background: rgba(201,100,66,0.10); color: var(--terracotta); }
     .badge-ctr   { background: rgba(181,51,51,0.08);  color: #b53333; }
     .badge-cr    { background: rgba(181,51,51,0.08);  color: #b53333; }
+    /* Priority badges */
+    .pri-badge { display:inline-block;font-size:0.68rem;font-weight:600;padding:2px 7px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em;margin-right:5px }
+    .pri-low   { background:rgba(74,140,96,0.10);  color:#4a8c60 }
+    .pri-med   { background:rgba(180,130,40,0.12); color:#a07a1a }
+    .pri-high  { background:rgba(201,100,66,0.12); color:#c96242 }
+    .pri-crit  { background:rgba(181,51,51,0.12);  color:#b53333 }
     .badge-roas  { background: var(--warm-sand);      color: var(--charcoal); }
     .badge-all   { background: rgba(181,51,51,0.14);  color: #8b2020; }
 
@@ -1448,6 +1454,14 @@
             <button class="impr-filter" data-filter="fix_cr">Fix CR <span id="cnt-cr" style="opacity:.6"></span></button>
             <button class="impr-filter" data-filter="fix_roas">Fix ROAS <span id="cnt-roas" style="opacity:.6"></span></button>
           </div>
+          <div class="impr-filter-bar" id="imprPriFilters" style="margin-top:8px">
+            <span style="font-size:0.72rem;color:var(--stone);margin-right:6px;font-family:var(--font-sans)">Priority:</span>
+            <button class="impr-filter active" data-pri="all">Tất cả</button>
+            <button class="impr-filter" data-pri="low"><span class="pri-badge pri-low">low</span></button>
+            <button class="impr-filter" data-pri="medium"><span class="pri-badge pri-med">medium</span></button>
+            <button class="impr-filter" data-pri="high"><span class="pri-badge pri-high">high</span></button>
+            <button class="impr-filter" data-pri="critical"><span class="pri-badge pri-crit">critical</span></button>
+          </div>
           <div class="impr-table-wrap">
             <table class="impr-table">
               <thead>
@@ -1457,7 +1471,8 @@
                   <th style="text-align:center">CTR</th>
                   <th style="text-align:center">CR</th>
                   <th style="text-align:center">ROAS</th>
-                  <th>Cải thiện</th>
+                  <th>Priority / Scenario</th>
+                  <th>Sample</th>
                   <th></th>
                 </tr>
               </thead>
@@ -2624,13 +2639,24 @@
       return 'fix_ctr';                               // catch-all: CTR bad + CR bad
     }
 
+    // Data từ bảng scenarios_rules (Neon DB)
     const IMPR_META = {
-      top:       { label: 'Top performer',       cls: 'badge-top',  text: 'Duy trì & nhân bản sang listing khác' },
-      quick_win: { label: 'Quick win',            cls: 'badge-qw',   text: 'Fix thumbnail/title — buyer đã muốn mua khi vào' },
-      fix_cr:    { label: 'Fix CR',               cls: 'badge-cr',   text: 'Cải thiện nội dung listing: hình, giá, keywords' },
-      fix_roas:  { label: 'Fix ROAS',             cls: 'badge-roas', text: 'Xem lại bid quảng cáo hoặc tăng giá sản phẩm' },
-      fix_ctr:   { label: 'Fix CTR + CR',         cls: 'badge-all',  text: 'Review toàn diện: thumbnail, title, nội dung, giá' },
+      top:       { label: 'Nhân đôi sản phẩm tương tự',                    cls: 'badge-top',  priority: 'low',      pCls: 'pri-low'  },
+      quick_win: { label: 'Thumbnail yếu — cần cải thiện ảnh bìa',         cls: 'badge-qw',   priority: 'medium',   pCls: 'pri-med'  },
+      fix_cr:    { label: 'Traffic đủ nhưng listing chưa thuyết phục mua', cls: 'badge-cr',   priority: 'high',     pCls: 'pri-high' },
+      fix_roas:  { label: 'Metrics tốt nhưng margin mỏng',                 cls: 'badge-roas', priority: 'high',     pCls: 'pri-high' },
+      fix_ctr:   { label: 'Listing yếu toàn diện — cần tái cấu trúc',     cls: 'badge-all',  priority: 'critical', pCls: 'pri-crit' },
     };
+    // Sample links từ bảng market_listing (listing_link field — null nếu chưa input)
+    const MARKET_SAMPLES = {
+      'baby blanket': null, 'baby onesie': null, 'baby romper': null,
+      'baby bodysuit': null, 'baby comforter': null, 'baby lovey': null,
+      'waffle baby blanket': null, 'woven blanket': null, 'photo blanket': null,
+      'luxury baby blanket': null, 'checkered blanket': null, 'memory blanket': null,
+      'milestone blanket': null, 'baby jumpsuit': null, 'baby outfit': null,
+      'matching family shirts': null, 'sweatshirt': null,
+    };
+    let _imprPriFilter = 'all';
 
     const PROD_COLOR = { 'baby blanket': 'chip-neu', 'baby onesie': 'badge-qw', 'baby romper': 'chip-ok' };
 
@@ -2645,7 +2671,12 @@
         if (el) el.textContent = '(' + counts[k] + ')';
       });
 
-      const filtered = filter === 'all' ? LISTINGS : LISTINGS.filter(d => classifyListing(d) === filter);
+      const filtered = LISTINGS.filter(d => {
+        const cls = classifyListing(d);
+        const clsOk = filter === 'all' || cls === filter;
+        const priOk = _imprPriFilter === 'all' || IMPR_META[cls].priority === _imprPriFilter;
+        return clsOk && priOk;
+      });
       const html = filtered.map(d => {
         const cls = classifyListing(d);
         const m = IMPR_META[cls];
@@ -2654,13 +2685,18 @@
         const ctrChip = d.ctr >= 2 ? `<span class="metric-chip chip-ok">${d.ctr}%</span>` : `<span class="metric-chip chip-warn">${d.ctr}%</span>`;
         const crChip  = d.cr  >= 4 ? `<span class="metric-chip chip-ok">${d.cr}%</span>`  : `<span class="metric-chip chip-warn">${d.cr}%</span>`;
         const roasChip= d.roas>= 2 ? `<span class="metric-chip chip-ok">${d.roas}x</span>` : `<span class="metric-chip chip-neu">${d.roas}x</span>`;
+        const sampleUrl = MARKET_SAMPLES[d.p] || null;
+        const sampleCell = sampleUrl
+          ? `<a href="${sampleUrl}" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none">Sample ↗</a>`
+          : `<span style="font-size:0.78rem;color:var(--stone)">—</span>`;
         return `<tr>
           <td style="color:var(--charcoal)">${title}</td>
           <td><span class="metric-chip ${pc}" style="font-size:0.70rem">${d.p}</span></td>
           <td style="text-align:center">${ctrChip}</td>
           <td style="text-align:center">${crChip}</td>
           <td style="text-align:center">${roasChip}</td>
-          <td><span class="impr-badge ${m.cls}">${m.label}</span><br><span style="font-size:0.76rem;color:var(--stone);line-height:1.4">${m.text}</span></td>
+          <td><span class="pri-badge ${m.pCls}">${m.priority}</span><span style="font-size:0.76rem;color:var(--charcoal)">${m.label}</span></td>
+          <td style="text-align:center">${sampleCell}</td>
           <td><a href="${d.l}" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none;white-space:nowrap">Xem ↗</a></td>
         </tr>`;
       }).join('');
@@ -2674,6 +2710,16 @@
       document.querySelectorAll('#imprFilters .impr-filter').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderImprTable(btn.dataset.filter);
+    });
+
+    document.getElementById('imprPriFilters').addEventListener('click', e => {
+      const btn = e.target.closest('.impr-filter');
+      if (!btn) return;
+      document.querySelectorAll('#imprPriFilters .impr-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _imprPriFilter = btn.dataset.pri;
+      const activeClsFilter = document.querySelector('#imprFilters .impr-filter.active');
+      renderImprTable(activeClsFilter ? activeClsFilter.dataset.filter : 'all');
     });
 
     // ── Listing Scale Up ──────────────────────────
