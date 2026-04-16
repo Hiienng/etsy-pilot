@@ -609,6 +609,8 @@
     .impr-filter.active { background: var(--near-black); color: var(--ivory); border-color: var(--near-black); }
 
     .impr-table-wrap { overflow-x: auto; }
+    .impr-select { font-family:var(--font-sans);font-size:0.80rem;color:var(--charcoal);background:var(--warm-sand);border:1px solid var(--border-cream);border-radius:6px;padding:4px 28px 4px 8px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2387867f' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;cursor:pointer; }
+    .impr-select:focus { outline:none;border-color:var(--ring-deep); }
 
     .impr-table {
       width: 100%;
@@ -1446,21 +1448,40 @@
         <!-- Filter + table -->
         <p class="hub-section-label">Danh sách listing</p>
         <div class="chart-card">
-          <div class="impr-filter-bar" id="imprFilters">
-            <button class="impr-filter active" data-filter="all">Tất cả <span id="cnt-all" style="opacity:.6"></span></button>
-            <button class="impr-filter" data-filter="top">Top performer <span id="cnt-top" style="opacity:.6"></span></button>
-            <button class="impr-filter" data-filter="quick_win">Quick win <span id="cnt-qw" style="opacity:.6"></span></button>
-            <button class="impr-filter" data-filter="fix_ctr">Fix CTR <span id="cnt-ctr" style="opacity:.6"></span></button>
-            <button class="impr-filter" data-filter="fix_cr">Fix CR <span id="cnt-cr" style="opacity:.6"></span></button>
-            <button class="impr-filter" data-filter="fix_roas">Fix ROAS <span id="cnt-roas" style="opacity:.6"></span></button>
-          </div>
-          <div class="impr-filter-bar" id="imprPriFilters" style="margin-top:8px">
-            <span style="font-size:0.72rem;color:var(--stone);margin-right:6px;font-family:var(--font-sans)">Priority:</span>
-            <button class="impr-filter active" data-pri="all">Tất cả</button>
-            <button class="impr-filter" data-pri="low"><span class="pri-badge pri-low">low</span></button>
-            <button class="impr-filter" data-pri="medium"><span class="pri-badge pri-med">medium</span></button>
-            <button class="impr-filter" data-pri="high"><span class="pri-badge pri-high">high</span></button>
-            <button class="impr-filter" data-pri="critical"><span class="pri-badge pri-crit">critical</span></button>
+          <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:6px">
+              <label for="fProd" style="font-size:0.78rem;color:var(--stone);font-family:var(--font-sans);white-space:nowrap">Sản phẩm</label>
+              <select id="fProd" class="impr-select">
+                <option value="all">Tất cả</option>
+                <option value="baby blanket">baby blanket</option>
+                <option value="baby onesie">baby onesie</option>
+                <option value="baby romper">baby romper</option>
+              </select>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <label for="fCTR" style="font-size:0.78rem;color:var(--stone);font-family:var(--font-sans)">CTR</label>
+              <select id="fCTR" class="impr-select">
+                <option value="all">Tất cả</option>
+                <option value="pass">Pass ≥2%</option>
+                <option value="fail">Fail &lt;2%</option>
+              </select>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <label for="fCR" style="font-size:0.78rem;color:var(--stone);font-family:var(--font-sans)">CR</label>
+              <select id="fCR" class="impr-select">
+                <option value="all">Tất cả</option>
+                <option value="pass">Pass ≥4%</option>
+                <option value="fail">Fail &lt;4%</option>
+              </select>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <label for="fROAS" style="font-size:0.78rem;color:var(--stone);font-family:var(--font-sans)">ROAS</label>
+              <select id="fROAS" class="impr-select">
+                <option value="all">Tất cả</option>
+                <option value="pass">Pass ≥2x</option>
+                <option value="fail">Fail &lt;2x</option>
+              </select>
+            </div>
           </div>
           <div class="impr-table-wrap">
             <table class="impr-table">
@@ -2617,7 +2638,7 @@
         document.getElementById('perf-sub-scaleup').style.display      = target === 'scaleup'      ? '' : 'none';
         if (target === 'improvement' && !window._imprRendered) {
           window._imprRendered = true;
-          renderImprTable('all');
+          renderImprTable();
         }
         if (target === 'scaleup' && !window._scaleupRendered) {
           window._scaleupRendered = true;
@@ -2656,27 +2677,25 @@
       'milestone blanket': null, 'baby jumpsuit': null, 'baby outfit': null,
       'matching family shirts': null, 'sweatshirt': null,
     };
-    let _imprPriFilter = 'all';
-
     const PROD_COLOR = { 'baby blanket': 'chip-neu', 'baby onesie': 'badge-qw', 'baby romper': 'chip-ok' };
 
-    function renderImprTable(filter) {
-      const body = document.getElementById('imprTableBody');
-      const counts = { all: LISTINGS.length, top: 0, quick_win: 0, fix_ctr: 0, fix_cr: 0, fix_roas: 0 };
-      LISTINGS.forEach(d => { const c = classifyListing(d); if (counts[c] !== undefined) counts[c]++; });
-
-      // update count badges
-      Object.keys(counts).forEach(k => {
-        const el = document.getElementById('cnt-' + k);
-        if (el) el.textContent = '(' + counts[k] + ')';
-      });
+    function renderImprTable() {
+      const prod = document.getElementById('fProd').value;
+      const ctrF = document.getElementById('fCTR').value;
+      const crF  = document.getElementById('fCR').value;
+      const roasF= document.getElementById('fROAS').value;
 
       const filtered = LISTINGS.filter(d => {
-        const cls = classifyListing(d);
-        const clsOk = filter === 'all' || cls === filter;
-        const priOk = _imprPriFilter === 'all' || IMPR_META[cls].priority === _imprPriFilter;
-        return clsOk && priOk;
+        if (prod !== 'all' && d.p !== prod) return false;
+        if (ctrF  === 'pass' && d.ctr  <  2) return false;
+        if (ctrF  === 'fail' && d.ctr  >= 2) return false;
+        if (crF   === 'pass' && d.cr   <  4) return false;
+        if (crF   === 'fail' && d.cr   >= 4) return false;
+        if (roasF === 'pass' && d.roas <  2) return false;
+        if (roasF === 'fail' && d.roas >= 2) return false;
+        return true;
       });
+
       const html = filtered.map(d => {
         const cls = classifyListing(d);
         const m = IMPR_META[cls];
@@ -2700,26 +2719,12 @@
           <td><a href="${d.l}" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none;white-space:nowrap">Xem ↗</a></td>
         </tr>`;
       }).join('');
-      body.innerHTML = html;
+      document.getElementById('imprTableBody').innerHTML = html;
       document.getElementById('imprCount').textContent = `Hiển thị ${filtered.length} / 128 listings`;
     }
 
-    document.getElementById('imprFilters').addEventListener('click', e => {
-      const btn = e.target.closest('.impr-filter');
-      if (!btn) return;
-      document.querySelectorAll('#imprFilters .impr-filter').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderImprTable(btn.dataset.filter);
-    });
-
-    document.getElementById('imprPriFilters').addEventListener('click', e => {
-      const btn = e.target.closest('.impr-filter');
-      if (!btn) return;
-      document.querySelectorAll('#imprPriFilters .impr-filter').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      _imprPriFilter = btn.dataset.pri;
-      const activeClsFilter = document.querySelector('#imprFilters .impr-filter.active');
-      renderImprTable(activeClsFilter ? activeClsFilter.dataset.filter : 'all');
+    ['fProd','fCTR','fCR','fROAS'].forEach(id => {
+      document.getElementById(id).addEventListener('change', renderImprTable);
     });
 
     // ── Listing Scale Up ──────────────────────────
