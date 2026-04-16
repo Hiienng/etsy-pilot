@@ -552,6 +552,124 @@
       .three-col   { grid-template-columns: 1fr; }
     }
 
+    /* ─── Performance Sub-panel Pill Toggle ────────────────── */
+    .perf-pill-wrap {
+      display: flex;
+      gap: 4px;
+      background: var(--warm-sand);
+      border-radius: 12px;
+      padding: 4px;
+      width: fit-content;
+      margin-bottom: 28px;
+      box-shadow: 0 0 0 1px var(--ring-warm);
+    }
+
+    .perf-pill {
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--stone);
+      padding: 7px 18px;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+
+    .perf-pill.active {
+      background: var(--ivory);
+      color: var(--near-black);
+      box-shadow: 0 0 0 1px var(--ring-warm), 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* ─── Listing Improvement Table ─────────────────────────── */
+    .impr-filter-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .impr-filter {
+      font-family: var(--font-sans);
+      font-size: 0.80rem;
+      font-weight: 500;
+      padding: 5px 13px;
+      border-radius: 20px;
+      border: 1px solid var(--border-warm);
+      background: var(--ivory);
+      color: var(--stone);
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+
+    .impr-filter:hover { border-color: var(--ring-deep); color: var(--charcoal); }
+    .impr-filter.active { background: var(--near-black); color: var(--ivory); border-color: var(--near-black); }
+
+    .impr-table-wrap { overflow-x: auto; }
+
+    .impr-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-sans);
+      font-size: 0.84rem;
+    }
+
+    .impr-table th {
+      text-align: left;
+      padding: 9px 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--stone);
+      border-bottom: 1px solid var(--border-warm);
+      white-space: nowrap;
+      background: var(--ivory);
+      position: sticky;
+      top: 0;
+    }
+
+    .impr-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border-cream);
+      vertical-align: middle;
+    }
+
+    .impr-table tr:last-child td { border-bottom: none; }
+    .impr-table tr:hover td { background: rgba(245,244,237,0.6); }
+
+    .metric-chip {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .chip-ok   { background: rgba(74,140,96,0.10);  color: #4a8c60; }
+    .chip-warn { background: rgba(181,51,51,0.08);  color: #b53333; }
+    .chip-neu  { background: var(--warm-sand);      color: var(--charcoal); }
+
+    .impr-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .badge-top   { background: rgba(74,140,96,0.10);  color: #4a8c60; }
+    .badge-qw    { background: rgba(201,100,66,0.10); color: var(--terracotta); }
+    .badge-ctr   { background: rgba(181,51,51,0.08);  color: #b53333; }
+    .badge-cr    { background: rgba(181,51,51,0.08);  color: #b53333; }
+    .badge-roas  { background: var(--warm-sand);      color: var(--charcoal); }
+    .badge-all   { background: rgba(181,51,51,0.14);  color: #8b2020; }
+
     /* ─── Hub Section Label ─────────────────────────────────── */
     .hub-section-label {
       font-family: var(--font-sans);
@@ -839,6 +957,15 @@
 
     <!-- ── Panel 1: Performance Hub ───────────────── -->
     <section class="hub-panel active" id="tab-performance" role="tabpanel">
+
+      <!-- Pill toggle -->
+      <div class="perf-pill-wrap">
+        <button class="perf-pill active" data-perf="performance">Listing Performance</button>
+        <button class="perf-pill"        data-perf="improvement">Listing Improvement</button>
+      </div>
+
+      <!-- ── Sub-panel: Listing Performance ─────── -->
+      <div id="perf-sub-performance">
 
       <h2 class="section-heading" style="margin-bottom:6px">Listing Performance</h2>
       <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone);margin-bottom:24px">
@@ -1250,6 +1377,93 @@
           </tbody>
         </table>
       </div>
+
+      </div><!-- /perf-sub-performance -->
+
+      <!-- ── Sub-panel: Listing Improvement ──────── -->
+      <div id="perf-sub-improvement" style="display:none">
+
+        <h2 class="section-heading" style="margin-bottom:6px">Listing Improvement</h2>
+        <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone);margin-bottom:24px">
+          Benchmark từng listing với ngưỡng CTR/CR/ROAS và đối chiếu với <code style="font-family:var(--font-mono);font-size:0.88rem;background:var(--warm-sand);padding:1px 6px;border-radius:4px">market_listing</code>
+          · 128 listings · cập nhật 2026-04-16
+        </p>
+
+        <!-- Market benchmark cards -->
+        <p class="hub-section-label">Market benchmark</p>
+        <div class="three-col" style="margin-bottom:28px">
+          <div class="chart-card">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+              <span style="font-size:0.72rem;background:var(--warm-sand);color:var(--charcoal);padding:2px 8px;border-radius:4px;font-weight:500">baby blanket</span>
+              <span style="font-size:0.72rem;color:var(--stone)">56 internal listings</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px">
+              <div><p style="font-size:0.72rem;color:var(--stone);margin-bottom:2px">Market hot rate</p><p style="font-family:var(--font-serif);font-size:1.5rem;font-weight:500">50<span style="font-size:0.9rem">%</span></p></div>
+              <div><p style="font-size:0.72rem;color:var(--stone);margin-bottom:2px">Market avg price</p><p style="font-family:var(--font-serif);font-size:1.5rem;font-weight:500">$92</p></div>
+              <div><p style="font-size:0.72rem;color:var(--stone);margin-bottom:2px">Our avg CTR</p><p style="font-size:1rem;font-weight:500;color:#b53333">1.41% <span style="font-size:0.78rem;color:var(--stone)">/ 2% target</span></p></div>
+              <div><p style="font-size:0.72rem;color:var(--stone);margin-bottom:2px">Our avg CR</p><p style="font-size:1rem;font-weight:500;color:#4a8c60">4.28% <span style="font-size:0.78rem;color:var(--stone)">/ 4% target</span></p></div>
+            </div>
+            <p style="font-size:0.78rem;color:var(--olive);margin-top:12px;padding-top:10px;border-top:1px solid var(--border-cream)">CTR là vấn đề chính — 0/56 đạt ngưỡng. Market avg review 5,403 → demand lớn.</p>
+          </div>
+          <div class="chart-card">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+              <span style="font-size:0.72rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:2px 8px;border-radius:4px;font-weight:500">baby onesie</span>
+              <span style="font-size:0.72rem;color:var(--stone)">42 internal listings</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px">
+              <div><p style="font-size:0.72rem;color:var(--stone);margin-bottom:2px">Market hot rate</p><p style="font-family:var(--font-serif);font-size:1.5rem;font-weight:500;color:var(--terracotta)">100<span style="font-size:0.9rem">%</span></p></div>
+              <div><p style="font-size:0.72rem;color:var(--stone);margin-bottom:2px">Market avg price</p><p style="font-family:var(--font-serif);font-size:1.5rem;font-weight:500">$62</p></div>
+              <div><p style="font-size:0.72rem;color:var(--stone);margin-bottom:2px">Our avg CTR</p><p style="font-size:1rem;font-weight:500">1.75% <span style="font-size:0.78rem;color:var(--stone)">/ 2% target</span></p></div>
+              <div><p style="font-size:0.72rem;color:var(--stone);margin-bottom:2px">Our avg CR</p><p style="font-size:1rem;font-weight:500;color:#b53333">3.75% <span style="font-size:0.78rem;color:var(--stone)">/ 4% target</span></p></div>
+            </div>
+            <p style="font-size:0.78rem;color:var(--olive);margin-top:12px;padding-top:10px;border-top:1px solid var(--border-cream)">Market 100% hot — ưu tiên cao nhất. ROAS 0/42 → review giá quảng cáo.</p>
+          </div>
+          <div class="chart-card" style="border-color:rgba(74,140,96,0.25)">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+              <span style="font-size:0.72rem;background:rgba(74,140,96,0.10);color:#4a8c60;padding:2px 8px;border-radius:4px;font-weight:500">baby romper</span>
+              <span style="font-size:0.72rem;color:var(--stone)">30 internal listings</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px">
+              <div><p style="font-size:0.72rem;color:var(--stone);margin-bottom:2px">Market hot rate</p><p style="font-family:var(--font-serif);font-size:1.5rem;font-weight:500">71<span style="font-size:0.9rem">%</span></p></div>
+              <div><p style="font-size:0.72rem;color:var(--stone);margin-bottom:2px">Market avg price</p><p style="font-family:var(--font-serif);font-size:1.5rem;font-weight:500">$58</p></div>
+              <div><p style="font-size:0.72rem;color:var(--stone);margin-bottom:2px">Our avg CTR</p><p style="font-size:1rem;font-weight:500">1.71% <span style="font-size:0.78rem;color:var(--stone)">/ 2% target</span></p></div>
+              <div><p style="font-size:0.72rem;color:var(--stone);margin-bottom:2px">Our avg CR</p><p style="font-size:1rem;font-weight:500;color:#4a8c60">4.53% <span style="font-size:0.78rem;color:var(--stone)">/ 4% target</span></p></div>
+            </div>
+            <p style="font-size:0.78rem;color:var(--olive);margin-top:12px;padding-top:10px;border-top:1px solid var(--border-cream)">Best performer — 3 listings đạt cả 3 chỉ số. Nhân bản pattern này.</p>
+          </div>
+        </div>
+
+        <!-- Filter + table -->
+        <p class="hub-section-label">Danh sách listing</p>
+        <div class="chart-card">
+          <div class="impr-filter-bar" id="imprFilters">
+            <button class="impr-filter active" data-filter="all">Tất cả <span id="cnt-all" style="opacity:.6"></span></button>
+            <button class="impr-filter" data-filter="top">Top performer <span id="cnt-top" style="opacity:.6"></span></button>
+            <button class="impr-filter" data-filter="quick_win">Quick win <span id="cnt-qw" style="opacity:.6"></span></button>
+            <button class="impr-filter" data-filter="fix_ctr">Fix CTR <span id="cnt-ctr" style="opacity:.6"></span></button>
+            <button class="impr-filter" data-filter="fix_cr">Fix CR <span id="cnt-cr" style="opacity:.6"></span></button>
+            <button class="impr-filter" data-filter="fix_roas">Fix ROAS <span id="cnt-roas" style="opacity:.6"></span></button>
+          </div>
+          <div class="impr-table-wrap">
+            <table class="impr-table">
+              <thead>
+                <tr>
+                  <th style="width:36%">Listing title</th>
+                  <th>Sản phẩm</th>
+                  <th style="text-align:center">CTR</th>
+                  <th style="text-align:center">CR</th>
+                  <th style="text-align:center">ROAS</th>
+                  <th>Cải thiện</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="imprTableBody"></tbody>
+            </table>
+          </div>
+          <p style="font-family:var(--font-sans);font-size:0.78rem;color:var(--stone);margin-top:12px;padding-top:10px;border-top:1px solid var(--border-cream)" id="imprCount"></p>
+        </div>
+
+      </div><!-- /perf-sub-improvement -->
 
     </section>
 
@@ -2254,6 +2468,85 @@
           requestAnimationFrame(initCharts);
         }
       });
+    });
+
+    // ── Performance Hub pill toggle ───────────────
+    document.querySelectorAll('.perf-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.perf-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const target = pill.dataset.perf;
+        document.getElementById('perf-sub-performance').style.display = target === 'performance' ? '' : 'none';
+        document.getElementById('perf-sub-improvement').style.display  = target === 'improvement'  ? '' : 'none';
+        if (target === 'improvement' && !window._imprRendered) {
+          window._imprRendered = true;
+          renderImprTable('all');
+        }
+      });
+    });
+
+    // ── Listing Improvement data & render ─────────
+    const LISTINGS = [{"id":"4484436101","t":"Personalized baby blanket, embroidered cotton baby blanket with name, monogramed blanket, baby shower gifts, custom baby gifts","p":"baby blanket","ctr":1.14,"cr":4.12,"roas":2.6,"l":"https://www.etsy.com/listing/4484436101"},{"id":"4484424677","t":"Baby girl gift, birth announcement blankets, embroidered pink baby blanket with name, personalized newborn gifts","p":"baby blanket","ctr":1.35,"cr":6.22,"roas":2.59,"l":"https://www.etsy.com/listing/4484424677"},{"id":"4484390861","t":"Personalized baby gifts, custom baby blanket, embroidered newborn gifts, baby shower gifts","p":"baby blanket","ctr":1.54,"cr":5.03,"roas":2.58,"l":"https://www.etsy.com/listing/4484390861"},{"id":"4484400432","t":"Baby name blanket, knit  embroidered blanket, custom baby gift, new born gifts, personalized baby gifts","p":"baby blanket","ctr":1.14,"cr":3.79,"roas":2.58,"l":"https://www.etsy.com/listing/4484400432"},{"id":"4484398298","t":"Baby boy blanket, embroidered baby blanket with name, cotton knit custom baby blanket, gift for baby boys","p":"baby blanket","ctr":1.7,"cr":5.71,"roas":2.56,"l":"https://www.etsy.com/listing/4484398298"},{"id":"4484376488","t":"Newborn boy gift, baby boy embroidered cotton knit baby blankets, baby boy gifts, home coming outfit","p":"baby blanket","ctr":1.23,"cr":2.76,"roas":2.51,"l":"https://www.etsy.com/listing/4484376488"},{"id":"4484429205","t":"Custom baby blanket, embroidered knit baby blanket with name, born baby gifts, new baby gifts","p":"baby blanket","ctr":1.24,"cr":2.7,"roas":2.45,"l":"https://www.etsy.com/listing/4484429205"},{"id":"4484436858","t":"Birth announcement blanket, embroidered cotton baby name blankets, new baby gifts, born baby gifts","p":"baby blanket","ctr":1.26,"cr":6.12,"roas":2.43,"l":"https://www.etsy.com/listing/4484436858"},{"id":"4484353685","t":"Baby girl blanket, cotton knit embroidered pink baby blanket with name, gifts for newborn, baby gift girls","p":"baby blanket","ctr":1.11,"cr":6.1,"roas":2.43,"l":"https://www.etsy.com/listing/4484353685"},{"id":"4484362282","t":"Baby keepsake, white embroidered custom baby name blanket, newborn gifts, born baby gifts","p":"baby blanket","ctr":1.43,"cr":3.31,"roas":2.42,"l":"https://www.etsy.com/listing/4484362282"},{"id":"4484375312","t":"Custom baby girl gift, knit baby blanket with name, embroidered blanket, custom baby shower gifts","p":"baby blanket","ctr":1.24,"cr":6.0,"roas":2.4,"l":"https://www.etsy.com/listing/4484375312"},{"id":"4484427891","t":"Personalized embroidered blanket for baby birth announcement, custom baby blanket, knit cotton blanket with name","p":"baby blanket","ctr":1.45,"cr":4.31,"roas":2.39,"l":"https://www.etsy.com/listing/4484427891"},{"id":"4484376982","t":"Baby keepsake, embroidered knit cotton baby blanket, born baby gifts, monogramed baby gift","p":"baby blanket","ctr":1.44,"cr":4.19,"roas":2.3,"l":"https://www.etsy.com/listing/4484376982"},{"id":"4484360476","t":"Custom baby blanket, custom baby boy gift, embroidered baby boy blankets, knit cotton olive baby blanket","p":"baby blanket","ctr":1.39,"cr":2.49,"roas":2.26,"l":"https://www.etsy.com/listing/4484360476"},{"id":"4484433775","t":"Baby shower gifts, cotton knit embroidered baby name blanket, applique initial blanket, new baby gifts","p":"baby blanket","ctr":1.28,"cr":3.53,"roas":2.25,"l":"https://www.etsy.com/listing/4484433775"},{"id":"4484432167","t":"Personalized baby blanket with name, knit cotton blanket, birth announcement blanket, baby boy blanket, baby girl blanket","p":"baby blanket","ctr":1.66,"cr":3.06,"roas":2.2,"l":"https://www.etsy.com/listing/4484432167"},{"id":"4484428759","t":"Newborn embroidered baby blanket with name, baby milestone, baby birth announcement blanket","p":"baby blanket","ctr":1.21,"cr":4.7,"roas":2.15,"l":"https://www.etsy.com/listing/4484428759"},{"id":"4484432886","t":"Custom baby blanket with name for birth announcement, embroidered baby blanket, baby girl blanket, baby boy blanket","p":"baby blanket","ctr":1.24,"cr":3.86,"roas":2.14,"l":"https://www.etsy.com/listing/4484432886"},{"id":"4484375972","t":"Custom baby girl blanket, embroidered knit baby blanket with name, monogramed blankets, baby shower gifts","p":"baby blanket","ctr":1.14,"cr":3.2,"roas":2.14,"l":"https://www.etsy.com/listing/4484375972"},{"id":"4484442130","t":"Custom baby gift, baby name blanket, embroidered cotton knit blankets, baby hospital outfit","p":"baby blanket","ctr":1.59,"cr":3.46,"roas":2.13,"l":"https://www.etsy.com/listing/4484442130"},{"id":"4484373672","t":"Emboirdered baby blanket with name, baby shower gift, baby milestone, baby keepsake, custom baby gifts","p":"baby blanket","ctr":1.23,"cr":2.5,"roas":2.08,"l":"https://www.etsy.com/listing/4484373672"},{"id":"4484429611","t":"Embroidered born baby gift, sage baby name blanket, baby keepsake, knit cotton blanket with name","p":"baby blanket","ctr":1.25,"cr":4.7,"roas":2.07,"l":"https://www.etsy.com/listing/4484429611"},{"id":"4484438537","t":"Applique embroidered blanket, monogramed baby blanket, baby boy gifts, baby girl gifts, baby boy blanket, baby girl blanket","p":"baby blanket","ctr":1.6,"cr":5.15,"roas":2.06,"l":"https://www.etsy.com/listing/4484438537"},{"id":"4484425579","t":"Baby boy gift, birth announcement blue blankets, embroidered baby blanket with name, personalized newborn gifts","p":"baby blanket","ctr":1.28,"cr":6.27,"roas":2.01,"l":"https://www.etsy.com/listing/4484425579"},{"id":"4484363873","t":"Personalized baby blanket, applique embroidered baby blanket with name, custom baby gifts","p":"baby blanket","ctr":1.35,"cr":3.09,"roas":1.96,"l":"https://www.etsy.com/listing/4484363873"},{"id":"4484431946","t":"Embroidered sage custom baby gift, knit baby blanket with name, newborn gifts, new baby gifts","p":"baby blanket","ctr":1.35,"cr":4.65,"roas":1.93,"l":"https://www.etsy.com/listing/4484431946"},{"id":"4484447553","t":"Personalized baby gifts, custom baby name blanket, embroidered new born baby gifts","p":"baby blanket","ctr":1.48,"cr":3.31,"roas":1.88,"l":"https://www.etsy.com/listing/4484447553"},{"id":"4484361448","t":"Custom baby blanket, embroidered knit cotton sage blanket with name, baby boy blanket, baby girl blanket, new baby gifts","p":"baby blanket","ctr":1.56,"cr":2.74,"roas":1.87,"l":"https://www.etsy.com/listing/4484361448"},{"id":"4484389041","t":"Baby shower gift, embroidered baby blanket with name, knit blanket with applique initials, born baby gifts","p":"baby blanket","ctr":1.36,"cr":3.98,"roas":1.85,"l":"https://www.etsy.com/listing/4484389041"},{"id":"4484424071","t":"Birth announcement beige blanket, embroidered baby blanket, baby keepsake, custom baby gifts, personalized baby newborn gift","p":"baby blanket","ctr":1.26,"cr":5.49,"roas":1.84,"l":"https://www.etsy.com/listing/4484424071"},{"id":"4484397082","t":"New baby gift, custom applique embroidered baby blanket with name, gift for baby, baby milestone gift","p":"baby blanket","ctr":1.25,"cr":6.08,"roas":1.82,"l":"https://www.etsy.com/listing/4484397082"},{"id":"4484367333","t":"Baby name blanket, embroiderd knitt cotton baby blanket, born baby gifts, monogramed baby gift","p":"baby blanket","ctr":1.7,"cr":4.93,"roas":1.81,"l":"https://www.etsy.com/listing/4484367333"},{"id":"4484399572","t":"Baby boy gift, embroidered baby blanket with name and initials, newborn boy gifts, home coming outfit","p":"baby blanket","ctr":1.39,"cr":3.1,"roas":1.76,"l":"https://www.etsy.com/listing/4484399572"},{"id":"4484391502","t":"Applique embroidered custom baby blanket, baby shower gifts, personalized blankets, new baby gifts","p":"baby blanket","ctr":1.16,"cr":3.89,"roas":1.68,"l":"https://www.etsy.com/listing/4484391502"},{"id":"4484366649","t":"Newborn baby girl, baby girl embroidered cotton knit baby blankets, baby girl gifts, home coming outfit","p":"baby blanket","ctr":1.54,"cr":3.04,"roas":1.64,"l":"https://www.etsy.com/listing/4484366649"},{"id":"4484395242","t":"New baby gift, custom knit embroidered baby blanket, gift for baby, baby keepsakes","p":"baby blanket","ctr":1.37,"cr":3.97,"roas":1.59,"l":"https://www.etsy.com/listing/4484395242"},{"id":"4484444227","t":"Personalized baby blanket with name, applique embroidered baby blanket, cotton knit blanket, baby milestone, baby keepskae","p":"baby blanket","ctr":1.16,"cr":4.52,"roas":1.58,"l":"https://www.etsy.com/listing/4484444227"},{"id":"4484450382","t":"Custom baby blanket, cotton knit baby name blanket, baby millestone, new baby gifts","p":"baby blanket","ctr":1.56,"cr":4.88,"roas":1.57,"l":"https://www.etsy.com/listing/4484450382"},{"id":"4484370958","t":"Embroidered baby shower gift, custom baby blanket, personalized newborn gift, gift for baby","p":"baby blanket","ctr":1.3,"cr":4.67,"roas":1.52,"l":"https://www.etsy.com/listing/4484370958"},{"id":"4484370124","t":"Custom baby boy gift, knitt baby blanket with name, embroidered blanket, custom baby shower gifts","p":"baby blanket","ctr":1.41,"cr":2.71,"roas":1.51,"l":"https://www.etsy.com/listing/4484370124"},{"id":"4484436420","t":"Custom name embroidered baby boy blankets, knit cotton baby blanket with name and birthdate, new baby gifts","p":"baby blanket","ctr":1.7,"cr":2.51,"roas":1.5,"l":"https://www.etsy.com/listing/4484436420"},{"id":"4484444626","t":"Custom name monogram baby gift, embroidered cotton knit baby blanket with name, baby girl blanket, baby boy blanket","p":"baby blanket","ctr":1.46,"cr":5.21,"roas":1.49,"l":"https://www.etsy.com/listing/4484444626"},{"id":"4484393004","t":"Baby blanket gift, monogrammed newborn baby gift, snewborn gift, custom baby blanket, custom baby name","p":"baby blanket","ctr":1.62,"cr":3.24,"roas":1.47,"l":"https://www.etsy.com/listing/4484393004"},{"id":"4484398832","t":"Baby girl blankets, embroidered custom name baby blanket, cotton knit baby blanket, baby shower gifts, newborn girl gift","p":"baby blanket","ctr":1.66,"cr":5.76,"roas":1.43,"l":"https://www.etsy.com/listing/4484398832"},{"id":"4484425167","t":"Embroidered custom baby blanket, cotton knit baby birth announcement white blankets,  personalized new baby gifts","p":"baby blanket","ctr":1.43,"cr":5.22,"roas":1.42,"l":"https://www.etsy.com/listing/4484425167"},{"id":"4484436979","t":"Newborn gifts, baby hospital outfit, applique custom baby name blanket, cotton knit blanket with name, gift for baby","p":"baby blanket","ctr":1.63,"cr":3.75,"roas":1.42,"l":"https://www.etsy.com/listing/4484436979"},{"id":"4484443606","t":"Customizable blanket, knit cotton baby name blanket, applique embroidered baby gifts, born baby gifts, baby shower gifts","p":"baby blanket","ctr":1.66,"cr":2.76,"roas":1.36,"l":"https://www.etsy.com/listing/4484443606"},{"id":"4484377500","t":"Custom gift for baby, monogramed baby blanket with name, born baby gifts, baby boy blanket, baby girl blanket","p":"baby blanket","ctr":1.58,"cr":3.0,"roas":1.34,"l":"https://www.etsy.com/listing/4484377500"},{"id":"4484448828","t":"Embroided cusstom name monogrammed blanket, baby blanket with applique initial, born baby gift, baby boy gift, baby girl gift","p":"baby blanket","ctr":1.64,"cr":5.75,"roas":1.33,"l":"https://www.etsy.com/listing/4484448828"},{"id":"4484359942","t":"Baby boy blanket, cotton knit embroidered blue baby blanket with name, gifts for newborn, baby gift boy","p":"baby blanket","ctr":1.63,"cr":6.18,"roas":1.32,"l":"https://www.etsy.com/listing/4484359942"},{"id":"4484428317","t":"Personalized baby blanket with name, birth announcement blankets, newborn baby gifts","p":"baby blanket","ctr":1.19,"cr":6.24,"roas":1.31,"l":"https://www.etsy.com/listing/4484428317"},{"id":"4484426855","t":"Personalized newborn gifts, custom baby blanket, cotton knit embroidered blanket for birth announcement, new baby gifts","p":"baby blanket","ctr":1.43,"cr":5.34,"roas":1.28,"l":"https://www.etsy.com/listing/4484426855"},{"id":"4484357677","t":"Personalized newborn gifts, cotton knit, embroidered beige custom baby blankets, personalized baby blanket, baby milestones","p":"baby blanket","ctr":1.6,"cr":3.49,"roas":1.28,"l":"https://www.etsy.com/listing/4484357677"},{"id":"4484397732","t":"Baby name blanket, custom baby gift, new born gifts, embroidered blanket, born baby gift","p":"baby blanket","ctr":1.62,"cr":4.51,"roas":1.27,"l":"https://www.etsy.com/listing/4484397732"},{"id":"4484439301","t":"Custom born baby gift, monogramed blanket, knit cotton blanket with embroidered babe name, personalized newborn gifts","p":"baby blanket","ctr":1.69,"cr":4.95,"roas":1.21,"l":"https://www.etsy.com/listing/4484439301"},{"id":"4484449268","t":"Baby shower gift, applique embroidered custom baby name blanket, baby boy blanket, baby girl blanket","p":"baby blanket","ctr":1.35,"cr":3.36,"roas":1.2,"l":"https://www.etsy.com/listing/4484449268"},{"id":"4482406051","t":"Baby boy clothes, embroidered custom baby onesie, newborn boy gifts, baby shower gifts","p":"baby onesie","ctr":1.6,"cr":2.87,"roas":1.83,"l":"https://www.etsy.com/listing/4482406051"},{"id":"4482408737","t":"New baby gift with embroidered name and applique initials baby onesie, personalized newborn outfit","p":"baby onesie","ctr":2.2,"cr":4.39,"roas":1.79,"l":"https://www.etsy.com/listing/4482408737"},{"id":"4482396113","t":"Baby announcement gift, applique embroidered new baby gift, custom baby onesie, baby shower gifts","p":"baby onesie","ctr":1.47,"cr":2.83,"roas":1.76,"l":"https://www.etsy.com/listing/4482396113"},{"id":"4482392987","t":"Embroidered custom baby onesie, applique new baby gift, personalized newborn outfit","p":"baby onesie","ctr":1.41,"cr":3.11,"roas":1.75,"l":"https://www.etsy.com/listing/4482392987"},{"id":"4482404325","t":"Custom baby onesie, embroidered baby clothes, newborn gifts, custom baby gifts","p":"baby onesie","ctr":1.46,"cr":4.66,"roas":1.7,"l":"https://www.etsy.com/listing/4482404325"},{"id":"4482410614","t":"Embroidered custom baby onesie, personalized baby gift, coming home outfit, baby boy gifts, baby girrl gifts","p":"baby onesie","ctr":1.65,"cr":6.47,"roas":1.67,"l":"https://www.etsy.com/listing/4482410614"},{"id":"4482367382","t":"Custom baby onesie, applique embroidered baby clothes, custom baby clothes, new baby gift","p":"baby onesie","ctr":2.03,"cr":4.83,"roas":1.66,"l":"https://www.etsy.com/listing/4482367382"},{"id":"4482360269","t":"Custom baby gift, applique embroidered baby onesie, newborn gifts, baby shower gift","p":"baby onesie","ctr":2.01,"cr":1.83,"roas":1.59,"l":"https://www.etsy.com/listing/4482360269"},{"id":"4482407841","t":"Baby boy gifts, embroidered custom baby onesie for boys, baby shower gifts, new baby gifts","p":"baby onesie","ctr":1.31,"cr":4.87,"roas":1.57,"l":"https://www.etsy.com/listing/4482407841"},{"id":"4482415672","t":"Baby coming home outfit, custom baby onesie with applique embroidered initials, baby clothes for baby shower gifts","p":"baby onesie","ctr":1.96,"cr":4.44,"roas":1.55,"l":"https://www.etsy.com/listing/4482415672"},{"id":"4482395572","t":"Baby boy coming home outfit, custom baby onesie for boys, newborn outfit, baby boy gifts","p":"baby onesie","ctr":1.88,"cr":5.93,"roas":1.55,"l":"https://www.etsy.com/listing/4482395572"},{"id":"4482409153","t":"Coming home outfit, embroidered custom baby onesie, newborn gifts, baby shower gifts","p":"baby onesie","ctr":2.06,"cr":1.86,"roas":1.48,"l":"https://www.etsy.com/listing/4482409153"},{"id":"4482355143","t":"Baby boy coming home outfit, applique embroidered baby onesie, baby boy gifts","p":"baby onesie","ctr":1.42,"cr":5.41,"roas":1.43,"l":"https://www.etsy.com/listing/4482355143"},{"id":"4482396809","t":"Baby shower gift, personalized baby gift, custom baby onesie, applique embroidered baby clothes","p":"baby onesie","ctr":2.08,"cr":3.34,"roas":1.4,"l":"https://www.etsy.com/listing/4482396809"},{"id":"4482357850","t":"Personalized newborn outfit, applique embroidered custom baby onesie, newborn gift","p":"baby onesie","ctr":1.23,"cr":2.77,"roas":1.39,"l":"https://www.etsy.com/listing/4482357850"},{"id":"4482361886","t":"Baby boy clothes, applique embroidered custom baby onesie, baby boy gifts, newborn boy gift, blue baby clothes","p":"baby onesie","ctr":1.3,"cr":5.95,"roas":1.33,"l":"https://www.etsy.com/listing/4482361886"},{"id":"4482358885","t":"Baby boy coming home outfit, applique embroidered custom baby onesie, baby boy gifts, newborn boy gift","p":"baby onesie","ctr":1.74,"cr":2.88,"roas":1.32,"l":"https://www.etsy.com/listing/4482358885"},{"id":"4482394895","t":"Baby coming home outfit, applique embroidered custom baby baby onesie, baby shower gifts, newborn outfit","p":"baby onesie","ctr":2.19,"cr":4.94,"roas":1.28,"l":"https://www.etsy.com/listing/4482394895"},{"id":"4482401166","t":"Baby coming home outfit, applique embroidered custom baby baby onesie, new baby gifts","p":"baby onesie","ctr":1.46,"cr":3.01,"roas":1.28,"l":"https://www.etsy.com/listing/4482401166"},{"id":"4482364946","t":"Custom newborn gifts, applique embroidered custom baby onesie, coming home outfit, new baby gift","p":"baby onesie","ctr":2.17,"cr":3.65,"roas":1.27,"l":"https://www.etsy.com/listing/4482364946"},{"id":"4482363442","t":"Applique embroidered custom baby onesie, baby coming home outfit, baby shower gift","p":"baby onesie","ctr":2.01,"cr":5.38,"roas":1.25,"l":"https://www.etsy.com/listing/4482363442"},{"id":"4482357281","t":"Baby girl gifts, applique embroidered custom baby onesie, newborn girl gift, pink baby clothes","p":"baby onesie","ctr":1.23,"cr":2.87,"roas":1.21,"l":"https://www.etsy.com/listing/4482357281"},{"id":"4482398072","t":"Embroidered custom baby onesie, baby shower gifts, new baby gifts, baby boy gifts, baby girl gifts","p":"baby onesie","ctr":1.6,"cr":6.28,"roas":1.15,"l":"https://www.etsy.com/listing/4482398072"},{"id":"4482410429","t":"Baby announcement, custom baby gift, baby onesie with applique embroidered initials, newborn outfit","p":"baby onesie","ctr":1.84,"cr":2.35,"roas":1.12,"l":"https://www.etsy.com/listing/4482410429"},{"id":"4482355763","t":"Baby boy gifts, applique embroidered custom baby onesie, green baby clothes, newborn boy gift, new baby gift","p":"baby onesie","ctr":2.09,"cr":2.23,"roas":1.11,"l":"https://www.etsy.com/listing/4482355763"},{"id":"4482408213","t":"New baby gift, custom baby onesie with applique embroidered initials, custom baby clothes","p":"baby onesie","ctr":1.62,"cr":2.11,"roas":1.06,"l":"https://www.etsy.com/listing/4482408213"},{"id":"4482394273","t":"Baby coming home outfit, applique embroidered newborn outfit, baby onesie, personalized baby gift","p":"baby onesie","ctr":1.93,"cr":2.6,"roas":1.05,"l":"https://www.etsy.com/listing/4482394273"},{"id":"4482391635","t":"Baby girl gifts, embroidered custom baby onesie, newborn girl gift, custom baby gifts, baby girl outfit","p":"baby onesie","ctr":1.84,"cr":3.59,"roas":1.04,"l":"https://www.etsy.com/listing/4482391635"},{"id":"4482416678","t":"Baby coming home outfit, embroidered custom baby onesie for baby shower gifts, personalized newborn outfit","p":"baby onesie","ctr":1.73,"cr":1.8,"roas":0.99,"l":"https://www.etsy.com/listing/4482416678"},{"id":"4482396110","t":"Baby boy gifts, embroidered custom baby onesie, newborn boy gift, custom baby gifts, baby boy outfit","p":"baby onesie","ctr":1.43,"cr":1.96,"roas":0.97,"l":"https://www.etsy.com/listing/4482396110"},{"id":"4482412586","t":"Baby girl gifts, embroidered custom baby onesie for girls, baby shower gifts, new baby gifts, newborn girl gifts","p":"baby onesie","ctr":2.11,"cr":6.07,"roas":0.95,"l":"https://www.etsy.com/listing/4482412586"},{"id":"4482391121","t":"Applique embroidered baby boy clothes, custom baby onesie, baby boy gifts, newborn boy gift","p":"baby onesie","ctr":1.43,"cr":2.29,"roas":0.93,"l":"https://www.etsy.com/listing/4482391121"},{"id":"4482354297","t":"Baby girl coming home outfit, applique embroidered baby onesie, baby girl gifts, baby girl clothes","p":"baby onesie","ctr":1.84,"cr":1.92,"roas":0.92,"l":"https://www.etsy.com/listing/4482354297"},{"id":"4482409489","t":"Coming home outfit, baby onesie with applique embroidered initials, newborn outfit","p":"baby onesie","ctr":1.88,"cr":4.43,"roas":0.91,"l":"https://www.etsy.com/listing/4482409489"},{"id":"4482411266","t":"Baby girl coming home outfit, embroidered custom baby onesie for girls, baby shower gifts, new baby gifts","p":"baby onesie","ctr":1.46,"cr":4.25,"roas":0.8,"l":"https://www.etsy.com/listing/4482411266"},{"id":"4482393659","t":"Baby coming home outfit, applique embroidered new baby gift, custom baby onesie, personalized newborn outfit","p":"baby onesie","ctr":1.85,"cr":4.78,"roas":0.79,"l":"https://www.etsy.com/listing/4482393659"},{"id":"4482413046","t":"Embroidered custom baby onesie, personalized baby gift, coming home outfit, baby boy gifts, baby girrl gifts","p":"baby onesie","ctr":1.84,"cr":4.78,"roas":0.77,"l":"https://www.etsy.com/listing/4482413046"},{"id":"4482360865","t":"Applique embroidered custom baby onesie, baby coming home outfit,  newborn gift","p":"baby onesie","ctr":1.9,"cr":3.47,"roas":0.77,"l":"https://www.etsy.com/listing/4482360865"},{"id":"4482361481","t":"Applique embroidered custom baby onesie, new baby gift, personalized newborn outfit","p":"baby onesie","ctr":2.16,"cr":3.45,"roas":0.7,"l":"https://www.etsy.com/listing/4482361481"},{"id":"4482388539","t":"Baby girl coming home outfit, custom baby onesie for girls, newborn outfit, baby girl gifts","p":"baby onesie","ctr":1.43,"cr":3.22,"roas":0.68,"l":"https://www.etsy.com/listing/4482388539"},{"id":"4482388003","t":"Baby shower gift, applique embroidered custom baby onesie, personalized baby gift","p":"baby onesie","ctr":1.78,"cr":5.25,"roas":0.64,"l":"https://www.etsy.com/listing/4482388003"},{"id":"4482406491","t":"Baby boy gifts, embroidered custom baby onesie for boys, baby shower gifts, new baby gifts","p":"baby onesie","ctr":1.71,"cr":2.25,"roas":0.64,"l":"https://www.etsy.com/listing/4482406491"},{"id":"4486344550","t":"Custom baby zip romper, baby hospital outfit, embroidered custom name newborn outfit","p":"baby romper","ctr":1.84,"cr":3.8,"roas":2.2,"l":"https://www.etsy.com/listing/4486344550"},{"id":"4486349667","t":"Embroidered baby sage zip romper, baby home coming outfit, born baby gifts","p":"baby romper","ctr":2.17,"cr":2.8,"roas":2.18,"l":"https://www.etsy.com/listing/4486349667"},{"id":"4486333339","t":"Sage custom name embroidered zip romper, newborn coming home outfit, new baby gifts, baby hospital outfit","p":"baby romper","ctr":2.18,"cr":5.65,"roas":2.07,"l":"https://www.etsy.com/listing/4486333339"},{"id":"4486322061","t":"Custom name embroidered zip romper, pink coming home outfit, newborn baby girl gifts, baby girl gifts","p":"baby romper","ctr":1.21,"cr":2.34,"roas":2.07,"l":"https://www.etsy.com/listing/4486322061"},{"id":"4486333937","t":"Baby hospital outfit, custom baby zip romper, personalized baby gifts, personalized newborn outfit","p":"baby romper","ctr":2.13,"cr":5.61,"roas":2.05,"l":"https://www.etsy.com/listing/4486333937"},{"id":"4486332458","t":"Custom zip romper with embroidered name, baby milestone, personalized newborn outfit","p":"baby romper","ctr":1.35,"cr":6.18,"roas":2.05,"l":"https://www.etsy.com/listing/4486332458"},{"id":"4486337985","t":"Custom zip romper, baby hospital outfit, embroidered custom name newborn outfit","p":"baby romper","ctr":1.31,"cr":5.92,"roas":2.04,"l":"https://www.etsy.com/listing/4486337985"},{"id":"4486324567","t":"Baby boy gifts, zip romper with embroidered name, baby milestone, gift for new baby","p":"baby romper","ctr":2.1,"cr":4.46,"roas":2.01,"l":"https://www.etsy.com/listing/4486324567"},{"id":"4486326463","t":"Baby shower gift girl zip romper, custom baby gifts, newborn outfit, personalized newborn outfit","p":"baby romper","ctr":1.51,"cr":6.05,"roas":1.96,"l":"https://www.etsy.com/listing/4486326463"},{"id":"4486336989","t":"Newborn coming home outfit, embroidered baby name zip romper, custom baby gifts, navy baby clothes","p":"baby romper","ctr":2.01,"cr":3.2,"roas":1.95,"l":"https://www.etsy.com/listing/4486336989"},{"id":"4486330194","t":"Home coming outfit, embroidered baby name white zip romper, baby milestone, baby bodysuit with name","p":"baby romper","ctr":1.45,"cr":2.46,"roas":1.94,"l":"https://www.etsy.com/listing/4486330194"},{"id":"4486362204","t":"Brown custom zip romper, baby shower gift boy outfit, baby keepsake, newborn gifts","p":"baby romper","ctr":1.51,"cr":5.82,"roas":1.86,"l":"https://www.etsy.com/listing/4486362204"},{"id":"4486360620","t":"Custom name baby romper, new born gifts, home coming outfit, born baby gift, baby keepsake","p":"baby romper","ctr":2.13,"cr":4.42,"roas":1.86,"l":"https://www.etsy.com/listing/4486360620"},{"id":"4486330842","t":"Baby shower gifts, custom embroidered zip romper, baby clothes, newborn outfit.","p":"baby romper","ctr":2.08,"cr":3.83,"roas":1.73,"l":"https://www.etsy.com/listing/4486330842"},{"id":"4486351043","t":"White custom baby romper, new born boy gifts, baby girl gifts, newborn outfit","p":"baby romper","ctr":1.93,"cr":3.41,"roas":1.71,"l":"https://www.etsy.com/listing/4486351043"},{"id":"4486352207","t":"Navy blue zip romper with embroidered name, baby boy coming home outfit, new baby gifts","p":"baby romper","ctr":1.71,"cr":3.73,"roas":1.67,"l":"https://www.etsy.com/listing/4486352207"},{"id":"4486338517","t":"Personalized newborn gifts, custom zip romper for new baby, newborn coming home outfit","p":"baby romper","ctr":1.42,"cr":5.67,"roas":1.51,"l":"https://www.etsy.com/listing/4486338517"},{"id":"4486350379","t":"Home coming outfit, custom baby name zip romper, personalized baby clothes","p":"baby romper","ctr":1.47,"cr":2.49,"roas":1.48,"l":"https://www.etsy.com/listing/4486350379"},{"id":"4486321209","t":"Newborn baby boy gifts, custom name embroidered zip romper, navy coming home outfit, baby boy gifts, baby milestone","p":"baby romper","ctr":1.94,"cr":4.48,"roas":1.47,"l":"https://www.etsy.com/listing/4486321209"},{"id":"4486362770","t":"Embroidered custom name romper, newborn boy and girl gift, personalized baby home coming outfit","p":"baby romper","ctr":1.5,"cr":3.39,"roas":1.44,"l":"https://www.etsy.com/listing/4486362770"},{"id":"4486361064","t":"Personalized newborn outfit romper, custom new baby gift, baby shower gift idea","p":"baby romper","ctr":1.94,"cr":5.02,"roas":1.38,"l":"https://www.etsy.com/listing/4486361064"},{"id":"4486361642","t":"Baby home coming outfit, custom baby romper, personalized baby clothes, personalized newborn clothes","p":"baby romper","ctr":1.27,"cr":4.99,"roas":1.34,"l":"https://www.etsy.com/listing/4486361642"},{"id":"4486333906","t":"Baby shower gift boy zip romper, custom baby gifts, newborn outfit, baby boy gifts","p":"baby romper","ctr":1.22,"cr":5.31,"roas":1.34,"l":"https://www.etsy.com/listing/4486333906"},{"id":"4486340999","t":"Embroidered baby zip romper, baby shower gifts, personalized baby gift, newborn gifts","p":"baby romper","ctr":1.22,"cr":2.87,"roas":1.34,"l":"https://www.etsy.com/listing/4486340999"},{"id":"4486341990","t":"Gift newborn girl coming home outfit, custom name zip romper, embroidered name personalized new baby outfit","p":"baby romper","ctr":2.06,"cr":6.35,"roas":1.27,"l":"https://www.etsy.com/listing/4486341990"},{"id":"4486340465","t":"Custom baby romper, baby hospital outfit, custom baby boy gift, custom baby boy gift","p":"baby romper","ctr":1.51,"cr":5.58,"roas":1.2,"l":"https://www.etsy.com/listing/4486340465"},{"id":"4486329502","t":"Embroidered custom name zip romper, baby coming home outfit, personalized newborn outfit, gift for baby","p":"baby romper","ctr":2.06,"cr":6.05,"roas":1.18,"l":"https://www.etsy.com/listing/4486329502"},{"id":"4486325308","t":"Baby coming home outfit, custom name embroidered zip romper, sage newborn outfit","p":"baby romper","ctr":1.78,"cr":2.67,"roas":1.07,"l":"https://www.etsy.com/listing/4486325308"},{"id":"4486347188","t":"Baby home coming outfit, custom baby romper, personalized baby gifts, baby keepsakes","p":"baby romper","ctr":1.74,"cr":6.23,"roas":1.05,"l":"https://www.etsy.com/listing/4486347188"},{"id":"4486360014","t":"Pink custom baby zip romper, baby girl coming home outfit, newborn girl gift","p":"baby romper","ctr":1.45,"cr":5.19,"roas":0.9,"l":"https://www.etsy.com/listing/4486360014"}];
+
+    function classifyListing(d) {
+      const ctrOk = d.ctr >= 2, crOk = d.cr >= 4, roasOk = d.roas >= 2;
+      if (ctrOk && crOk && roasOk) return 'top';
+      if (crOk && !ctrOk) return 'quick_win';       // CR ok, CTR bad → fix thumbnail
+      if (ctrOk && !crOk) return 'fix_cr';           // CTR ok, CR bad → fix listing content
+      if (ctrOk && crOk && !roasOk) return 'fix_roas'; // both ok but ROAS bad → fix bid/price
+      return 'fix_ctr';                               // catch-all: CTR bad + CR bad
+    }
+
+    const IMPR_META = {
+      top:       { label: 'Top performer',       cls: 'badge-top',  text: 'Duy trì & nhân bản sang listing khác' },
+      quick_win: { label: 'Quick win',            cls: 'badge-qw',   text: 'Fix thumbnail/title — buyer đã muốn mua khi vào' },
+      fix_cr:    { label: 'Fix CR',               cls: 'badge-cr',   text: 'Cải thiện nội dung listing: hình, giá, keywords' },
+      fix_roas:  { label: 'Fix ROAS',             cls: 'badge-roas', text: 'Xem lại bid quảng cáo hoặc tăng giá sản phẩm' },
+      fix_ctr:   { label: 'Fix CTR + CR',         cls: 'badge-all',  text: 'Review toàn diện: thumbnail, title, nội dung, giá' },
+    };
+
+    const PROD_COLOR = { 'baby blanket': 'chip-neu', 'baby onesie': 'badge-qw', 'baby romper': 'chip-ok' };
+
+    function renderImprTable(filter) {
+      const body = document.getElementById('imprTableBody');
+      const counts = { all: LISTINGS.length, top: 0, quick_win: 0, fix_ctr: 0, fix_cr: 0, fix_roas: 0 };
+      LISTINGS.forEach(d => { const c = classifyListing(d); if (counts[c] !== undefined) counts[c]++; });
+
+      // update count badges
+      Object.keys(counts).forEach(k => {
+        const el = document.getElementById('cnt-' + k);
+        if (el) el.textContent = '(' + counts[k] + ')';
+      });
+
+      const filtered = filter === 'all' ? LISTINGS : LISTINGS.filter(d => classifyListing(d) === filter);
+      const html = filtered.map(d => {
+        const cls = classifyListing(d);
+        const m = IMPR_META[cls];
+        const pc = PROD_COLOR[d.p] || 'chip-neu';
+        const title = d.t.length > 70 ? d.t.slice(0, 68) + '…' : d.t;
+        const ctrChip = d.ctr >= 2 ? `<span class="metric-chip chip-ok">${d.ctr}%</span>` : `<span class="metric-chip chip-warn">${d.ctr}%</span>`;
+        const crChip  = d.cr  >= 4 ? `<span class="metric-chip chip-ok">${d.cr}%</span>`  : `<span class="metric-chip chip-warn">${d.cr}%</span>`;
+        const roasChip= d.roas>= 2 ? `<span class="metric-chip chip-ok">${d.roas}x</span>` : `<span class="metric-chip chip-neu">${d.roas}x</span>`;
+        return `<tr>
+          <td style="color:var(--charcoal)">${title}</td>
+          <td><span class="metric-chip ${pc}" style="font-size:0.70rem">${d.p}</span></td>
+          <td style="text-align:center">${ctrChip}</td>
+          <td style="text-align:center">${crChip}</td>
+          <td style="text-align:center">${roasChip}</td>
+          <td><span class="impr-badge ${m.cls}">${m.label}</span><br><span style="font-size:0.76rem;color:var(--stone);line-height:1.4">${m.text}</span></td>
+          <td><a href="${d.l}" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none;white-space:nowrap">Xem ↗</a></td>
+        </tr>`;
+      }).join('');
+      body.innerHTML = html;
+      document.getElementById('imprCount').textContent = `Hiển thị ${filtered.length} / 128 listings`;
+    }
+
+    document.getElementById('imprFilters').addEventListener('click', e => {
+      const btn = e.target.closest('.impr-filter');
+      if (!btn) return;
+      document.querySelectorAll('.impr-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderImprTable(btn.dataset.filter);
     });
   </script>
 
