@@ -46,6 +46,6 @@ async def health():
     return {"status": "ok", "env": settings.APP_ENV}
 
 # Serve frontend static files (index.html, css/, js/) — must be AFTER API routes
-_frontend_dir = Path(__file__).resolve().parents[2].parent
+_frontend_dir = Path(__file__).resolve().parents[2]
 if (_frontend_dir / "index.html").exists():
     app.mount("/", StaticFiles(directory=str(_frontend_dir), html=True), name="frontend")
