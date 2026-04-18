@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from .core.config import get_settings
 from .core.database import create_tables, AsyncSessionLocal
 from .api.routes import listings, market, performance, internal
@@ -42,3 +44,8 @@ app.include_router(internal.router, prefix="/api/v1")
 @app.get("/health")
 async def health():
     return {"status": "ok", "env": settings.APP_ENV}
+
+# Serve frontend static files (index.html, css/, js/) — must be AFTER API routes
+_frontend_dir = Path(__file__).resolve().parents[2].parent
+if (_frontend_dir / "index.html").exists():
+    app.mount("/", StaticFiles(directory=str(_frontend_dir), html=True), name="frontend")
