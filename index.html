@@ -2824,6 +2824,40 @@
       }
     }
 
+    // ── Retry Extract from History ───────────────────
+    async function importRetryExtract(batchId) {
+      const prog = document.getElementById('importProgress');
+      prog.style.display = '';
+      prog.style.color = '';
+      prog.textContent = 'Retrying extraction for ' + batchId + '...';
+      try {
+        const res = await fetch(API_BASE + '/extract?batch_id=' + batchId, { method: 'POST' });
+        if (!res.ok) throw new Error(await res.text());
+        const exData = await res.json();
+        _importBatchId = batchId;
+        _importLR = exData.listing_report || [];
+        _importKW = exData.keyword_report || [];
+        importRenderPreview();
+        prog.textContent = 'Extraction complete — review below.';
+        importLoadHistory();
+      } catch (err) {
+        prog.textContent = 'Retry failed: ' + err.message;
+        prog.style.color = '#b53333';
+      }
+    }
+
+    // ── Discard from History ──────────────────────────
+    async function importDiscardHistory(batchId) {
+      if (!confirm('Discard batch ' + batchId + '? Raw images will be deleted.')) return;
+      try {
+        const res = await fetch(API_BASE + '/discard?batch_id=' + batchId, { method: 'POST' });
+        if (!res.ok) throw new Error(await res.text());
+        importLoadHistory();
+      } catch (err) {
+        alert('Discard failed: ' + err.message);
+      }
+    }
+
     // ── Load History ──────────────────────────────────
     async function importLoadHistory() {
       try {
@@ -2839,9 +2873,14 @@
           const statusCls = b.status === 'confirmed' ? 'chip-ok' : b.status === 'rolled_back' ? 'chip-warn' : 'chip-neu';
           const created = b.created_at ? new Date(b.created_at).toLocaleString('vi-VN') : '';
           const confirmed = b.confirmed_at ? new Date(b.confirmed_at).toLocaleString('vi-VN') : '';
-          const actions = b.status === 'confirmed'
-            ? `<button onclick="importRollback('${b.batch_id}')" style="font-size:0.72rem;color:var(--terracotta);background:none;border:1px solid var(--terracotta);border-radius:4px;padding:2px 8px;cursor:pointer">Rollback</button>`
-            : '';
+          let actions = '';
+          const btnStyle = 'font-size:0.72rem;background:none;border-radius:4px;padding:2px 8px;cursor:pointer;';
+          if (b.status === 'confirmed') {
+            actions = `<button onclick="importRollback('${b.batch_id}')" style="${btnStyle}color:var(--terracotta);border:1px solid var(--terracotta)">Rollback</button>`;
+          } else if (b.status === 'uploaded' || b.status === 'extracted') {
+            actions = `<button onclick="importRetryExtract('${b.batch_id}')" style="${btnStyle}color:var(--charcoal);border:1px solid var(--border-warm)">Retry</button> `
+                    + `<button onclick="importDiscardHistory('${b.batch_id}')" style="${btnStyle}color:var(--terracotta);border:1px solid var(--terracotta)">Discard</button>`;
+          }
           return `<tr>
             <td style="font-family:var(--font-mono);font-size:0.76rem">${b.batch_id}</td>
             <td><span class="metric-chip ${statusCls}" style="font-size:0.70rem">${b.status}</span></td>
