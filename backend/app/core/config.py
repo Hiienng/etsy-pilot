@@ -3,8 +3,7 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    # Database (Neon PostgreSQL) — set DATABASE_URL directly OR DB_TOKEN
-    DB_TOKEN: str = ""
+    # Database (Neon PostgreSQL)
     DATABASE_URL: str = ""
 
     # Claude API — optional if Claude features are not used
@@ -28,18 +27,20 @@ class Settings(BaseSettings):
     def async_db_url(self) -> str:
         """Build asyncpg-compatible URL. SSL is passed via connect_args, not URL param."""
         import re
-        url = self.DATABASE_URL or f"postgresql+asyncpg://{self.DB_TOKEN}"
+        url = self.DATABASE_URL
         # Normalize driver prefix
         url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
         url = url.replace("postgres://", "postgresql+asyncpg://", 1)
-        # Strip SSL params from URL — handled via connect_args in database.py
+        # Strip params unsupported by asyncpg — SSL handled via connect_args
         url = re.sub(r"[?&]sslmode=[^&]*", "", url)
         url = re.sub(r"[?&]ssl=[^&]*", "", url)
+        url = re.sub(r"[?&]channel_binding=[^&]*", "", url)
         return url
 
     class Config:
-        env_file = ".env"
+        env_file = "../../.env"
         env_file_encoding = "utf-8"
+        extra = "ignore"
 
 
 @lru_cache

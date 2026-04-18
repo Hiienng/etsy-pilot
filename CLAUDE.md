@@ -45,7 +45,7 @@ nguyenphamdieuhien.online/
 - Pydantic schemas (request/response) → `backend/app/schemas/`
 - Config tập trung tại `backend/app/core/config.py` — dùng `get_settings()` (lru_cache)
 - DB connection tại `backend/app/core/database.py` — dùng `get_db()` dependency
-- **DB_TOKEN** đọc từ `.env` — không hardcode connection string trong code
+- **DATABASE_URL** đọc từ `.env` — không hardcode connection string trong code
 - Claude API calls tập trung tại `backend/app/services/claude_service.py`
 
 ### MODEL (`model/`)
@@ -72,8 +72,7 @@ nguyenphamdieuhien.online/
 
 | Biến | Dùng cho | Nơi đọc |
 |---|---|---|
-| `DB_TOKEN` | Neon PostgreSQL connection | `core/config.py` |
-| `DATABASE_URL` | Full async URL (optional, override DB_TOKEN) | `core/config.py` |
+| `DATABASE_URL` | Neon PostgreSQL connection string | `core/config.py` |
 | `ANTHROPIC_API_KEY` | Claude API | `services/claude_service.py` |
 | `CLAUDE_MODEL` | Model ID (default: `claude-sonnet-4-6`) | `core/config.py` |
 | `APP_ENV` | `development` / `production` | `core/config.py` |

@@ -23,7 +23,7 @@ model/weights/
 *.pth
 *.onnx
 data/processed/
-data/raw/*.png
+data/raw/**/*.png
 data/raw/done/
 
 # ─── Personal / Legacy ───────────────────────────────────────────────────────
