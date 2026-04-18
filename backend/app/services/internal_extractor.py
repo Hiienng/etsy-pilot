@@ -1,11 +1,11 @@
 """
-Claude Vision extractor for Etsy Ads dashboard screenshots.
+Gemini Vision extractor for Etsy Ads dashboard screenshots.
 
 Two screenshot types:
   1. Listing performance (summary header + daily table)
   2. Keyword performance (keyword × metrics table)
 
-Claude auto-classifies the type and returns structured JSON.
+Gemini auto-classifies the type and returns structured JSON.
 """
 import asyncio
 import base64
@@ -13,11 +13,11 @@ import json
 import re
 from pathlib import Path
 
-import anthropic
+import google.generativeai as genai
 
 from ..core.config import get_settings
 
-# ── Unified prompt — Claude classifies automatically ────────────────────────
+# ── Unified prompt — Gemini classifies automatically ──────────────────────────
 
 EXTRACTION_PROMPT = """You are an AI that reads Etsy Ads dashboard screenshots and extracts structured data.
 
@@ -89,31 +89,28 @@ IMPORTANT:
 """
 
 
-async def _call_claude_vision(image_path: str, settings=None) -> dict | None:
-    """Send one image to Claude Vision, return parsed JSON."""
+async def _call_gemini_vision(image_path: str, settings=None) -> dict | None:
+    """Send one image to Gemini Vision, return parsed JSON."""
     if settings is None:
         settings = get_settings()
 
-    path = Path(image_path)
-    media_type = "image/png" if path.suffix.lower() == ".png" else "image/jpeg"
-    image_data = base64.b64encode(path.read_bytes()).decode("utf-8")
+    genai.configure(api_key=settings.GEMINI_API_KEY)
+    model = genai.GenerativeModel(settings.GEMINI_MODEL)
 
-    client = anthropic.AsyncAnthropic(api_key=settings.ANTHROPIC_API_KEY)
+    path = Path(image_path)
+    image_data = path.read_bytes()
+    mime_type = "image/png" if path.suffix.lower() == ".png" else "image/jpeg"
 
     try:
-        response = await client.messages.create(
-            model=settings.CLAUDE_MODEL,
-            max_tokens=4096,
-            messages=[{
-                "role": "user",
-                "content": [
-                    {"type": "image", "source": {"type": "base64", "media_type": media_type, "data": image_data}},
-                    {"type": "text", "text": EXTRACTION_PROMPT},
-                ],
-            }],
+        response = await asyncio.to_thread(
+            model.generate_content,
+            [
+                {"mime_type": mime_type, "data": image_data},
+                EXTRACTION_PROMPT,
+            ],
         )
 
-        text = response.content[0].text.strip()
+        text = response.text.strip()
         # Strip markdown code fences if present
         text = re.sub(r"^```(?:json)?\s*", "", text)
         text = re.sub(r"\s*```$", "", text)
@@ -150,7 +147,7 @@ async def extract_batch(
     async def _process(idx: int, path: str):
         nonlocal done
         async with sem:
-            result = await _call_claude_vision(path, settings)
+            result = await _call_gemini_vision(path, settings)
             results[idx] = result
             done += 1
             if on_progress:
@@ -273,8 +270,6 @@ def _merge_results(
             })
 
     # Add batch_id + period to keyword rows
-    # Period = "30 days ending on screenshot date" — use the period from
-    # the first listing group, or leave blank for user to confirm
     default_period = ""
     if listing_groups:
         first = next(iter(listing_groups.values()))

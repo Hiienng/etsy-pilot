@@ -6,9 +6,9 @@ class Settings(BaseSettings):
     # Database (Neon PostgreSQL)
     DATABASE_URL: str = ""
 
-    # Claude API — optional if Claude features are not used
-    ANTHROPIC_API_KEY: str = ""
-    CLAUDE_MODEL: str = "claude-sonnet-4-6"
+    # AI Vision — Gemini for screenshot extraction
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.0-flash"
 
     # App
     APP_ENV: str = "development"
