@@ -972,6 +972,7 @@
           <button class="perf-pill active" data-perf="performance">Listing Performance</button>
           <button class="perf-pill"        data-perf="improvement">Listing Improvement</button>
           <button class="perf-pill"        data-perf="scaleup">Listing Scale Up</button>
+          <button class="perf-pill"        data-perf="import">Internal Import</button>
         </div>
       </div>
 
@@ -1371,6 +1372,105 @@
         </div>
 
       </div><!-- /perf-sub-scaleup -->
+
+      <!-- ── Sub-panel: Internal Import ──────────── -->
+      <div id="perf-sub-import" style="display:none">
+
+        <h2 class="section-heading" style="margin-bottom:6px">Internal Ads Import</h2>
+        <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone);margin-bottom:24px">
+          Upload Etsy Ads screenshots &rarr; Claude Vision extract &rarr; Review &rarr; Import DB
+        </p>
+
+        <!-- Section 1: Upload Zone -->
+        <div class="chart-card" id="importUploadZone">
+          <p class="hub-section-label" style="margin-bottom:12px">1. Upload screenshots</p>
+          <div id="importDropZone" style="border:2px dashed var(--border-cream);border-radius:12px;padding:40px 20px;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s">
+            <p style="font-family:var(--font-serif);font-size:1.1rem;color:var(--charcoal);margin-bottom:6px">Drag &amp; drop screenshots here</p>
+            <p style="font-size:0.78rem;color:var(--stone)">or click to browse &middot; PNG, JPG &middot; Max 100 files</p>
+            <input type="file" id="importFileInput" multiple accept="image/png,image/jpeg,image/webp" style="display:none">
+          </div>
+          <div id="importFileInfo" style="display:none;margin-top:14px">
+            <p style="font-family:var(--font-sans);font-size:0.85rem;color:var(--charcoal)"><strong id="importFileCount">0</strong> files selected &middot; <span id="importFileSize">0 KB</span></p>
+            <div id="importThumbs" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;max-height:80px;overflow:hidden"></div>
+          </div>
+          <div style="margin-top:18px;display:flex;align-items:center;gap:16px">
+            <button id="importExtractBtn" onclick="importStartUpload()" disabled style="font-family:var(--font-sans);font-size:0.88rem;font-weight:500;color:var(--ivory);background:var(--terracotta);border:none;border-radius:8px;padding:10px 24px;cursor:pointer;opacity:0.5">Upload &amp; Extract</button>
+            <span id="importProgress" style="font-size:0.78rem;color:var(--stone);display:none"></span>
+          </div>
+        </div>
+
+        <!-- Section 2: Preview (hidden until extraction complete) -->
+        <div id="importPreviewSection" style="display:none;margin-top:24px">
+          <p class="hub-section-label" style="margin-bottom:8px">2. Review extracted data</p>
+          <div class="chart-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <p style="font-family:var(--font-sans);font-size:0.85rem;color:var(--charcoal)">
+                Batch: <strong id="importBatchId"></strong> &middot;
+                <span id="importPreviewCounts"></span>
+              </p>
+            </div>
+
+            <!-- Listing Report Preview -->
+            <p style="font-size:0.78rem;font-weight:500;color:var(--charcoal);margin-bottom:6px">Listing Report</p>
+            <div class="impr-table-wrap" style="margin-bottom:16px">
+              <table class="impr-table" style="font-size:0.76rem">
+                <thead>
+                  <tr>
+                    <th>Listing ID</th><th>Title</th><th>VM</th><th>Price</th>
+                    <th>Period</th><th style="text-align:right">Views</th><th style="text-align:right">Clicks</th>
+                    <th style="text-align:right">Orders</th><th style="text-align:right">Revenue</th>
+                    <th style="text-align:right">Spend</th><th style="text-align:right">ROAS</th>
+                  </tr>
+                </thead>
+                <tbody id="importLRBody"></tbody>
+              </table>
+            </div>
+
+            <!-- Keyword Report Preview -->
+            <p style="font-size:0.78rem;font-weight:500;color:var(--charcoal);margin-bottom:6px">Keyword Report</p>
+            <div class="impr-table-wrap" style="margin-bottom:16px">
+              <table class="impr-table" style="font-size:0.76rem">
+                <thead>
+                  <tr>
+                    <th>Listing ID</th><th>Keyword</th><th>VM</th><th>Period</th>
+                    <th style="text-align:right">Views</th><th style="text-align:right">Clicks</th>
+                    <th>Click Rate</th><th style="text-align:right">Spend</th>
+                    <th style="text-align:right">Revenue</th><th style="text-align:right">ROAS</th>
+                    <th style="text-align:right">Orders</th>
+                  </tr>
+                </thead>
+                <tbody id="importKWBody"></tbody>
+              </table>
+            </div>
+
+            <div style="display:flex;gap:12px;justify-content:flex-end">
+              <button onclick="importDiscard()" style="font-family:var(--font-sans);font-size:0.85rem;color:var(--stone);background:var(--warm-sand);border:1px solid var(--border-cream);border-radius:8px;padding:8px 20px;cursor:pointer">Discard</button>
+              <button onclick="importConfirm()" style="font-family:var(--font-sans);font-size:0.85rem;font-weight:500;color:var(--ivory);background:var(--terracotta);border:none;border-radius:8px;padding:8px 24px;cursor:pointer">Confirm Import</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Import History -->
+        <div style="margin-top:28px">
+          <p class="hub-section-label" style="margin-bottom:8px">Import History</p>
+          <div class="chart-card">
+            <div class="impr-table-wrap">
+              <table class="impr-table" style="font-size:0.78rem">
+                <thead>
+                  <tr>
+                    <th>Batch ID</th><th>Status</th><th>Listings</th><th>Keywords</th>
+                    <th>Created</th><th>Confirmed</th><th></th>
+                  </tr>
+                </thead>
+                <tbody id="importHistoryBody">
+                  <tr><td colspan="7" style="text-align:center;color:var(--stone);padding:16px">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /perf-sub-import -->
 
     </section>
 
@@ -2298,6 +2398,7 @@
         document.getElementById('perf-sub-performance').style.display = target === 'performance' ? '' : 'none';
         document.getElementById('perf-sub-improvement').style.display  = target === 'improvement'  ? '' : 'none';
         document.getElementById('perf-sub-scaleup').style.display      = target === 'scaleup'      ? '' : 'none';
+        document.getElementById('perf-sub-import').style.display        = target === 'import'       ? '' : 'none';
         if (target === 'improvement' && !window._imprRendered) {
           window._imprRendered = true;
           loadListingsDashboard();
@@ -2306,6 +2407,10 @@
           window._scaleupRendered = true;
           requestAnimationFrame(initScaleupChart);
           renderScaleupTable('all');
+        }
+        if (target === 'import' && !window._importRendered) {
+          window._importRendered = true;
+          importLoadHistory();
         }
       });
     });
@@ -2534,6 +2639,237 @@
       btn.classList.add('active');
       renderScaleupTable(btn.dataset.sf);
     });
+  </script>
+
+  <!-- ── Internal Import ─────────────────────────────── -->
+  <script>
+    const API_BASE = '/api/v1/internal';
+    let _importBatchId = null;
+    let _importLR = [];
+    let _importKW = [];
+    let _importFiles = [];
+
+    // ── Drag & Drop + File Input ──────────────────────
+    const dropZone = document.getElementById('importDropZone');
+    const fileInput = document.getElementById('importFileInput');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--terracotta)'; dropZone.style.background = 'rgba(201,100,66,0.04)'; });
+    dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = 'var(--border-cream)'; dropZone.style.background = ''; });
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.style.borderColor = 'var(--border-cream)';
+      dropZone.style.background = '';
+      if (e.dataTransfer.files.length) importSetFiles(Array.from(e.dataTransfer.files));
+    });
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) importSetFiles(Array.from(fileInput.files));
+    });
+
+    function importSetFiles(files) {
+      const allowed = ['image/png', 'image/jpeg', 'image/webp'];
+      _importFiles = files.filter(f => allowed.includes(f.type)).slice(0, 100);
+      if (!_importFiles.length) return;
+
+      const totalSize = _importFiles.reduce((s, f) => s + f.size, 0);
+      const sizeStr = totalSize > 1048576 ? (totalSize / 1048576).toFixed(1) + ' MB' : (totalSize / 1024).toFixed(0) + ' KB';
+      document.getElementById('importFileCount').textContent = _importFiles.length;
+      document.getElementById('importFileSize').textContent = sizeStr;
+
+      // Thumbnails
+      const thumbs = document.getElementById('importThumbs');
+      thumbs.innerHTML = '';
+      _importFiles.slice(0, 12).forEach(f => {
+        const url = URL.createObjectURL(f);
+        const img = document.createElement('img');
+        img.src = url;
+        img.style.cssText = 'width:48px;height:48px;object-fit:cover;border-radius:6px;border:1px solid var(--border-cream)';
+        thumbs.appendChild(img);
+      });
+      if (_importFiles.length > 12) {
+        const more = document.createElement('span');
+        more.textContent = '+' + (_importFiles.length - 12);
+        more.style.cssText = 'display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:6px;background:var(--warm-sand);font-size:0.75rem;color:var(--stone)';
+        thumbs.appendChild(more);
+      }
+
+      document.getElementById('importFileInfo').style.display = '';
+      const btn = document.getElementById('importExtractBtn');
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    }
+
+    // ── Upload & Extract ──────────────────────────────
+    async function importStartUpload() {
+      if (!_importFiles.length) return;
+      const btn = document.getElementById('importExtractBtn');
+      const prog = document.getElementById('importProgress');
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.textContent = 'Uploading...';
+      prog.style.display = '';
+      prog.textContent = 'Uploading files...';
+
+      try {
+        // Step 1: Upload
+        const fd = new FormData();
+        _importFiles.forEach(f => fd.append('files', f));
+        const upRes = await fetch(API_BASE + '/upload', { method: 'POST', body: fd });
+        if (!upRes.ok) throw new Error('Upload failed: ' + (await upRes.text()));
+        const upData = await upRes.json();
+        _importBatchId = upData.batch_id;
+        prog.textContent = 'Extracting with Claude Vision... (this may take a minute)';
+
+        // Step 2: Extract
+        const exRes = await fetch(API_BASE + '/extract?batch_id=' + _importBatchId, { method: 'POST' });
+        if (!exRes.ok) throw new Error('Extract failed: ' + (await exRes.text()));
+        const exData = await exRes.json();
+
+        _importLR = exData.listing_report || [];
+        _importKW = exData.keyword_report || [];
+        importRenderPreview();
+
+      } catch (err) {
+        prog.textContent = 'Error: ' + err.message;
+        prog.style.color = '#b53333';
+      } finally {
+        btn.textContent = 'Upload & Extract';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      }
+    }
+
+    // ── Render Preview Tables ─────────────────────────
+    function importRenderPreview() {
+      document.getElementById('importBatchId').textContent = _importBatchId;
+      document.getElementById('importPreviewCounts').textContent =
+        _importLR.length + ' listing rows \u00b7 ' + _importKW.length + ' keyword rows';
+
+      // Listing report — show summary rows first, then daily (max 50 visible)
+      const lrHtml = _importLR.slice(0, 50).map(r => `<tr>
+        <td>${r.listing_id || ''}</td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.title || ''}</td>
+        <td>${r.no_vm || ''}</td>
+        <td style="text-align:right">${r.price != null ? '$' + r.price : ''}</td>
+        <td>${r.period || ''}</td>
+        <td style="text-align:right">${r.views || 0}</td>
+        <td style="text-align:right">${r.clicks || 0}</td>
+        <td style="text-align:right">${r.orders || 0}</td>
+        <td style="text-align:right">${r.revenue ? '$' + Number(r.revenue).toFixed(2) : '0'}</td>
+        <td style="text-align:right">${r.spend ? '$' + Number(r.spend).toFixed(2) : '0'}</td>
+        <td style="text-align:right;font-weight:500;color:${r.roas >= 2 ? '#4a8c60' : r.roas > 0 ? 'var(--charcoal)' : 'var(--stone)'}">${Number(r.roas || 0).toFixed(2)}</td>
+      </tr>`).join('');
+      document.getElementById('importLRBody').innerHTML = lrHtml || '<tr><td colspan="11" style="text-align:center;color:var(--stone);padding:12px">No listing data extracted</td></tr>';
+
+      // Keyword report
+      const kwHtml = _importKW.slice(0, 50).map(r => `<tr>
+        <td>${r.listing_id || ''}</td>
+        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.keyword || ''}</td>
+        <td>${r.no_vm || ''}</td>
+        <td>${r.period || ''}</td>
+        <td style="text-align:right">${r.views || 0}</td>
+        <td style="text-align:right">${r.clicks || 0}</td>
+        <td>${r.click_rate || '0%'}</td>
+        <td style="text-align:right">${r.spend ? '$' + Number(r.spend).toFixed(2) : '0'}</td>
+        <td style="text-align:right">${r.revenue ? '$' + Number(r.revenue).toFixed(2) : '0'}</td>
+        <td style="text-align:right">${Number(r.roas || 0).toFixed(2)}</td>
+        <td style="text-align:right">${r.orders || 0}</td>
+      </tr>`).join('');
+      document.getElementById('importKWBody').innerHTML = kwHtml || '<tr><td colspan="11" style="text-align:center;color:var(--stone);padding:12px">No keyword data extracted</td></tr>';
+
+      document.getElementById('importPreviewSection').style.display = '';
+    }
+
+    // ── Confirm Import ────────────────────────────────
+    async function importConfirm() {
+      if (!_importBatchId) return;
+      try {
+        const res = await fetch(API_BASE + '/confirm', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ batch_id: _importBatchId, listing_report: _importLR, keyword_report: _importKW }),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+        alert('Import successful! ' + data.rows.listing + ' listing rows, ' + data.rows.keyword + ' keyword rows.');
+        importReset();
+        importLoadHistory();
+      } catch (err) {
+        alert('Confirm failed: ' + err.message);
+      }
+    }
+
+    // ── Discard ───────────────────────────────────────
+    async function importDiscard() {
+      if (!_importBatchId) return;
+      if (!confirm('Discard this batch? Raw images will be deleted.')) return;
+      try {
+        await fetch(API_BASE + '/discard?batch_id=' + _importBatchId, { method: 'POST' });
+        importReset();
+        importLoadHistory();
+      } catch (err) {
+        alert('Discard failed: ' + err.message);
+      }
+    }
+
+    // ── Rollback ──────────────────────────────────────
+    async function importRollback(batchId) {
+      if (!confirm('Rollback batch ' + batchId + '? DB rows will be deleted.')) return;
+      try {
+        const res = await fetch(API_BASE + '/rollback?batch_id=' + batchId, { method: 'POST' });
+        if (!res.ok) throw new Error(await res.text());
+        importLoadHistory();
+      } catch (err) {
+        alert('Rollback failed: ' + err.message);
+      }
+    }
+
+    // ── Load History ──────────────────────────────────
+    async function importLoadHistory() {
+      try {
+        const res = await fetch(API_BASE + '/history');
+        if (!res.ok) throw new Error('Failed to load history');
+        const items = await res.json();
+        const body = document.getElementById('importHistoryBody');
+        if (!items.length) {
+          body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--stone);padding:16px">No import history yet</td></tr>';
+          return;
+        }
+        body.innerHTML = items.map(b => {
+          const statusCls = b.status === 'confirmed' ? 'chip-ok' : b.status === 'rolled_back' ? 'chip-warn' : 'chip-neu';
+          const created = b.created_at ? new Date(b.created_at).toLocaleString('vi-VN') : '';
+          const confirmed = b.confirmed_at ? new Date(b.confirmed_at).toLocaleString('vi-VN') : '';
+          const actions = b.status === 'confirmed'
+            ? `<button onclick="importRollback('${b.batch_id}')" style="font-size:0.72rem;color:var(--terracotta);background:none;border:1px solid var(--terracotta);border-radius:4px;padding:2px 8px;cursor:pointer">Rollback</button>`
+            : '';
+          return `<tr>
+            <td style="font-family:var(--font-mono);font-size:0.76rem">${b.batch_id}</td>
+            <td><span class="metric-chip ${statusCls}" style="font-size:0.70rem">${b.status}</span></td>
+            <td style="text-align:center">${b.listing_count || 0}</td>
+            <td style="text-align:center">${b.keyword_count || 0}</td>
+            <td style="font-size:0.76rem">${created}</td>
+            <td style="font-size:0.76rem">${confirmed}</td>
+            <td>${actions}</td>
+          </tr>`;
+        }).join('');
+      } catch (err) {
+        document.getElementById('importHistoryBody').innerHTML =
+          '<tr><td colspan="7" style="text-align:center;color:var(--stone);padding:16px">Could not load history</td></tr>';
+      }
+    }
+
+    // ── Reset UI ──────────────────────────────────────
+    function importReset() {
+      _importBatchId = null;
+      _importLR = [];
+      _importKW = [];
+      _importFiles = [];
+      document.getElementById('importFileInput').value = '';
+      document.getElementById('importFileInfo').style.display = 'none';
+      document.getElementById('importPreviewSection').style.display = 'none';
+      document.getElementById('importProgress').style.display = 'none';
+      document.getElementById('importProgress').style.color = '';
+    }
   </script>
 
   <!-- ── Auth Script ───────────────────────────────── -->
