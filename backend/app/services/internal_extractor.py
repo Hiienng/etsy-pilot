@@ -8,14 +8,19 @@ Two screenshot types:
 Gemini auto-classifies the type and returns structured JSON.
 """
 import asyncio
-import base64
 import json
+import logging
 import re
 from pathlib import Path
 
 import google.generativeai as genai
 
 from ..core.config import get_settings
+
+logger = logging.getLogger(__name__)
+
+MAX_RETRIES = 3
+RETRY_BASE_DELAY = 2  # seconds — exponential backoff: 2s, 4s, 8s
 
 # ── Unified prompt — Gemini classifies automatically ──────────────────────────
 
@@ -90,7 +95,7 @@ IMPORTANT:
 
 
 async def _call_gemini_vision(image_path: str, settings=None) -> dict | None:
-    """Send one image to Gemini Vision, return parsed JSON."""
+    """Send one image to Gemini Vision with retry + exponential backoff."""
     if settings is None:
         settings = get_settings()
 
@@ -101,34 +106,50 @@ async def _call_gemini_vision(image_path: str, settings=None) -> dict | None:
     image_data = path.read_bytes()
     mime_type = "image/png" if path.suffix.lower() == ".png" else "image/jpeg"
 
-    try:
-        response = await asyncio.to_thread(
-            model.generate_content,
-            [
-                {"mime_type": mime_type, "data": image_data},
-                EXTRACTION_PROMPT,
-            ],
-        )
+    last_error = None
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            response = await asyncio.to_thread(
+                model.generate_content,
+                [
+                    {"mime_type": mime_type, "data": image_data},
+                    EXTRACTION_PROMPT,
+                ],
+            )
 
-        text = response.text.strip()
-        # Strip markdown code fences if present
-        text = re.sub(r"^```(?:json)?\s*", "", text)
-        text = re.sub(r"\s*```$", "", text)
+            text = response.text.strip()
+            # Strip markdown code fences if present
+            text = re.sub(r"^```(?:json)?\s*", "", text)
+            text = re.sub(r"\s*```$", "", text)
 
-        json_match = re.search(r"\{[\s\S]*\}", text)
-        if json_match:
-            return json.loads(json_match.group())
-        return json.loads(text)
+            json_match = re.search(r"\{[\s\S]*\}", text)
+            if json_match:
+                return json.loads(json_match.group())
+            return json.loads(text)
 
-    except json.JSONDecodeError:
-        return None
-    except Exception:
-        return None
+        except json.JSONDecodeError as e:
+            last_error = e
+            logger.warning(
+                "Gemini returned invalid JSON for %s (attempt %d/%d): %s",
+                path.name, attempt, MAX_RETRIES, e,
+            )
+        except Exception as e:
+            last_error = e
+            logger.warning(
+                "Gemini API error for %s (attempt %d/%d): %s",
+                path.name, attempt, MAX_RETRIES, e,
+            )
+
+        if attempt < MAX_RETRIES:
+            delay = RETRY_BASE_DELAY * (2 ** (attempt - 1))
+            await asyncio.sleep(delay)
+
+    logger.error("All %d retries failed for %s: %s", MAX_RETRIES, path.name, last_error)
+    return None
 
 
 async def extract_batch(
     image_paths: list[str],
-    batch_id: str,
     on_progress=None,
 ) -> tuple[list[dict], list[dict]]:
     """
@@ -156,12 +177,11 @@ async def extract_batch(
     tasks = [_process(i, p) for i, p in enumerate(image_paths)]
     await asyncio.gather(*tasks)
 
-    return _merge_results(results, batch_id)
+    return _merge_results(results)
 
 
 def _merge_results(
     raw_results: list[dict | None],
-    batch_id: str,
 ) -> tuple[list[dict], list[dict]]:
     """
     Merge extracted data from multiple screenshots.
@@ -245,7 +265,6 @@ def _merge_results(
         s = grp["summary"]
         listing_rows.append({
             **base,
-            "batch_id": batch_id,
             "period": grp["period"],
             "views": s.get("views", 0),
             "clicks": s.get("clicks", 0),
@@ -259,7 +278,6 @@ def _merge_results(
         for date_key, metrics in sorted(grp["daily"].items()):
             listing_rows.append({
                 **base,
-                "batch_id": batch_id,
                 "period": date_key,
                 "views": metrics.get("views", 0),
                 "clicks": metrics.get("clicks", 0),
@@ -269,14 +287,13 @@ def _merge_results(
                 "roas": metrics.get("roas", 0),
             })
 
-    # Add batch_id + period to keyword rows
+    # Set default period on keyword rows from listing data
     default_period = ""
     if listing_groups:
         first = next(iter(listing_groups.values()))
         default_period = first.get("period", "")
 
     for kw in keyword_rows:
-        kw["batch_id"] = batch_id
         kw.setdefault("period", default_period)
 
     return listing_rows, keyword_rows

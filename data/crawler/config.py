@@ -46,6 +46,9 @@ SEARCH_TAGS = [
     "memorial gift",
 ]
 
+# PostgreSQL (Neon) — shared with backend
+DATABASE_URL = os.environ.get("DATABASE_URL", "")
+
 # Output
-OUTPUT_FORMAT = ["json", "csv"]  # json, csv, sqlite
-DB_PATH = "output/etsy_products.db"
+OUTPUT_FORMAT = ["json", "csv"]  # json, csv, postgres
+DB_PATH = "output/etsy_products.db"  # legacy SQLite fallback

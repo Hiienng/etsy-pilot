@@ -1,13 +1,16 @@
 """
 Storage Module
-Lưu dữ liệu đã extract vào JSON, CSV, SQLite
+Lưu dữ liệu đã extract vào JSON, CSV, PostgreSQL (Neon).
+SQLite giữ lại làm fallback nếu DATABASE_URL không có.
 """
 import json
 import csv
 import sqlite3
+import re as _re
 from pathlib import Path
 from datetime import datetime
-from config import OUTPUT_DIR, DB_PATH
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+from config import OUTPUT_DIR, DB_PATH, DATABASE_URL
 
 
 def ensure_output_dir():
@@ -191,6 +194,119 @@ def save_sqlite(products: list[dict], db_path: str = None):
     return db_path
 
 
+def _pg_dsn() -> str | None:
+    """Convert DATABASE_URL to psycopg2-compatible DSN. Returns None if unavailable."""
+    url = DATABASE_URL
+    if not url:
+        return None
+    # Normalize prefix
+    url = url.replace("postgresql+asyncpg://", "postgresql://", 1)
+    url = url.replace("postgres://", "postgresql://", 1)
+    # Strip params unsupported by psycopg2 (channel_binding)
+    parsed = urlparse(url)
+    qs = parse_qs(parsed.query)
+    qs.pop("channel_binding", None)
+    if "sslmode" not in qs:
+        qs["sslmode"] = ["require"]
+    clean_query = urlencode({k: v[0] for k, v in qs.items()})
+    return urlunparse(parsed._replace(query=clean_query))
+
+
+def save_postgres(products: list[dict]):
+    """Lưu vào Neon PostgreSQL — bảng market_product (shared với backend)."""
+    if not products:
+        print("[Storage] Không có dữ liệu để lưu PostgreSQL")
+        return
+
+    dsn = _pg_dsn()
+    if not dsn:
+        print("[Storage] DATABASE_URL chưa cấu hình — bỏ qua PostgreSQL, dùng SQLite fallback")
+        return save_sqlite(products)
+
+    try:
+        import psycopg2
+    except ImportError:
+        print("[Storage] psycopg2 chưa cài — pip install psycopg2-binary. Fallback SQLite.")
+        return save_sqlite(products)
+
+    conn = psycopg2.connect(dsn)
+    cursor = conn.cursor()
+
+    # Ensure table exists (mirrors backend/app/models/market_product.py)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS market_product (
+            id SERIAL PRIMARY KEY,
+            batch_id VARCHAR(64),
+            source_screenshot VARCHAR(256),
+            search_tag VARCHAR(128),
+            etsy_best VARCHAR(32),
+            product_type VARCHAR(128),
+            category VARCHAR(128),
+            title TEXT,
+            price INTEGER,
+            original_price INTEGER,
+            discount INTEGER,
+            shop_name VARCHAR(256),
+            rating NUMERIC(3,1),
+            review_count INTEGER,
+            badge VARCHAR(32),
+            is_ad BOOLEAN DEFAULT FALSE,
+            free_shipping BOOLEAN DEFAULT FALSE,
+            image_description TEXT,
+            scroll_position INTEGER,
+            crawled_at TIMESTAMPTZ DEFAULT NOW()
+        )
+    """)
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_mp_search_tag ON market_product(search_tag)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_mp_product_type ON market_product(product_type)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_mp_category ON market_product(category)")
+
+    now = datetime.now().isoformat()
+    for p in (normalize_product(x) for x in products):
+        cursor.execute("""
+            INSERT INTO market_product (
+                batch_id, source_screenshot, search_tag, etsy_best,
+                product_type, category, title, price, original_price, discount,
+                shop_name, rating, review_count, badge, is_ad, free_shipping,
+                image_description, scroll_position, crawled_at
+            ) VALUES (
+                %(batch_id)s, %(source_screenshot)s, %(search_tag)s, %(etsy_best)s,
+                %(product_type)s, %(category)s, %(title)s, %(price)s, %(original_price)s, %(discount)s,
+                %(shop_name)s, %(rating)s, %(review_count)s, %(badge)s, %(is_ad)s, %(free_shipping)s,
+                %(image_description)s, %(scroll_position)s, %(crawled_at)s
+            )
+        """, {
+            "batch_id": p.get("batch_id"),
+            "source_screenshot": p.get("source_screenshot"),
+            "search_tag": p.get("search_tag"),
+            "etsy_best": p.get("etsy_best"),
+            "product_type": p.get("product_type"),
+            "category": p.get("category"),
+            "title": p.get("title"),
+            "price": p.get("price"),
+            "original_price": p.get("original_price"),
+            "discount": p.get("discount"),
+            "shop_name": p.get("shop_name"),
+            "rating": p.get("rating"),
+            "review_count": p.get("review_count"),
+            "badge": p.get("badge"),
+            "is_ad": bool(p.get("is_ad")),
+            "free_shipping": bool(p.get("free_shipping")),
+            "image_description": p.get("image_description"),
+            "scroll_position": p.get("scroll_position"),
+            "crawled_at": now,
+        })
+
+    conn.commit()
+
+    cursor.execute("SELECT COUNT(*) FROM market_product")
+    total = cursor.fetchone()[0]
+    conn.close()
+
+    print(f"[Storage] PostgreSQL saved: market_product (total {total} records)")
+    return dsn
+
+
 def save_all(category_products: dict, timestamp: str = None):
     """
     Lưu tất cả dữ liệu cùng lúc.
@@ -213,8 +329,8 @@ def save_all(category_products: dict, timestamp: str = None):
     # Lưu CSV
     save_csv(all_products, f"etsy_products_{timestamp}.csv")
 
-    # Lưu SQLite
-    save_sqlite(all_products)
+    # Lưu PostgreSQL (fallback SQLite nếu không có DATABASE_URL)
+    save_postgres(all_products)
 
     return {
         "total_products": len(all_products),
@@ -227,17 +343,56 @@ def query_top_products(
     category: str = None,
     limit: int = 20,
     sort_by: str = "rating",
-    db_path: str = None
 ) -> list[dict]:
-    """Query top sản phẩm từ SQLite"""
-    if db_path is None:
-        db_path = DB_PATH
+    """Query top sản phẩm từ PostgreSQL (fallback SQLite)."""
+    dsn = _pg_dsn()
+    if dsn:
+        return _query_postgres(category, limit, sort_by, dsn)
+    return _query_sqlite(category, limit, sort_by)
 
-    if not Path(db_path).exists():
-        print(f"Database chưa tồn tại: {db_path}")
+
+def _query_postgres(category, limit, sort_by, dsn) -> list[dict]:
+    try:
+        import psycopg2
+        import psycopg2.extras
+    except ImportError:
+        return _query_sqlite(category, limit, sort_by)
+
+    conn = psycopg2.connect(dsn)
+    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    where_clause = "WHERE is_ad = FALSE"
+    params = []
+    if category:
+        where_clause += " AND category = %s"
+        params.append(category)
+
+    order_map = {
+        "rating": "rating DESC NULLS LAST, review_count DESC NULLS LAST",
+        "scroll": "scroll_position ASC NULLS LAST",
+        "recent": "crawled_at DESC",
+    }
+    order = order_map.get(sort_by, "scroll_position ASC NULLS LAST")
+    params.append(limit)
+
+    cursor.execute(f"""
+        SELECT * FROM market_product
+        {where_clause}
+        ORDER BY {order}
+        LIMIT %s
+    """, params)
+
+    rows = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return rows
+
+
+def _query_sqlite(category, limit, sort_by) -> list[dict]:
+    if not Path(DB_PATH).exists():
+        print(f"Database chưa tồn tại: {DB_PATH}")
         return []
 
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 

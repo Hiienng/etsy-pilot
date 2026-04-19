@@ -16,3 +16,4 @@ class ImportBatch(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     confirmed_at = Column(DateTime(timezone=True), nullable=True)
     note = Column(Text, nullable=True)
+    error_message = Column(Text, nullable=True)

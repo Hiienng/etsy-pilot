@@ -1384,6 +1384,21 @@
         <!-- Section 1: Upload Zone -->
         <div class="chart-card" id="importUploadZone">
           <p class="hub-section-label" style="margin-bottom:12px">1. Upload screenshots</p>
+
+          <!-- VM Code + Importer inputs -->
+          <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+            <div>
+              <label style="font-family:var(--font-sans);font-size:0.78rem;color:var(--stone);display:block;margin-bottom:4px">VM Code <span style="color:var(--terracotta)">*</span></label>
+              <input type="text" id="importVmCode" placeholder="VM08" maxlength="10"
+                style="font-family:var(--font-mono);font-size:0.88rem;padding:8px 12px;border:1px solid var(--border-cream);border-radius:8px;width:100px;background:var(--ivory);color:var(--charcoal)">
+            </div>
+            <div>
+              <label style="font-family:var(--font-sans);font-size:0.78rem;color:var(--stone);display:block;margin-bottom:4px">Importer</label>
+              <input type="text" id="importImporter" placeholder="Name" maxlength="64"
+                style="font-family:var(--font-sans);font-size:0.88rem;padding:8px 12px;border:1px solid var(--border-cream);border-radius:8px;width:160px;background:var(--ivory);color:var(--charcoal)">
+            </div>
+          </div>
+
           <div id="importDropZone" style="border:2px dashed var(--border-cream);border-radius:12px;padding:40px 20px;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s">
             <p style="font-family:var(--font-serif);font-size:1.1rem;color:var(--charcoal);margin-bottom:6px">Drag &amp; drop screenshots here</p>
             <p style="font-size:0.78rem;color:var(--stone)">or click to browse &middot; PNG, JPG &middot; Max 100 files</p>
@@ -2701,6 +2716,12 @@
     // ── Upload & Extract ──────────────────────────────
     async function importStartUpload() {
       if (!_importFiles.length) return;
+      const vmCode = document.getElementById('importVmCode').value.trim();
+      if (!vmCode) {
+        alert('Vui long nhap VM Code (vd: VM08)');
+        document.getElementById('importVmCode').focus();
+        return;
+      }
       const btn = document.getElementById('importExtractBtn');
       const prog = document.getElementById('importProgress');
       btn.disabled = true;
@@ -2782,11 +2803,18 @@
     // ── Confirm Import ────────────────────────────────
     async function importConfirm() {
       if (!_importBatchId) return;
+      const vmCode = document.getElementById('importVmCode').value.trim();
+      const importer = document.getElementById('importImporter').value.trim() || null;
+      if (!vmCode) {
+        alert('Vui long nhap VM Code truoc khi confirm');
+        document.getElementById('importVmCode').focus();
+        return;
+      }
       try {
         const res = await fetch(API_BASE + '/confirm', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ batch_id: _importBatchId, listing_report: _importLR, keyword_report: _importKW }),
+          body: JSON.stringify({ batch_id: _importBatchId, no_vm: vmCode, importer: importer, listing_report: _importLR, keyword_report: _importKW }),
         });
         if (!res.ok) throw new Error(await res.text());
         const data = await res.json();
@@ -2907,6 +2935,8 @@
       document.getElementById('importPreviewSection').style.display = 'none';
       document.getElementById('importProgress').style.display = 'none';
       document.getElementById('importProgress').style.color = '';
+      document.getElementById('importVmCode').value = '';
+      document.getElementById('importImporter').value = '';
     }
   </script>
 

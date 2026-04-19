@@ -53,6 +53,8 @@ class ExtractResponse(BaseModel):
 # ── Confirm request / response ───────────────────────────
 class ConfirmRequest(BaseModel):
     batch_id: str
+    no_vm: str | None = None
+    importer: str | None = None
     listing_report: list[ListingReportRow]
     keyword_report: list[KeywordReportRow]
 
@@ -78,3 +80,4 @@ class BatchHistoryItem(BaseModel):
     created_at: datetime | None = None
     confirmed_at: datetime | None = None
     note: str | None = None
+    error_message: str | None = None

@@ -17,7 +17,7 @@ from datetime import datetime
 
 import re as _re
 from vision_extractor import extract_products_from_screenshot
-from storage import normalize_product, save_csv, save_json, save_sqlite
+from storage import normalize_product, save_csv, save_json, save_postgres
 from config import GEMINI_API_KEY
 
 
@@ -180,7 +180,7 @@ class EtsyVisionAgent:
 
         csv_path = save_csv(products, f"{prefix}.csv")
         json_path = save_json(products, f"{prefix}.json")
-        save_sqlite(products)
+        save_postgres(products)
 
         return {
             "products": products,

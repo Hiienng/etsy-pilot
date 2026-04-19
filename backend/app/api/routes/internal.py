@@ -3,11 +3,10 @@ Internal Ads Data Pipeline — API routes.
 
 Prefix: /api/v1/internal
 """
-import asyncio
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ...core.database import get_db, AsyncSessionLocal
+from ...core.database import get_db
 from ...schemas.internal import (
     UploadResponse,
     ExtractResponse,
@@ -39,7 +38,26 @@ async def upload_screenshots(
         if ext not in allowed:
             raise HTTPException(400, f"File type not allowed: {f.filename}")
 
-    batch_id, count, _ = await internal_service.save_uploaded_files(files, db)
+    # Validate image content (magic bytes, size, dimensions)
+    errors = []
+    file_contents: list[tuple] = []  # (UploadFile, bytes)
+    for f in files:
+        content = await f.read()
+        err = await internal_service.validate_image(f.filename, content)
+        if err:
+            errors.append(err)
+        else:
+            file_contents.append((f, content))
+
+    if errors:
+        raise HTTPException(
+            422,
+            detail={"message": "Image validation failed", "errors": errors},
+        )
+
+    batch_id, count, _ = await internal_service.save_uploaded_files(
+        file_contents, db,
+    )
     return UploadResponse(batch_id=batch_id, file_count=count)
 
 
@@ -77,6 +95,8 @@ async def confirm_import(req: ConfirmRequest, db: AsyncSession = Depends(get_db)
             batch_id=req.batch_id,
             listing_report=[r.model_dump() for r in req.listing_report],
             keyword_report=[r.model_dump() for r in req.keyword_report],
+            no_vm=req.no_vm,
+            importer=req.importer,
             db=db,
         )
     except ValueError as e:
