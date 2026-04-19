@@ -88,8 +88,21 @@ ROAS_BREAKEVEN = 2.0
 
 
 async def seed_scenarios(db: AsyncSession) -> None:
-    """Drop & re-seed scenarios_rules from the xlsx matrix."""
-    await db.execute(text("DELETE FROM scenarios_rules"))
+    """Drop & re-create scenarios_rules with correct schema, then seed."""
+    await db.execute(text("DROP TABLE IF EXISTS scenarios_rules CASCADE"))
+    await db.execute(text("""
+        CREATE TABLE scenarios_rules (
+            id SERIAL PRIMARY KEY,
+            roas_band VARCHAR(32) NOT NULL,
+            cr_level  VARCHAR(8)  NOT NULL,
+            ctr_level VARCHAR(8)  NOT NULL,
+            case_name TEXT        NOT NULL,
+            action    VARCHAR(32) NOT NULL,
+            cause     TEXT,
+            fix_listing TEXT,
+            fix_ads   TEXT
+        )
+    """))
     for row in _SCENARIO_SEED:
         await db.execute(
             text("""
