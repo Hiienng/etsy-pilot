@@ -165,7 +165,7 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
             FROM (
                 SELECT DISTINCT ON (listing_id) *
                 FROM listing_report
-                ORDER BY listing_id, created_at DESC
+                ORDER BY listing_id, import_date DESC
             ) lr
         )
         SELECT
