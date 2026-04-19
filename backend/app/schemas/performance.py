@@ -21,6 +21,6 @@ class ListingDashboardItem(BaseModel):
     scenario_cause: str | None = None
     scenario_fix_listing: str | None = None
     scenario_fix_ads: str | None = None
-    # reference (from market_listing LATERAL)
+    # reference (from market_product LATERAL)
     ref_title: str | None = None
-    ref_url: str | None = None
+    ref_shop: str | None = None

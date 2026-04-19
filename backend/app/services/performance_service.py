@@ -189,17 +189,17 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
             sr.fix_ads                             AS scenario_fix_ads,
             -- reference: best revenue-potential alike product from market
             ref.title                              AS ref_title,
-            ref.listing_link                       AS ref_url
+            ref.shop_name                          AS ref_shop
         FROM lr
         LEFT JOIN scenarios_rules sr
             ON  sr.roas_band  = lr.roas_band
             AND sr.cr_level   = lr.cr_level
             AND sr.ctr_level  = lr.ctr_level
         LEFT JOIN LATERAL (
-            SELECT title, listing_link
-            FROM market_listing
+            SELECT title, shop_name
+            FROM market_product
             WHERE product_type = lr.product
-            ORDER BY (price::float * review_count) DESC NULLS LAST
+            ORDER BY (price::float * COALESCE(review_count, 0)) DESC NULLS LAST
             LIMIT 1
         ) ref ON true
         ORDER BY
