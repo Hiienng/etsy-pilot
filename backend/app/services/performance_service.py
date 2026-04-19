@@ -162,10 +162,11 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
                                                                THEN 'high'
                     ELSE 'low'
                 END                                AS ctr_level
-            FROM listing_report lr
-            INNER JOIN (
-                SELECT batch_id FROM import_batch ORDER BY created_at DESC LIMIT 1
-            ) latest ON lr.batch_id = latest.batch_id
+            FROM (
+                SELECT DISTINCT ON (listing_id) *
+                FROM listing_report
+                ORDER BY listing_id, created_at DESC
+            ) lr
         )
         SELECT
             lr.listing_id,
