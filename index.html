@@ -2418,18 +2418,13 @@
     // ── Listing Improvement data & render ─────────
     let LISTINGS = [];
 
-    // CSS class mapping per scenario_key (presentation only — labels/priority come from API)
-    const SCENARIO_CLS = {
-      top:       { badge: 'badge-top',  pri: 'pri-low'  },
-      quick_win: { badge: 'badge-qw',   pri: 'pri-med'  },
-      fix_cr:    { badge: 'badge-cr',   pri: 'pri-high' },
-      fix_roas:  { badge: 'badge-roas', pri: 'pri-high' },
-      fix_ctr:   { badge: 'badge-all',  pri: 'pri-crit' },
+    // CSS per scenario_action
+    const ACTION_CLS = {
+      keep:           { badge: 'badge-top',  pri: 'pri-low'  },
+      improve:        { badge: 'badge-qw',   pri: 'pri-med'  },
+      improve_or_off: { badge: 'badge-all',  pri: 'pri-crit' },
     };
 
-    const PROD_COLOR = { 'baby blanket': 'chip-neu', 'baby onesie': 'badge-qw', 'baby romper': 'chip-ok' };
-
-    // Fetch listings with scenario + reference from API
     async function loadListingsDashboard() {
       try {
         const res = await fetch('/api/v1/performance/listings');
@@ -2450,12 +2445,12 @@
       const roasF= document.getElementById('fROAS').value;
       _imprFiltered = LISTINGS.filter(d => {
         if (prod !== 'all' && d.product !== prod) return false;
-        if (ctrF  === 'pass' && d.ctr  <  2) return false;
-        if (ctrF  === 'fail' && d.ctr  >= 2) return false;
-        if (crF   === 'pass' && d.cr   <  4) return false;
-        if (crF   === 'fail' && d.cr   >= 4) return false;
-        if (roasF === 'pass' && d.roas <  2) return false;
-        if (roasF === 'fail' && d.roas >= 2) return false;
+        if (ctrF  === 'pass' && d.ctr  <  1.5) return false;
+        if (ctrF  === 'fail' && d.ctr  >= 1.5) return false;
+        if (crF   === 'pass' && d.cr   <  3)   return false;
+        if (crF   === 'fail' && d.cr   >= 3)   return false;
+        if (roasF === 'pass' && d.roas <  2)   return false;
+        if (roasF === 'fail' && d.roas >= 2)   return false;
         return true;
       });
     }
@@ -2463,13 +2458,12 @@
     function _imprRenderRows() {
       const visible = _imprFiltered.slice(0, _imprPage);
       const html = visible.map(d => {
-        const cls  = d.scenario_key || 'fix_ctr';
-        const sc   = SCENARIO_CLS[cls] || SCENARIO_CLS.fix_ctr;
-        const pc   = PROD_COLOR[d.product] || 'chip-neu';
+        const act  = d.scenario_action || 'improve';
+        const ac   = ACTION_CLS[act] || ACTION_CLS.improve;
         const title = (d.title || '').length > 70 ? (d.title || '').slice(0, 68) + '…' : (d.title || '');
-        const ctrChip  = d.ctr  >= 2 ? `<span class="metric-chip chip-ok">${d.ctr}%</span>`  : `<span class="metric-chip chip-warn">${d.ctr}%</span>`;
-        const crChip   = d.cr   >= 4 ? `<span class="metric-chip chip-ok">${d.cr}%</span>`   : `<span class="metric-chip chip-warn">${d.cr}%</span>`;
-        const roasChip = d.roas >= 2 ? `<span class="metric-chip chip-ok">${d.roas}x</span>` : `<span class="metric-chip chip-neu">${d.roas}x</span>`;
+        const ctrChip  = d.ctr  >= 1.5 ? `<span class="metric-chip chip-ok">${d.ctr}%</span>`  : `<span class="metric-chip chip-warn">${d.ctr}%</span>`;
+        const crChip   = d.cr   >= 3   ? `<span class="metric-chip chip-ok">${d.cr}%</span>`   : `<span class="metric-chip chip-warn">${d.cr}%</span>`;
+        const roasChip = d.roas >= 2   ? `<span class="metric-chip chip-ok">${d.roas}x</span>` : `<span class="metric-chip chip-neu">${d.roas}x</span>`;
         const refLabel = d.ref_title ? (d.ref_title.length > 36 ? d.ref_title.slice(0, 34) + '…' : d.ref_title) : null;
         const refCell  = d.ref_url
           ? `<a href="${d.ref_url}" target="_blank" rel="noopener" title="${d.ref_title || ''}" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none">${refLabel || 'Ref ↗'}</a>`
@@ -2477,22 +2471,27 @@
         const urlCell  = d.url
           ? `<a href="${d.url}" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none;white-space:nowrap">Xem ↗</a>`
           : `<span style="font-size:0.78rem;color:var(--stone)">—</span>`;
+        // Scenario cell: action badge + label + cause on hover
+        const scenTitle = [d.scenario_cause, d.scenario_fix_listing, d.scenario_fix_ads].filter(Boolean).join('\n');
+        const actionLabel = act === 'keep' ? 'Giữ nguyên' : act === 'improve' ? 'Cải thiện' : 'Cải thiện / Tắt';
         return `<tr>
           <td style="color:var(--charcoal)">${title}</td>
-          <td><span class="metric-chip ${pc}" style="font-size:0.70rem">${d.product || ''}</span></td>
+          <td><span class="metric-chip chip-neu" style="font-size:0.70rem">${d.product || ''}</span></td>
           <td style="text-align:center">${ctrChip}</td>
           <td style="text-align:center">${crChip}</td>
           <td style="text-align:center">${roasChip}</td>
-          <td><span class="pri-badge ${sc.pri}">${d.scenario_priority || ''}</span><span style="font-size:0.76rem;color:var(--charcoal);margin-left:4px">${d.scenario_label || ''}</span></td>
-          <td style="font-size:0.78rem;color:var(--charcoal)">${refCell}</td>
+          <td title="${scenTitle}"><span class="pri-badge ${ac.pri}">${actionLabel}</span><span style="font-size:0.76rem;color:var(--charcoal);margin-left:4px">${d.scenario_label || ''}</span></td>
+          <td style="font-size:0.78rem">${refCell}</td>
           <td>${urlCell}</td>
         </tr>`;
       }).join('');
       document.getElementById('imprTableBody').innerHTML = html || '<tr><td colspan="8" style="text-align:center;color:var(--stone);padding:24px">Không có listing nào.</td></tr>';
       const hasMore = _imprFiltered.length > _imprPage;
       const btn = document.getElementById('imprLoadMore');
-      btn.style.display = hasMore ? '' : 'none';
-      if (hasMore) btn.textContent = `Xem thêm (còn ${_imprFiltered.length - _imprPage})`;
+      if (btn) {
+        btn.style.display = hasMore ? '' : 'none';
+        if (hasMore) btn.textContent = `Xem thêm (còn ${_imprFiltered.length - _imprPage})`;
+      }
       document.getElementById('imprCount').textContent = `Hiển thị ${Math.min(_imprPage, _imprFiltered.length)} / ${_imprFiltered.length} listings`;
     }
 
