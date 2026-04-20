@@ -1194,7 +1194,10 @@
         </p>
 
         <!-- Filter + table -->
-        <p class="hub-section-label">Danh sách listing</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <p class="hub-section-label" style="margin:0">Danh sách listing</p>
+          <button id="imprReloadBtn" onclick="imprReload()" style="font-family:var(--font-sans);font-size:0.78rem;color:var(--terracotta);background:transparent;border:1px solid var(--terracotta);border-radius:6px;padding:4px 12px;cursor:pointer;opacity:0.85" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.85'">Tải lại</button>
+        </div>
         <div class="chart-card">
           <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
             <div style="display:flex;align-items:center;gap:6px">
@@ -1230,12 +1233,20 @@
                 <option value="fail">Fail &lt;2x</option>
               </select>
             </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <label for="fVM" style="font-size:0.78rem;color:var(--stone);font-family:var(--font-sans)">VM</label>
+              <select id="fVM" class="impr-select">
+                <option value="all">Tất cả</option>
+                <option value="yes">Có VM</option>
+                <option value="no">Không có</option>
+              </select>
+            </div>
           </div>
           <div class="impr-table-wrap">
             <table class="impr-table">
               <thead>
                 <tr>
-                  <th style="width:36%">Listing title</th>
+                  <th style="width:10%">ID</th>
                   <th>Sản phẩm</th>
                   <th style="text-align:center">CTR</th>
                   <th style="text-align:center">CR</th>
@@ -2442,12 +2453,13 @@
 
     async function loadListingsDashboard() {
       try {
-        const res = await fetch('/api/v1/performance/listings');
+        const res = await fetch('/data/processed/performance_dashboard.json');
         if (res.ok) {
           LISTINGS = await res.json();
           renderImprTable();
         }
-      } catch (e) { console.warn('[performance/listings] fetch failed', e); }
+        // 404 = file chưa có → giữ nguyên empty state
+      } catch (e) { console.warn('[dashboard] load failed', e); }
     }
 
     let _imprPage = 10;
@@ -2458,6 +2470,7 @@
       const ctrF = document.getElementById('fCTR').value;
       const crF  = document.getElementById('fCR').value;
       const roasF= document.getElementById('fROAS').value;
+      const vmF  = document.getElementById('fVM').value;
       _imprFiltered = LISTINGS.filter(d => {
         if (prod !== 'all' && d.product !== prod) return false;
         if (ctrF  === 'pass' && d.ctr  <  1.5) return false;
@@ -2466,6 +2479,8 @@
         if (crF   === 'fail' && d.cr   >= 3)   return false;
         if (roasF === 'pass' && d.roas <  2)   return false;
         if (roasF === 'fail' && d.roas >= 2)   return false;
+        if (vmF   === 'yes'  && !d.ref_title)   return false;
+        if (vmF   === 'no'   &&  d.ref_title)   return false;
         return true;
       });
     }
@@ -2475,7 +2490,6 @@
       const html = visible.map(d => {
         const act  = d.scenario_action || 'improve';
         const ac   = ACTION_CLS[act] || ACTION_CLS.improve;
-        const title = (d.title || '').length > 70 ? (d.title || '').slice(0, 68) + '…' : (d.title || '');
         const ctrChip  = d.ctr  >= 1.5 ? `<span class="metric-chip chip-ok">${d.ctr}%</span>`  : `<span class="metric-chip chip-warn">${d.ctr}%</span>`;
         const crChip   = d.cr   >= 3   ? `<span class="metric-chip chip-ok">${d.cr}%</span>`   : `<span class="metric-chip chip-warn">${d.cr}%</span>`;
         const roasChip = d.roas >= 2   ? `<span class="metric-chip chip-ok">${d.roas}x</span>` : `<span class="metric-chip chip-neu">${d.roas}x</span>`;
@@ -2489,8 +2503,11 @@
         // Scenario cell: action badge + label + cause on hover
         const scenTitle = [d.scenario_cause, d.scenario_fix_listing, d.scenario_fix_ads].filter(Boolean).join('\n');
         const actionLabel = act === 'keep' ? 'Giữ nguyên' : act === 'improve' ? 'Cải thiện' : 'Cải thiện / Tắt';
+        const idCell = d.url
+          ? `<a href="${d.url}" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:0.82rem;color:var(--terracotta);text-decoration:none">${d.listing_id}</a>`
+          : `<span style="font-family:var(--font-mono);font-size:0.82rem;color:var(--charcoal)">${d.listing_id || '—'}</span>`;
         return `<tr>
-          <td style="color:var(--charcoal)">${title}</td>
+          <td>${idCell}</td>
           <td><span class="metric-chip chip-neu" style="font-size:0.70rem">${d.product || ''}</span></td>
           <td style="text-align:center">${ctrChip}</td>
           <td style="text-align:center">${crChip}</td>
@@ -2521,7 +2538,19 @@
       _imprRenderRows();
     }
 
-    ['fProd','fCTR','fCR','fROAS'].forEach(id => {
+    async function imprReload() {
+      const btn = document.getElementById('imprReloadBtn');
+      btn.textContent = 'Đang tải…';
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/v1/performance/refresh', { method: 'POST' });
+        if (res.ok) await loadListingsDashboard();
+      } catch (e) { console.warn('[imprReload] failed', e); }
+      btn.textContent = 'Tải lại';
+      btn.disabled = false;
+    }
+
+    ['fProd','fCTR','fCR','fROAS','fVM'].forEach(id => {
       document.getElementById(id).addEventListener('change', renderImprTable);
     });
 

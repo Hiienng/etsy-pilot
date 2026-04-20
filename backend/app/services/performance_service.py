@@ -1,3 +1,6 @@
+import json
+from decimal import Decimal
+from pathlib import Path
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,75 +13,75 @@ _SCENARIO_SEED = [
      "Có sales và đang lời", "keep", None, None, None),
     ("profitable", "low", "high",
      "Có sales và đang lời", "improve",
-     "Listing chưa tốt, keywords trong ads chưa tối ưu",
-     "Kiểm tra giá bán, giá ship, review, hình thông tin sp, option sản phẩm",
-     "Tắt bớt keywords không hiệu quả"),
+     "Listing: Khách clicks vào đúng intent nhưng listing chưa tốt.\nAds: Keywords trong ads chưa tối ưu.",
+     "Kiểm tra giá bán, giá ship, review, hình thông tin sp đã rõ chưa, option sản phẩm có thể thêm gì không.",
+     "Tắt bớt các keywords không hiệu quả đang chạy trong listing."),
     ("profitable", "high", "low",
      "Có sales và đang lời", "improve",
-     "Hình main chưa đúng intent, keywords chưa chuẩn, giá mòi cao",
-     "Tăng CTR: xem lại keywords, hình main, alt, giá mòi",
-     "Tắt bớt keywords không hiệu quả"),
+     "Listing: hình main chưa đúng intent, keywords dùng trong listing chưa chuẩn, giá mòi đang cao.\nAds: Keywords dùng trong ads đang chưa đúng intent.",
+     "Tăng CTR: xem lại keywords, hình main, alt trong hình main, giá mòi.",
+     "Tắt bớt các keywords không hiệu quả đang chạy trong listing."),
     ("profitable", "low", "low",
      "Có sales và đang lời", "improve",
-     "Keyword không hiệu quả, listing chưa đúng intent + chưa hấp dẫn",
-     "Tăng CTR: keywords, hình main, alt, giá mòi. Tăng CR: giá bán, offers, ship, reviews. Giảm CPC: long-tailed keywords",
-     "Tắt keywords không đúng intent hoặc target rộng, cpc cao"),
+     "Ads: Keyword đang không hiệu quả, giá mòi đang cao.\nListing: vừa chưa đúng intent vừa chưa đủ hấp dẫn để khách mua.\nViews cao, CTR thấp: Keywords trong ads và listing quá rộng, cạnh tranh cao.",
+     "Tăng CTR: xem lại keywords, hình main, alt trong hình main, giá mòi.\nTăng CR: tối ưu giá bán, offers, giá ship, reviews.\nGiảm CPC: đổi keywords rộng thành long-tailed.",
+     "Tắt bớt các keywords không đúng intent hoặc target rộng, cpc cao."),
 
     # --- Lỗ nhẹ (1 ≤ ROAS < breakeven) ---
     ("slight_loss", "high", "high",
      "Có sales, đang lỗ nhẹ", "improve",
-     "Views/clicks thấp hoặc AOV chưa cover ads, CPC > $0.8",
-     "Views thấp: xem lại keywords, giá mòi, hình main. Tăng AOV: thêm Offer hoặc related products",
-     "Tắt keywords không đúng intent hoặc target rộng, cpc cao"),
+     "Khi views và clicks quá thấp.\nAOV chưa đủ cover tiền ads, cpc quá cao (>$0.8).",
+     "Views và clicks thấp: xem lại keywords, giá mòi, hình main, alt trong hình main.\nTăng AOV: thêm Offer hoặc dùng related products.",
+     "Tắt bớt các keywords không đúng intent hoặc target rộng, cpc cao."),
     ("slight_loss", "high", "low",
      "Có sales, đang lỗ nhẹ", "improve",
-     "Keywords chưa đúng intent hoặc target quá rộng, cạnh tranh cao",
-     "Tối ưu keywords, hình main, alt, giá mòi",
-     "Tắt keywords không đúng intent hoặc target rộng, cpc cao"),
+     "Do keywords trong listing chưa đúng intent hoặc target quá rộng, do hình main, giá mòi.\nDo phần keywords trong ads chưa đúng intent hoặc quá rộng, cạnh tranh cao.",
+     "Tối ưu keywords, hình main, alt trong hình main, giá mòi.",
+     "Tắt bớt các keywords không đúng intent hoặc target rộng, cpc cao."),
     ("slight_loss", "low", "high",
      "Có sales, đang lỗ nhẹ", "improve",
-     "Listing chưa đủ hấp dẫn",
-     "Xem lại keywords, đổi long-tailed, hình main, alt, giảm giá mòi",
-     "Tắt keywords không đúng intent hoặc target rộng, cpc cao"),
+     "Do listing chưa đủ hấp dẫn.",
+     "Xem lại keywords dùng trong listing, đổi long-tailed keywords, bỏ bớt keywords target rộng.\nHình main, alt trong hình main.\nGiá mòi: giảm.",
+     "Tắt bớt các keywords không đúng intent hoặc target rộng, cpc cao."),
     ("slight_loss", "low", "low",
      "Có sales, đang lỗ nhẹ", "improve",
-     "Listing chưa tối ưu, keywords trong ads chưa hiệu quả",
-     "Tăng CTR: sửa keywords, alt, hình main, video, giảm giá mòi. Tăng CR: giá bán, ship, offer, reviews",
-     "Tắt keywords không hiệu quả"),
+     "Nếu có views: do listing, do keywords trong ads.\nViews thấp: do listing (xem lại keywords, hình main đúng intent), do keywords đang chạy trong ads.",
+     "Tăng CTR: sửa keywords khi cần, kiểm tra alt trong hình main, cân nhắc đổi hình main, video, giảm giá mòi.\nTăng CR: xem giá bán, giá ship, offer, reviews.",
+     "Tắt bớt các keywords không hiệu quả đang chạy trong listing."),
 
     # --- Lỗ nặng (0 < ROAS < 1) ---
     ("heavy_loss", "high", "high",
      "Có sales, lỗ nặng", "improve",
-     "AOV chưa cover ads spend, CPC > $0.8, views thấp",
-     "Views thấp: kiểm tra keywords, hình main. AOV thấp: thêm offer, related products",
-     "Tắt keywords không đúng intent, target rộng, cạnh tranh cao"),
+     "AOV chưa đủ cover ads spend.\nDo CPC quá cao (>$0.8).\nViews thấp.",
+     "Views thấp: kiểm tra lại keywords trong listing và ads (loại bỏ từ không đúng intent, target quá rộng), hình main hoặc alt trong hình main.\nAOV thấp: thay đổi offer, thêm related products.",
+     "Tắt keywords không đúng intent, target rộng, cạnh tranh cao trong ads."),
     ("heavy_loss", "low", "high",
      "Có sales, lỗ nặng", "improve",
-     "CR thấp do listing chưa tốt, keywords ads chưa đúng intent",
-     "Xem lại keywords, đổi long-tailed, hình main, alt, giảm giá mòi",
-     "Tắt keywords không đúng intent, target rộng, cạnh tranh cao"),
+     "CR thấp do listing chưa tốt, keywords trong ads chưa đúng intent hoặc quá rộng.",
+     "Xem lại keywords dùng trong listing, đổi long-tailed keywords, bỏ bớt keywords target rộng.\nHình main, alt trong hình main.\nGiá mòi: giảm.",
+     "Tắt keywords không đúng intent, target rộng, cạnh tranh cao trong ads."),
     ("heavy_loss", "high", "low",
      "Có sales, lỗ nặng", "improve",
-     "Keywords trong listing/ads cạnh tranh cao hoặc target rộng",
-     "Xem lại keywords, đổi long-tailed, hình main, alt, giảm giá mòi",
-     "Tắt keywords không đúng intent, target rộng, cạnh tranh cao"),
+     "Keywords (trong listing và trong ads), hình main, giá mòi.",
+     "Xem lại keywords dùng trong listing, đổi long-tailed keywords, bỏ bớt keywords target rộng.\nHình main, alt trong hình main.\nGiá mòi: giảm.",
+     "Tắt keywords không đúng intent, target rộng, cạnh tranh cao trong ads."),
     ("heavy_loss", "low", "low",
      "Có sales, lỗ nặng", "improve_or_off",
-     "Listing chưa tối ưu hoặc đã tối ưu nhưng không cải thiện → tắt",
-     "Xem lại keywords, hình main, alt, giá mòi, giá bán, ship, reviews",
-     "Tắt keywords không hiệu quả"),
+     "Listing chưa tối ưu: do keywords, hình main, giá mòi.\nĐã tối ưu nhưng không có xu hướng cải thiện: tắt.",
+     "Xem lại keywords dùng trong listing, đổi long-tailed keywords, bỏ bớt keywords target rộng.\nHình main, alt trong hình main.\nGiá mòi: giảm.\nKiểm tra giá bán, giá ship, reviews xem có review xấu không.",
+     "Tắt keywords không đúng intent, target rộng, cạnh tranh cao trong ads."),
 
     # --- Không có sale (ROAS = 0) ---
     ("no_sales", "zero", "high",
      "Không có sale, có clicks", "improve_or_off",
-     "Listing mới: theo dõi. Listing cũ đã tối ưu: tắt. Chưa tối ưu: keywords, giá, hình, reviews",
-     "Đổi keywords thành long-tailed, up thêm ảnh chi tiết, xin reviews",
-     "Tắt keywords không đúng intent, target rộng, cạnh tranh cao"),
+     "Listing mới: để theo dõi thêm, kiểm tra keywords trong ads.\nListing cũ, đã tối ưu nhưng không cải thiện: tắt.\nListing cũ, chưa tối ưu: keywords có thể không liên quan, giá bán, giá mòi, hình chi tiết hoặc reviews.",
+     "Đổi keywords thành long-tailed, up thêm ảnh chi tiết, xin reviews, gỡ review xấu.",
+     "Tắt keywords không đúng intent, target rộng, cạnh tranh cao trong ads."),
     ("no_sales", "zero", "low",
      "Không có sale, có clicks", "improve_or_off",
-     "Listing mới: theo dõi. Listing cũ: tắt. Có thể do listing mất index",
-     "Đổi keywords thành long-tailed, thêm ảnh, xin reviews, thêm offers. Mất index: deactive → reactive",
-     "Tắt keywords không đúng intent, target rộng, cạnh tranh cao"),
+     "Listing mới: để theo dõi thêm, kiểm tra keywords trong ads.\nListing cũ, đã tối ưu nhưng không cải thiện: tắt.\nListing cũ, chưa tối ưu: keywords có thể không liên quan, giá bán, giá mòi, hình chi tiết hoặc reviews.\nDo listing mất index.",
+     "Đổi keywords thành long-tailed, up thêm ảnh chi tiết, xin reviews, gỡ review xấu.\nThêm offers, giảm giá.\nNếu do listing mất index: deactive → reactive lại listing.",
+     "Tắt keywords không đúng intent, target rộng, cạnh tranh cao trong ads."),
 ]
 
 # Thresholds
@@ -197,8 +200,9 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
             AND sr.ctr_level  = lr.ctr_level
         LEFT JOIN LATERAL (
             SELECT title, shop_name
-            FROM market_product
-            WHERE product_type = lr.product
+            FROM market_listing
+            WHERE LOWER(product_type) LIKE '%' || LOWER(lr.product) || '%'
+               OR LOWER(lr.product)   LIKE '%' || LOWER(product_type) || '%'
             ORDER BY (price::float * COALESCE(review_count, 0)) DESC NULLS LAST
             LIMIT 1
         ) ref ON true
@@ -213,3 +217,11 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
     """)
     result = await db.execute(sql)
     return [dict(r) for r in result.mappings().all()]
+
+
+def write_dashboard_json(listings: list[dict], out_path: Path) -> None:
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(
+        json.dumps(listings, default=lambda o: float(o) if isinstance(o, Decimal) else str(o), ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
