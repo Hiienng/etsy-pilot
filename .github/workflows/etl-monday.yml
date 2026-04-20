@@ -1,0 +1,30 @@
+name: Monday ETL — listing_report → listings
+
+on:
+  schedule:
+    # Mỗi thứ 2 lúc 07:00 UTC (14:00 giờ VN)
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+
+jobs:
+  etl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install deps
+        run: pip install psycopg2-binary
+
+      - name: Run ETL
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python data/crawler/etl_listings.py
