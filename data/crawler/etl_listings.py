@@ -4,11 +4,14 @@ ETL: listing_report → listings
 Chạy mỗi thứ 2 chiều via GitHub Actions.
 
 Logic:
-  - DISTINCT ON (listing_id) lấy row mới nhất từ listing_report
+  - Với mỗi listing_id trong listing_report, lấy latest non-null value
+    riêng cho từng field (title, category, no_vm, importer) bằng
+    correlated subquery ORDER BY import_time DESC.
   - UPSERT vào listings:
       INSERT nếu listing_id chưa có
-      UPDATE nếu đã có (COALESCE giữ giá trị cũ nếu field mới null)
-  - importer = 'ETL_automation'
+      UPDATE nếu đã có: COALESCE(new, existing) — chỉ ghi đè khi field
+      hiện tại đang null, không bao giờ xoá dữ liệu đã có.
+  - Yêu cầu: UNIQUE constraint trên listings.listing_id (đã tồn tại).
 
 Env vars:
   DATABASE_URL — Neon PostgreSQL connection string
@@ -46,50 +49,47 @@ def run_etl(dsn: str) -> dict:
     conn = psycopg2.connect(dsn)
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
-    conn.commit()
-
-    # Lấy unique listing mới nhất từ listing_report
+    # Lấy latest non-null value per field per listing_id
     cur.execute("""
-        SELECT DISTINCT ON (listing_id)
+        SELECT
             listing_id,
-            title,
-            category,
-            no_vm,
-            import_time
-        FROM listing_report
+            (SELECT title    FROM listing_report r2 WHERE r2.listing_id = r.listing_id AND r2.title    IS NOT NULL ORDER BY r2.import_time DESC NULLS LAST LIMIT 1) AS title,
+            (SELECT category FROM listing_report r2 WHERE r2.listing_id = r.listing_id AND r2.category IS NOT NULL ORDER BY r2.import_time DESC NULLS LAST LIMIT 1) AS category,
+            (SELECT no_vm    FROM listing_report r2 WHERE r2.listing_id = r.listing_id AND r2.no_vm    IS NOT NULL ORDER BY r2.import_time DESC NULLS LAST LIMIT 1) AS no_vm,
+            (SELECT importer FROM listing_report r2 WHERE r2.listing_id = r.listing_id AND r2.importer IS NOT NULL ORDER BY r2.import_time DESC NULLS LAST LIMIT 1) AS importer,
+            MAX(import_time) AS import_time
+        FROM listing_report r
         WHERE listing_id IS NOT NULL
-        ORDER BY listing_id, import_time DESC NULLS LAST
+        GROUP BY listing_id
     """)
     source_rows = cur.fetchall()
     print(f"[ETL] Source: {len(source_rows)} unique listings từ listing_report")
 
-    inserted = updated = 0
-    now = datetime.now(timezone.utc)
+    upserted = 0
 
     for row in source_rows:
         url = f"https://www.etsy.com/listing/{row['listing_id']}"
         cur.execute("""
             INSERT INTO listings (listing_id, title, category, no_vm, url, import_time, importer)
-            VALUES (%(listing_id)s, %(title)s, %(category)s, %(no_vm)s, %(url)s, %(import_time)s, 'ETL_automation')
+            VALUES (%(listing_id)s, %(title)s, %(category)s, %(no_vm)s, %(url)s, %(import_time)s, %(importer)s)
             ON CONFLICT (listing_id) DO UPDATE SET
-                title       = COALESCE(EXCLUDED.title,    listings.title),
-                category    = COALESCE(EXCLUDED.category, listings.category),
-                no_vm       = COALESCE(EXCLUDED.no_vm,    listings.no_vm),
-                url         = COALESCE(EXCLUDED.url,      listings.url),
-                import_time = EXCLUDED.import_time,
-                importer    = 'ETL_automation'
+                title       = COALESCE(EXCLUDED.title,       listings.title),
+                category    = COALESCE(EXCLUDED.category,    listings.category),
+                no_vm       = COALESCE(EXCLUDED.no_vm,       listings.no_vm),
+                url         = COALESCE(EXCLUDED.url,         listings.url),
+                import_time = COALESCE(EXCLUDED.import_time, listings.import_time),
+                importer    = COALESCE(EXCLUDED.importer,    listings.importer)
         """, {
-            "listing_id": row["listing_id"],
-            "title":      row["title"],
-            "category":   row["category"],
-            "no_vm":      row["no_vm"],
-            "url":        url,
-            "import_time": row["import_time"] or now,
+            "listing_id":  row["listing_id"],
+            "title":       row["title"],
+            "category":    row["category"],
+            "no_vm":       row["no_vm"],
+            "url":         url,
+            "import_time": row["import_time"],
+            "importer":    row["importer"],
         })
         if cur.rowcount:
-            # xorshift: INSERT = 1 row affected, UPDATE = 1 row affected
-            # dùng xid để phân biệt INSERT vs UPDATE
-            updated += 1
+            upserted += 1
 
     conn.commit()
 
@@ -98,7 +98,7 @@ def run_etl(dsn: str) -> dict:
     total = cur.fetchone()["n"]
     conn.close()
 
-    return {"source": len(source_rows), "upserted": updated, "total_listings": total}
+    return {"source": len(source_rows), "upserted": upserted, "total_listings": total}
 
 
 def main():
@@ -110,9 +110,9 @@ def main():
     dsn = pg_dsn()
     result = run_etl(dsn)
 
-    print(f"\n  Source (listing_report unique): {result['source']}")
-    print(f"  Upserted vào listings:          {result['upserted']}")
-    print(f"  Total listings sau ETL:         {result['total_listings']}")
+    print(f"\n  Source (listing_report unique):  {result['source']}")
+    print(f"  Upserted vào listings:                    {result['upserted']}")
+    print(f"  Total listings sau ETL:                   {result['total_listings']}")
     print("\n  Done.")
 
 
