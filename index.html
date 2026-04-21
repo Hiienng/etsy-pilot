@@ -1246,14 +1246,15 @@
             <table class="impr-table">
               <thead>
                 <tr>
+                  <th style="width:32px"></th>
                   <th style="width:10%">ID</th>
                   <th>Sản phẩm</th>
+                  <th>Import date</th>
                   <th style="text-align:center">CTR</th>
                   <th style="text-align:center">CR</th>
                   <th style="text-align:center">ROAS</th>
                   <th>Scenario</th>
                   <th>Reference</th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody id="imprTableBody"></tbody>
@@ -2465,13 +2466,27 @@
     let _imprPage = 10;
     let _imprFiltered = [];
 
+    // Group flat rows by listing_id, sort each group latest-first (by reference_date).
+    function _imprGroup(rows) {
+      const byId = new Map();
+      rows.forEach(d => {
+        if (!byId.has(d.listing_id)) byId.set(d.listing_id, []);
+        byId.get(d.listing_id).push(d);
+      });
+      byId.forEach(arr => arr.sort((a, b) => (b.reference_date || '').localeCompare(a.reference_date || '')));
+      return Array.from(byId.values());  // [[latest, older…], …]
+    }
+
     function _imprApplyFilters() {
       const prod = document.getElementById('fProd').value;
       const ctrF = document.getElementById('fCTR').value;
       const crF  = document.getElementById('fCR').value;
       const roasF= document.getElementById('fROAS').value;
       const vmF  = document.getElementById('fVM').value;
-      _imprFiltered = LISTINGS.filter(d => {
+      // Filter on the LATEST row per listing_id (group[0])
+      const groups = _imprGroup(LISTINGS);
+      _imprFiltered = groups.filter(group => {
+        const d = group[0];
         if (prod !== 'all' && d.product !== prod) return false;
         if (ctrF  === 'pass' && d.ctr  <  1.5) return false;
         if (ctrF  === 'fail' && d.ctr  >= 1.5) return false;
@@ -2479,45 +2494,69 @@
         if (crF   === 'fail' && d.cr   >= 3)   return false;
         if (roasF === 'pass' && d.roas <  2)   return false;
         if (roasF === 'fail' && d.roas >= 2)   return false;
-        if (vmF   === 'yes'  && !d.ref_title)   return false;
-        if (vmF   === 'no'   &&  d.ref_title)   return false;
+        if (vmF   === 'yes'  && !d.ref_title)  return false;
+        if (vmF   === 'no'   &&  d.ref_title)  return false;
         return true;
       });
     }
 
+    // Render một row (dùng chung cho main + sub rows, cùng logic).
+    function _imprRowCells(d, opts) {
+      const isMain   = opts && opts.isMain;
+      const groupKey = opts && opts.groupKey;
+      const hasChildren = opts && opts.hasChildren;
+      const act  = d.scenario_action || 'improve';
+      const ac   = ACTION_CLS[act] || ACTION_CLS.improve;
+      const ctrChip  = d.ctr  >= 1.5 ? `<span class="metric-chip chip-ok">${d.ctr}%</span>`  : `<span class="metric-chip chip-warn">${d.ctr}%</span>`;
+      const crChip   = d.cr   >= 3   ? `<span class="metric-chip chip-ok">${d.cr}%</span>`   : `<span class="metric-chip chip-warn">${d.cr}%</span>`;
+      const roasChip = d.roas >= 2   ? `<span class="metric-chip chip-ok">${d.roas}x</span>` : `<span class="metric-chip chip-neu">${d.roas}x</span>`;
+      const refLabel = d.ref_title ? (d.ref_title.length > 36 ? d.ref_title.slice(0, 34) + '…' : d.ref_title) : null;
+      const refShopLabel = d.ref_shop ? `<span style="font-size:0.70rem;color:var(--stone);display:block">${d.ref_shop}</span>` : '';
+      const refCell  = d.ref_title
+        ? (d.ref_url
+          ? `<a href="${d.ref_url}" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none">${refLabel}</a>${refShopLabel}`
+          : `<span style="font-size:0.78rem;color:var(--charcoal)">${refLabel}</span>${refShopLabel}`)
+        : `<span style="font-size:0.78rem;color:var(--stone)">—</span>`;
+      const scenTitle = [d.scenario_cause, d.scenario_fix_listing, d.scenario_fix_ads].filter(Boolean).join('\n');
+      const actionLabel = act === 'keep' ? 'Giữ nguyên' : act === 'improve' ? 'Cải thiện' : 'Cải thiện / Tắt';
+      const idCell = d.url
+        ? `<a href="${d.url}" target="_blank" rel="noopener" title="Mở listing trên Etsy ↗" style="font-family:var(--font-mono);font-size:0.82rem;color:var(--terracotta);text-decoration:underline;text-underline-offset:2px">${d.listing_id}</a>`
+        : `<span style="font-family:var(--font-mono);font-size:0.82rem;color:var(--charcoal)">${d.listing_id || '—'}</span>`;
+      const importDate = d.period || '—';
+
+      const toggleCell = isMain
+        ? (hasChildren
+           ? `<td style="text-align:center;cursor:pointer;user-select:none" onclick="imprToggle('${groupKey}', this)" title="Xem các kỳ import cũ hơn"><span class="impr-caret" style="font-size:0.82rem;color:var(--terracotta);display:inline-block;transition:transform 0.15s">▸</span></td>`
+           : `<td></td>`)
+        : `<td></td>`;
+      const rowStyle = isMain ? '' : 'background:var(--warm-sand)';
+      const rowClass = isMain ? `impr-main-row` : `impr-sub-row impr-sub-${groupKey}`;
+      const rowAttrs = isMain ? '' : `style="display:none;${rowStyle}"`;
+
+      return `<tr class="${rowClass}" ${rowAttrs}>
+        ${toggleCell}
+        <td>${idCell}</td>
+        <td><span class="metric-chip chip-neu" style="font-size:0.70rem">${d.product || ''}</span></td>
+        <td style="font-family:var(--font-mono);font-size:0.78rem;color:var(--charcoal);white-space:nowrap">${importDate}</td>
+        <td style="text-align:center">${ctrChip}</td>
+        <td style="text-align:center">${crChip}</td>
+        <td style="text-align:center">${roasChip}</td>
+        <td title="${scenTitle}"><span class="pri-badge ${ac.pri}">${actionLabel}</span></td>
+        <td style="font-size:0.78rem">${refCell}</td>
+      </tr>`;
+    }
+
     function _imprRenderRows() {
       const visible = _imprFiltered.slice(0, _imprPage);
-      const html = visible.map(d => {
-        const act  = d.scenario_action || 'improve';
-        const ac   = ACTION_CLS[act] || ACTION_CLS.improve;
-        const ctrChip  = d.ctr  >= 1.5 ? `<span class="metric-chip chip-ok">${d.ctr}%</span>`  : `<span class="metric-chip chip-warn">${d.ctr}%</span>`;
-        const crChip   = d.cr   >= 3   ? `<span class="metric-chip chip-ok">${d.cr}%</span>`   : `<span class="metric-chip chip-warn">${d.cr}%</span>`;
-        const roasChip = d.roas >= 2   ? `<span class="metric-chip chip-ok">${d.roas}x</span>` : `<span class="metric-chip chip-neu">${d.roas}x</span>`;
-        const refLabel = d.ref_title ? (d.ref_title.length > 36 ? d.ref_title.slice(0, 34) + '…' : d.ref_title) : null;
-        const refCell  = d.ref_url
-          ? `<a href="${d.ref_url}" target="_blank" rel="noopener" title="${d.ref_title || ''}" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none">${refLabel || 'Ref ↗'}</a>`
-          : `<span style="font-size:0.78rem;color:var(--stone)">—</span>`;
-        const urlCell  = d.url
-          ? `<a href="${d.url}" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none;white-space:nowrap">Xem ↗</a>`
-          : `<span style="font-size:0.78rem;color:var(--stone)">—</span>`;
-        // Scenario cell: action badge + label + cause on hover
-        const scenTitle = [d.scenario_cause, d.scenario_fix_listing, d.scenario_fix_ads].filter(Boolean).join('\n');
-        const actionLabel = act === 'keep' ? 'Giữ nguyên' : act === 'improve' ? 'Cải thiện' : 'Cải thiện / Tắt';
-        const idCell = d.url
-          ? `<a href="${d.url}" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:0.82rem;color:var(--terracotta);text-decoration:none">${d.listing_id}</a>`
-          : `<span style="font-family:var(--font-mono);font-size:0.82rem;color:var(--charcoal)">${d.listing_id || '—'}</span>`;
-        return `<tr>
-          <td>${idCell}</td>
-          <td><span class="metric-chip chip-neu" style="font-size:0.70rem">${d.product || ''}</span></td>
-          <td style="text-align:center">${ctrChip}</td>
-          <td style="text-align:center">${crChip}</td>
-          <td style="text-align:center">${roasChip}</td>
-          <td title="${scenTitle}"><span class="pri-badge ${ac.pri}">${actionLabel}</span><span style="font-size:0.76rem;color:var(--charcoal);margin-left:4px">${d.scenario_label || ''}</span></td>
-          <td style="font-size:0.78rem">${refCell}</td>
-          <td>${urlCell}</td>
-        </tr>`;
+      const html = visible.map(group => {
+        const latest = group[0];
+        const older  = group.slice(1);
+        const key = (latest.listing_id || '').replace(/[^a-zA-Z0-9]/g, '');
+        let out = _imprRowCells(latest, { isMain: true, groupKey: key, hasChildren: older.length > 0 });
+        out += older.map(d => _imprRowCells(d, { isMain: false, groupKey: key })).join('');
+        return out;
       }).join('');
-      document.getElementById('imprTableBody').innerHTML = html || '<tr><td colspan="8" style="text-align:center;color:var(--stone);padding:24px">Không có listing nào.</td></tr>';
+      document.getElementById('imprTableBody').innerHTML = html || '<tr><td colspan="9" style="text-align:center;color:var(--stone);padding:24px">Không có listing nào.</td></tr>';
       const hasMore = _imprFiltered.length > _imprPage;
       const btn = document.getElementById('imprLoadMore');
       if (btn) {
@@ -2525,6 +2564,15 @@
         if (hasMore) btn.textContent = `Xem thêm (còn ${_imprFiltered.length - _imprPage})`;
       }
       document.getElementById('imprCount').textContent = `Hiển thị ${Math.min(_imprPage, _imprFiltered.length)} / ${_imprFiltered.length} listings`;
+    }
+
+    function imprToggle(key, caretTd) {
+      const rows = document.querySelectorAll(`tr.impr-sub-${key}`);
+      if (!rows.length) return;
+      const hidden = rows[0].style.display === 'none';
+      rows.forEach(r => { r.style.display = hidden ? '' : 'none'; });
+      const caret = caretTd.querySelector('.impr-caret');
+      if (caret) caret.style.transform = hidden ? 'rotate(90deg)' : '';
     }
 
     function renderImprTable() {
