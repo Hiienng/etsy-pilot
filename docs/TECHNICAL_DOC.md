@@ -71,7 +71,7 @@ Tất cả bảng cùng nằm trên Neon Postgres. Base = SQLAlchemy declarative
 - Nguồn: `listing_report` — lấy **latest non-null value per field** (correlated subquery per column).
 - UPSERT: INSERT mới nếu `listing_id` chưa có; UPDATE nếu đã có nhưng field đang null (`COALESCE` — không bao giờ xoá dữ liệu có sẵn).
 
-### 1.8 `etl_references` — top-3 market reference per internal listing
+### 1.8 `references_engine` — top-3 market reference per internal listing
 
 Populate **on-demand** qua endpoint `POST /api/v1/references/refresh` (service: [backend/app/services/references_service.py](../backend/app/services/references_service.py)). Không chạy trong cron ETL — user trigger khi cần.
 
@@ -258,7 +258,7 @@ Không có ràng buộc FK cứng — join thực hiện ở tầng SQL/service 
 |   |   | `/history` | GET | Internal Import |
 |   |   | `/snapshot/{batch_id}` | GET | Internal Import |
 | `/api/v1/market` | [market.py](../backend/app/api/routes/market.py) | `/samples` | GET | Research Hub |
-| `/api/v1/references` | [references.py](../backend/app/api/routes/references.py) | `/refresh` | POST | On-demand sinh `etl_references` |
+| `/api/v1/references` | [references.py](../backend/app/api/routes/references.py) | `/refresh` | POST | On-demand sinh `references_engine` |
 |   |   | `/` | GET | List references |
 |   |   | `/{listing_id}` | GET | References của 1 listing |
 

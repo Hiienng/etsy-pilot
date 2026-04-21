@@ -3,7 +3,7 @@ References service — on-demand: pair internal listings với top-N market
 listings cùng category, rank theo tag_ranking ASC.
 
 Gọi từ route POST /api/v1/references/refresh. Mỗi lần gọi chạy lại toàn
-bộ pipeline rồi UPSERT vào bảng etl_references (composite PK
+bộ pipeline rồi UPSERT vào bảng references_engine (composite PK
 (listing_id, reference_listing_id)).
 """
 
@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 _CREATE_TABLE_SQL = """
-CREATE TABLE IF NOT EXISTS etl_references (
+CREATE TABLE IF NOT EXISTS references_engine (
     listing_id           VARCHAR(32)  NOT NULL,
     reference_listing_id TEXT         NOT NULL,
     ref_rank             SMALLINT     NOT NULL,
@@ -61,7 +61,7 @@ SELECT * FROM ranked WHERE rnk <= :top_n
 """
 
 _UPSERT_SQL = """
-INSERT INTO etl_references (
+INSERT INTO references_engine (
     listing_id, reference_listing_id, ref_rank,
     ref_title, ref_shop, ref_url, ref_price,
     ref_rating, ref_review_count, ref_tag_ranking, ref_badge,
@@ -74,14 +74,14 @@ INSERT INTO etl_references (
 )
 ON CONFLICT (listing_id, reference_listing_id) DO UPDATE SET
     ref_rank         = EXCLUDED.ref_rank,
-    ref_title        = COALESCE(EXCLUDED.ref_title,        etl_references.ref_title),
-    ref_shop         = COALESCE(EXCLUDED.ref_shop,         etl_references.ref_shop),
-    ref_url          = COALESCE(EXCLUDED.ref_url,          etl_references.ref_url),
-    ref_price        = COALESCE(EXCLUDED.ref_price,        etl_references.ref_price),
-    ref_rating       = COALESCE(EXCLUDED.ref_rating,       etl_references.ref_rating),
-    ref_review_count = COALESCE(EXCLUDED.ref_review_count, etl_references.ref_review_count),
-    ref_tag_ranking  = COALESCE(EXCLUDED.ref_tag_ranking,  etl_references.ref_tag_ranking),
-    ref_badge        = COALESCE(EXCLUDED.ref_badge,        etl_references.ref_badge),
+    ref_title        = COALESCE(EXCLUDED.ref_title,        references_engine.ref_title),
+    ref_shop         = COALESCE(EXCLUDED.ref_shop,         references_engine.ref_shop),
+    ref_url          = COALESCE(EXCLUDED.ref_url,          references_engine.ref_url),
+    ref_price        = COALESCE(EXCLUDED.ref_price,        references_engine.ref_price),
+    ref_rating       = COALESCE(EXCLUDED.ref_rating,       references_engine.ref_rating),
+    ref_review_count = COALESCE(EXCLUDED.ref_review_count, references_engine.ref_review_count),
+    ref_tag_ranking  = COALESCE(EXCLUDED.ref_tag_ranking,  references_engine.ref_tag_ranking),
+    ref_badge        = COALESCE(EXCLUDED.ref_badge,        references_engine.ref_badge),
     refreshed_at     = now()
 """
 
@@ -92,6 +92,17 @@ async def refresh_references(
     listing_id: str | None = None,
 ) -> dict:
     await db.execute(text(_CREATE_TABLE_SQL))
+
+    # Xoá refs cũ của scope đang refresh — tránh tồn đọng khi top-N thay đổi.
+    await db.execute(
+        text(
+            """
+            DELETE FROM references_engine
+            WHERE (CAST(:listing_id AS VARCHAR) IS NULL OR listing_id = CAST(:listing_id AS VARCHAR))
+            """
+        ),
+        {"listing_id": listing_id},
+    )
 
     result = await db.execute(
         text(_SELECT_CANDIDATES_SQL),
@@ -108,7 +119,7 @@ async def refresh_references(
         text(
             """
             SELECT COUNT(DISTINCT listing_id) AS covered, COUNT(*) AS total
-            FROM etl_references
+            FROM references_engine
             WHERE (CAST(:listing_id AS VARCHAR) IS NULL OR listing_id = CAST(:listing_id AS VARCHAR))
             """
         ),
@@ -136,7 +147,7 @@ async def get_references(
                    ref_title, ref_shop, ref_url, ref_price,
                    ref_rating, ref_review_count, ref_tag_ranking, ref_badge,
                    refreshed_at
-            FROM etl_references
+            FROM references_engine
             WHERE (CAST(:listing_id AS VARCHAR) IS NULL OR listing_id = CAST(:listing_id AS VARCHAR))
             ORDER BY listing_id, ref_rank
             """
