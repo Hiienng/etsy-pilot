@@ -2547,8 +2547,40 @@
       </tr>`;
     }
 
+    // Render bảng keywords (nếu có). Chỉ gắn cho main row — keyword_report đã latest per listing.
+    function _imprKeywordTable(keywords) {
+      if (!Array.isArray(keywords) || !keywords.length) return '';
+      const fmtNum = v => (v == null || v === '') ? '—' : Number(v).toLocaleString('en-US');
+      const fmtRoas = v => (v == null || v === '') ? '—' : `${Number(v).toFixed(2)}x`;
+      const head = `<thead><tr style="font-family:var(--font-sans);font-size:0.70rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.04em">
+        <th style="text-align:left;padding:4px 8px;font-weight:600">Keyword</th>
+        <th style="text-align:right;padding:4px 8px;font-weight:600">Views</th>
+        <th style="text-align:right;padding:4px 8px;font-weight:600">Clicks</th>
+        <th style="text-align:right;padding:4px 8px;font-weight:600">CTR</th>
+        <th style="text-align:right;padding:4px 8px;font-weight:600">Orders</th>
+        <th style="text-align:right;padding:4px 8px;font-weight:600">Spend</th>
+        <th style="text-align:right;padding:4px 8px;font-weight:600">Revenue</th>
+        <th style="text-align:right;padding:4px 8px;font-weight:600">ROAS</th>
+      </tr></thead>`;
+      const body = keywords.map(k => `<tr style="font-family:var(--font-sans);font-size:0.76rem;color:var(--charcoal);border-top:1px solid var(--border-cream)">
+        <td style="padding:4px 8px">${_imprEsc(k.keyword)}</td>
+        <td style="text-align:right;padding:4px 8px;font-family:var(--font-mono)">${fmtNum(k.views)}</td>
+        <td style="text-align:right;padding:4px 8px;font-family:var(--font-mono)">${fmtNum(k.clicks)}</td>
+        <td style="text-align:right;padding:4px 8px;font-family:var(--font-mono)">${_imprEsc(k.click_rate || '—')}</td>
+        <td style="text-align:right;padding:4px 8px;font-family:var(--font-mono)">${fmtNum(k.orders)}</td>
+        <td style="text-align:right;padding:4px 8px;font-family:var(--font-mono)">${fmtNum(k.spend)}</td>
+        <td style="text-align:right;padding:4px 8px;font-family:var(--font-mono)">${fmtNum(k.revenue)}</td>
+        <td style="text-align:right;padding:4px 8px;font-family:var(--font-mono)">${fmtRoas(k.roas)}</td>
+      </tr>`).join('');
+      return `<div style="margin-top:12px">
+        <div style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;margin-bottom:4px">Keywords (latest import)</div>
+        <table style="width:100%;border-collapse:collapse;background:var(--parchment);border:1px solid var(--border-cream);border-radius:4px;overflow:hidden">${head}<tbody>${body}</tbody></table>
+      </div>`;
+    }
+
     // Row mở rộng: case + cause + fix_listing + fix_ads cho đúng kỳ d (span toàn chiều ngang).
-    function _imprDetailRow(d, groupKey) {
+    // `withKeywords` = true → kèm bảng keywords (chỉ gắn trên row latest).
+    function _imprDetailRow(d, groupKey, withKeywords) {
       const items = [
         ['Case',        d.scenario_label],
         ['Nguyên nhân', d.scenario_cause],
@@ -2560,11 +2592,13 @@
             `<div style="margin-bottom:6px"><span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;display:block;margin-bottom:2px">${k}</span><span style="font-family:var(--font-sans);font-size:0.80rem;color:var(--charcoal);line-height:1.5">${_imprEsc(v)}</span></div>`
           ).join('')
         : `<span style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);font-style:italic">Không có scenario mapping cho kỳ này.</span>`;
+      const kwBlock = withKeywords ? _imprKeywordTable(d.keywords) : '';
       return `<tr class="impr-sub-row impr-sub-${groupKey}" style="display:none;background:var(--warm-sand)">
         <td></td>
         <td colspan="8" style="padding:10px 14px 14px;border-top:1px dashed var(--border-cream)">
           <div style="font-family:var(--font-sans);font-size:0.70rem;font-weight:600;color:var(--terracotta);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">Chi tiết kỳ ${_imprEsc(d.period || '—')}</div>
           ${body}
+          ${kwBlock}
         </td>
       </tr>`;
     }
@@ -2576,12 +2610,12 @@
         const older  = group.slice(1);
         const key = (latest.listing_id || '').replace(/[^a-zA-Z0-9]/g, '');
         let out = _imprMetricRow(latest, { isMain: true, groupKey: key });
-        // Details của kỳ latest (nằm trong phần sổ ra).
-        out += _imprDetailRow(latest, key);
-        // Các kỳ cũ hơn: mỗi kỳ gồm row metric + row detail.
+        // Details của kỳ latest (nằm trong phần sổ ra) — kèm bảng keywords.
+        out += _imprDetailRow(latest, key, true);
+        // Các kỳ cũ hơn: mỗi kỳ gồm row metric + row detail (không lặp keywords).
         older.forEach(d => {
           out += _imprMetricRow(d, { isMain: false, groupKey: key });
-          out += _imprDetailRow(d, key);
+          out += _imprDetailRow(d, key, false);
         });
         return out;
       }).join('');

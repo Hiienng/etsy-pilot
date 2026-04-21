@@ -204,7 +204,8 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
             re.ref_url                             AS ref_url,
             re.ref_review_count                    AS ref_review_count,
             re.ref_rating                          AS ref_rating,
-            re.ref_badge                           AS ref_badge
+            re.ref_badge                           AS ref_badge,
+            kw.keywords                            AS keywords
         FROM listings l
         LEFT JOIN lr ON lr.listing_id = l.listing_id
         LEFT JOIN LATERAL (
@@ -221,6 +222,26 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
         LEFT JOIN references_engine re
             ON re.listing_id = l.listing_id
            AND re.ref_rank   = 1
+        LEFT JOIN LATERAL (
+            SELECT json_agg(
+                json_build_object(
+                    'keyword',    kr.keyword,
+                    'views',      kr.views,
+                    'clicks',     kr.clicks,
+                    'orders',     kr.orders,
+                    'revenue',    kr.revenue,
+                    'spend',      kr.spend,
+                    'roas',       kr.roas,
+                    'click_rate', kr.click_rate
+                ) ORDER BY COALESCE(kr.orders, 0) DESC, COALESCE(kr.clicks, 0) DESC
+            ) AS keywords
+            FROM keyword_report kr
+            WHERE kr.listing_id = l.listing_id
+              AND kr.import_time = (
+                  SELECT MAX(import_time) FROM keyword_report
+                  WHERE listing_id = l.listing_id
+              )
+        ) kw ON true
         ORDER BY l.listing_id ASC, lr.period ASC
     """)
     result = await db.execute(sql)
