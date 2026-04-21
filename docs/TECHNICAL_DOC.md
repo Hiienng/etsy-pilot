@@ -70,6 +70,33 @@ Tất cả bảng cùng nằm trên Neon Postgres. Base = SQLAlchemy declarative
 **ETL logic** (`etl_listings.py`, chạy mỗi thứ 2 lúc 07:00 UTC):
 - Nguồn: `listing_report` — lấy **latest non-null value per field** (correlated subquery per column).
 - UPSERT: INSERT mới nếu `listing_id` chưa có; UPDATE nếu đã có nhưng field đang null (`COALESCE` — không bao giờ xoá dữ liệu có sẵn).
+- Sau khi step 1 xong, tự động chạy step 2 sinh `etl_references` (xem §1.8).
+
+### 1.8 `etl_references` — top-3 market reference per internal listing
+
+Populate bởi `run_etl_references()` trong `data/crawler/etl_listings.py` (chạy nối tiếp sau bước ETL listings).
+
+| Column | Type | Null | Ghi chú |
+|---|---|---|---|
+| `listing_id` | `VARCHAR(32)` | NO | PK (composite), khớp `listings.listing_id` |
+| `reference_listing_id` | `TEXT` | NO | PK (composite), khớp `market_listing.id` |
+| `ref_rank` | `SMALLINT` | NO | 1..3 — thứ tự ưu tiên |
+| `ref_title` | `TEXT` | YES |   |
+| `ref_shop` | `TEXT` | YES |   |
+| `ref_url` | `TEXT` | YES |   |
+| `ref_price` | `INTEGER` | YES | cents |
+| `ref_rating` | `REAL` | YES | 0.0 – 5.0 |
+| `ref_review_count` | `INTEGER` | YES |   |
+| `ref_tag_ranking` | `INTEGER` | YES | Thấp hơn = xuất hiện sớm hơn trong search |
+| `ref_badge` | `TEXT` | YES | `Popular`, `Bestseller`… |
+| `match_method` | `VARCHAR(16)` | def `'category'` | Cơ chế match (hiện chỉ có `category`) |
+| `refreshed_at` | `TIMESTAMPTZ` | def `now()` |   |
+
+**Logic:**
+- Match: `ILIKE` — `listings.category` xuất hiện trong bất kỳ field nào của market_listing (`search_tag` / `product_type` / `title`).
+- Rank: `ORDER BY tag_ranking ASC NULLS LAST, review_count DESC NULLS LAST`, giữ top-3.
+- UPSERT: ON CONFLICT (`listing_id`, `reference_listing_id`) DO UPDATE — refresh rank + fill null fields bằng COALESCE.
+- Future work: thêm `match_method='embedding'` dùng `ListingEmbedder` khi cần match semantic thay vì category.
 
 ### 1.2 `listing_report` — snapshot hiệu suất theo listing × period
 
