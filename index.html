@@ -2500,11 +2500,15 @@
       });
     }
 
-    // Render một row (dùng chung cho main + sub rows, cùng logic).
-    function _imprRowCells(d, opts) {
-      const isMain   = opts && opts.isMain;
-      const groupKey = opts && opts.groupKey;
-      const hasChildren = opts && opts.hasChildren;
+    // Escape HTML + giữ xuống dòng từ \n
+    function _imprEsc(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])).replace(/\n/g, '<br>');
+    }
+
+    // Render 1 hàng metric (dùng chung cho main + sub).
+    function _imprMetricRow(d, opts) {
+      const isMain   = opts.isMain;
+      const groupKey = opts.groupKey;
       const act  = d.scenario_action || 'improve';
       const ac   = ACTION_CLS[act] || ACTION_CLS.improve;
       const ctrChip  = d.ctr  >= 1.5 ? `<span class="metric-chip chip-ok">${d.ctr}%</span>`  : `<span class="metric-chip chip-warn">${d.ctr}%</span>`;
@@ -2517,21 +2521,18 @@
           ? `<a href="${d.ref_url}" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none">${refLabel}</a>${refShopLabel}`
           : `<span style="font-size:0.78rem;color:var(--charcoal)">${refLabel}</span>${refShopLabel}`)
         : `<span style="font-size:0.78rem;color:var(--stone)">—</span>`;
-      const scenTitle = [d.scenario_cause, d.scenario_fix_listing, d.scenario_fix_ads].filter(Boolean).join('\n');
       const actionLabel = act === 'keep' ? 'Giữ nguyên' : act === 'improve' ? 'Cải thiện' : 'Cải thiện / Tắt';
       const idCell = d.url
         ? `<a href="${d.url}" target="_blank" rel="noopener" title="Mở listing trên Etsy ↗" style="font-family:var(--font-mono);font-size:0.82rem;color:var(--terracotta);text-decoration:underline;text-underline-offset:2px">${d.listing_id}</a>`
         : `<span style="font-family:var(--font-mono);font-size:0.82rem;color:var(--charcoal)">${d.listing_id || '—'}</span>`;
       const importDate = d.period || '—';
 
+      // Main row luôn có caret (kể cả listing chỉ 1 kỳ) — khi sổ xuống sẽ hiện details + các kỳ khác.
       const toggleCell = isMain
-        ? (hasChildren
-           ? `<td style="text-align:center;cursor:pointer;user-select:none" onclick="imprToggle('${groupKey}', this)" title="Xem các kỳ import cũ hơn"><span class="impr-caret" style="font-size:0.82rem;color:var(--terracotta);display:inline-block;transition:transform 0.15s">▸</span></td>`
-           : `<td></td>`)
+        ? `<td style="text-align:center;cursor:pointer;user-select:none" onclick="imprToggle('${groupKey}', this)" title="Xem chi tiết scenario + lịch sử kỳ import"><span class="impr-caret" style="font-size:0.82rem;color:var(--terracotta);display:inline-block;transition:transform 0.15s">▸</span></td>`
         : `<td></td>`;
-      const rowStyle = isMain ? '' : 'background:var(--warm-sand)';
       const rowClass = isMain ? `impr-main-row` : `impr-sub-row impr-sub-${groupKey}`;
-      const rowAttrs = isMain ? '' : `style="display:none;${rowStyle}"`;
+      const rowAttrs = isMain ? '' : `style="display:none;background:var(--warm-sand)"`;
 
       return `<tr class="${rowClass}" ${rowAttrs}>
         ${toggleCell}
@@ -2541,8 +2542,30 @@
         <td style="text-align:center">${ctrChip}</td>
         <td style="text-align:center">${crChip}</td>
         <td style="text-align:center">${roasChip}</td>
-        <td title="${scenTitle}"><span class="pri-badge ${ac.pri}">${actionLabel}</span></td>
+        <td><span class="pri-badge ${ac.pri}">${actionLabel}</span></td>
         <td style="font-size:0.78rem">${refCell}</td>
+      </tr>`;
+    }
+
+    // Row mở rộng: case + cause + fix_listing + fix_ads cho đúng kỳ d (span toàn chiều ngang).
+    function _imprDetailRow(d, groupKey) {
+      const items = [
+        ['Case',        d.scenario_label],
+        ['Nguyên nhân', d.scenario_cause],
+        ['Sửa listing', d.scenario_fix_listing],
+        ['Sửa ads',     d.scenario_fix_ads],
+      ].filter(([, v]) => v);
+      const body = items.length
+        ? items.map(([k, v]) =>
+            `<div style="margin-bottom:6px"><span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;display:block;margin-bottom:2px">${k}</span><span style="font-family:var(--font-sans);font-size:0.80rem;color:var(--charcoal);line-height:1.5">${_imprEsc(v)}</span></div>`
+          ).join('')
+        : `<span style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);font-style:italic">Không có scenario mapping cho kỳ này.</span>`;
+      return `<tr class="impr-sub-row impr-sub-${groupKey}" style="display:none;background:var(--warm-sand)">
+        <td></td>
+        <td colspan="8" style="padding:10px 14px 14px;border-top:1px dashed var(--border-cream)">
+          <div style="font-family:var(--font-sans);font-size:0.70rem;font-weight:600;color:var(--terracotta);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">Chi tiết kỳ ${_imprEsc(d.period || '—')}</div>
+          ${body}
+        </td>
       </tr>`;
     }
 
@@ -2552,8 +2575,14 @@
         const latest = group[0];
         const older  = group.slice(1);
         const key = (latest.listing_id || '').replace(/[^a-zA-Z0-9]/g, '');
-        let out = _imprRowCells(latest, { isMain: true, groupKey: key, hasChildren: older.length > 0 });
-        out += older.map(d => _imprRowCells(d, { isMain: false, groupKey: key })).join('');
+        let out = _imprMetricRow(latest, { isMain: true, groupKey: key });
+        // Details của kỳ latest (nằm trong phần sổ ra).
+        out += _imprDetailRow(latest, key);
+        // Các kỳ cũ hơn: mỗi kỳ gồm row metric + row detail.
+        older.forEach(d => {
+          out += _imprMetricRow(d, { isMain: false, groupKey: key });
+          out += _imprDetailRow(d, key);
+        });
         return out;
       }).join('');
       document.getElementById('imprTableBody').innerHTML = html || '<tr><td colspan="9" style="text-align:center;color:var(--stone);padding:24px">Không có listing nào.</td></tr>';
