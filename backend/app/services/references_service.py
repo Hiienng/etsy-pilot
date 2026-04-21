@@ -55,6 +55,8 @@ WITH ranked AS (
     )
     WHERE l.category IS NOT NULL
       AND ml.tag_ranking IS NOT NULL
+      AND ml.id != l.listing_id
+      AND NOT EXISTS (SELECT 1 FROM listings l2 WHERE l2.listing_id = ml.id)
       AND (CAST(:listing_id AS VARCHAR) IS NULL OR l.listing_id = CAST(:listing_id AS VARCHAR))
 )
 SELECT * FROM ranked WHERE rnk <= :top_n
