@@ -121,99 +121,107 @@ async def seed_scenarios(db: AsyncSession) -> None:
 
 async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
     """
-    listing_report → compute CTR/CR → classify roas_band/cr_level/ctr_level
-    → JOIN scenarios_rules on 3 dimensions
-    → LATERAL JOIN market_listing for reference product.
+    listings (all) → JOIN listing_report (all range-period rows, dedup listing_id+period)
+        → compute CTR/CR per row, classify bands
+        → LEFT JOIN LATERAL market_listing (id = listing_id, latest) → own market data
+        → LEFT JOIN scenarios_rules (3-dim)
+        → LEFT JOIN LATERAL market_listing (competitor ref, better badge/review/rating)
+    Sort: listing_id ASC
     """
     sql = text(f"""
         WITH lr AS (
-            SELECT
-                lr.listing_id,
-                lr.title,
-                lr.category                        AS product,
-                CASE WHEN lr.views > 0
-                     THEN ROUND(lr.clicks::numeric / lr.views * 100, 2)
+            SELECT DISTINCT ON (listing_id, period)
+                listing_id,
+                title,
+                category                           AS product,
+                period,
+                import_time                        AS reference_date,
+                views,
+                clicks,
+                orders,
+                revenue,
+                spend,
+                COALESCE(roas, 0)                  AS roas,
+                CASE WHEN views > 0
+                     THEN ROUND(clicks::numeric / views * 100, 2)
                      ELSE 0 END                    AS ctr,
-                CASE WHEN lr.clicks > 0
-                     THEN ROUND(lr.orders::numeric / lr.clicks * 100, 2)
+                CASE WHEN clicks > 0
+                     THEN ROUND(orders::numeric / clicks * 100, 2)
                      ELSE 0 END                    AS cr,
-                COALESCE(lr.roas, 0)               AS roas,
-                lr.views,
-                lr.clicks,
-                lr.orders,
-                lr.revenue,
-                lr.spend,
-                -- classify roas_band
                 CASE
-                    WHEN COALESCE(lr.orders, 0) = 0           THEN 'no_sales'
-                    WHEN lr.roas >= {ROAS_BREAKEVEN}           THEN 'profitable'
-                    WHEN lr.roas >= 1                           THEN 'slight_loss'
+                    WHEN COALESCE(orders, 0) = 0           THEN 'no_sales'
+                    WHEN COALESCE(roas, 0) >= {ROAS_BREAKEVEN} THEN 'profitable'
+                    WHEN COALESCE(roas, 0) >= 1            THEN 'slight_loss'
                     ELSE 'heavy_loss'
                 END                                AS roas_band,
-                -- classify cr_level
                 CASE
-                    WHEN COALESCE(lr.orders, 0) = 0           THEN 'zero'
-                    WHEN lr.clicks > 0
-                         AND (lr.orders::numeric / lr.clicks * 100) >= {CR_THRESHOLD}
-                                                               THEN 'high'
+                    WHEN COALESCE(orders, 0) = 0           THEN 'zero'
+                    WHEN clicks > 0
+                         AND (orders::numeric / clicks * 100) >= {CR_THRESHOLD}
+                                                            THEN 'high'
                     ELSE 'low'
                 END                                AS cr_level,
-                -- classify ctr_level
                 CASE
-                    WHEN lr.views > 0
-                         AND (lr.clicks::numeric / lr.views * 100) >= {CTR_THRESHOLD}
-                                                               THEN 'high'
+                    WHEN views > 0
+                         AND (clicks::numeric / views * 100) >= {CTR_THRESHOLD}
+                                                            THEN 'high'
                     ELSE 'low'
                 END                                AS ctr_level
-            FROM (
-                SELECT DISTINCT ON (listing_id) *
-                FROM listing_report
-                ORDER BY listing_id, import_time DESC
-            ) lr
+            FROM listing_report
+            WHERE period LIKE '% - %'
+            ORDER BY listing_id, period, import_time DESC
         )
         SELECT
-            lr.listing_id,
-            lr.title,
-            lr.product,
+            l.listing_id,
+            COALESCE(lr.title, l.title)            AS title,
+            COALESCE(lr.product, l.category)       AS product,
+            lr.period,
+            lr.reference_date,
             lr.ctr,
             lr.cr,
             lr.roas,
-            'https://www.etsy.com/listing/' || lr.listing_id AS url,
+            COALESCE(l.url, 'https://www.etsy.com/listing/' || l.listing_id) AS url,
             lr.views,
             lr.clicks,
             lr.orders,
             lr.revenue,
             lr.spend,
-            -- scenario fields
+            own.price,
+            own.discount                           AS discount_price,
+            own.rating,
+            own.review_count,
+            own.badge,
+            own.free_shipping,
+            own.is_ad,
             sr.action                              AS scenario_action,
             sr.case_name                           AS scenario_label,
             sr.cause                               AS scenario_cause,
             sr.fix_listing                         AS scenario_fix_listing,
             sr.fix_ads                             AS scenario_fix_ads,
-            -- reference: best revenue-potential alike product from market
-            ref.title                              AS ref_title,
-            ref.shop_name                          AS ref_shop
-        FROM lr
-        LEFT JOIN scenarios_rules sr
-            ON  sr.roas_band  = lr.roas_band
-            AND sr.cr_level   = lr.cr_level
-            AND sr.ctr_level  = lr.ctr_level
+            re.reference_listing_id                AS ref_id,
+            re.ref_title                           AS ref_title,
+            re.ref_shop                            AS ref_shop,
+            re.ref_url                             AS ref_url,
+            re.ref_review_count                    AS ref_review_count,
+            re.ref_rating                          AS ref_rating,
+            re.ref_badge                           AS ref_badge
+        FROM listings l
+        LEFT JOIN lr ON lr.listing_id = l.listing_id
         LEFT JOIN LATERAL (
-            SELECT title, shop_name
+            SELECT price, discount, rating, review_count, badge, free_shipping, is_ad
             FROM market_listing
-            WHERE LOWER(product_type) LIKE '%' || LOWER(lr.product) || '%'
-               OR LOWER(lr.product)   LIKE '%' || LOWER(product_type) || '%'
-            ORDER BY (price::float * COALESCE(review_count, 0)) DESC NULLS LAST
+            WHERE id = l.listing_id
+            ORDER BY import_date DESC
             LIMIT 1
-        ) ref ON true
-        ORDER BY
-            CASE sr.action
-                WHEN 'improve_or_off' THEN 1
-                WHEN 'improve'        THEN 2
-                WHEN 'keep'           THEN 3
-                ELSE 4
-            END ASC,
-            lr.roas ASC NULLS LAST
+        ) own ON true
+        LEFT JOIN scenarios_rules sr
+            ON  sr.roas_band = lr.roas_band
+            AND sr.cr_level  = lr.cr_level
+            AND sr.ctr_level = lr.ctr_level
+        LEFT JOIN references_engine re
+            ON re.listing_id = l.listing_id
+           AND re.ref_rank   = 1
+        ORDER BY l.listing_id ASC, lr.period ASC
     """)
     result = await db.execute(sql)
     return [dict(r) for r in result.mappings().all()]
