@@ -96,17 +96,22 @@ def upsert_listings(dsn: str, items: list[dict]):
         if exists:
             cur.execute("""
                 UPDATE market_listing SET
+                    price          = COALESCE(%s, price),
+                    title          = COALESCE(%s, title),
+                    rating         = COALESCE(%s, rating),
                     badge          = COALESCE(%s, badge),
                     discount       = COALESCE(%s, discount),
-                    tag_ranking    = COALESCE(%s, tag_ranking),
-                    review_count   = COALESCE(review_count, %s),
+                    tag_ranking    = %s,
+                    review_count   = COALESCE(%s, review_count),
                     is_ad          = %s,
                     free_shipping  = %s,
                     import_date    = %s
                 WHERE id = %s
             """, (
-                item.get("badge"), item.get("discount"),
-                item.get("tag_ranking"), item.get("review_count"),
+                item.get("price"), item.get("title"),
+                item.get("rating_score"), item.get("badge"),
+                item.get("discount"), item.get("tag_ranking"),
+                item.get("review_count"),
                 bool(item.get("is_ad")), bool(item.get("free_shipping")),
                 today, lid,
             ))
@@ -135,14 +140,13 @@ def upsert_listings(dsn: str, items: list[dict]):
 
 
 def fill_original_price(dsn: str) -> int:
-    """Tính original_price = price / (1 - discount/100) cho rows chưa có."""
+    """Tính original_price = price / (1 - discount/100), overwrite mỗi lần crawl."""
     conn = get_conn(dsn); cur = conn.cursor()
     cur.execute("""
         UPDATE market_listing
         SET original_price = ROUND(price::numeric / (1 - discount::numeric / 100))
         WHERE price IS NOT NULL AND discount IS NOT NULL
           AND discount > 0 AND discount < 100
-          AND original_price IS NULL
     """)
     n = cur.rowcount
     conn.commit(); conn.close()
