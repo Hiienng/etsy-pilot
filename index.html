@@ -2628,7 +2628,7 @@
         <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtNum(r.ref_tag_ranking)}</td>
       </tr>`).join('');
 
-      const mappingTip = `Mapping references engine:<br>\u2022 Match: <code>ILIKE</code> <b>internal category</b> vào <b>market_listing.search_tag / product_type / title</b>.<br>\u2022 Sort: <code>tag_ranking ASC NULLS LAST</code>, tie-break <code>review_count DESC</code>.<br>\u2022 Self-inclusion: OK — internal listing có thể xuất hiện làm rank-1 nếu cũng nằm trong market_listing.`;
+      const mappingTip = `Cách chọn reference:<br>Hệ thống tìm các listing trên thị trường có chứa <b>tên sản phẩm</b> (category) của listing nội bộ — thường xuất hiện trong <b>tiêu đề</b>, cũng có khi trong từ khoá tìm kiếm hoặc loại sản phẩm.<br><br>Sau đó xếp hạng theo <b>thứ hạng tìm kiếm trên Etsy</b> (xuất hiện sớm ⇒ tốt), lấy <b>top 3</b>.`;
       return `<div style="margin-top:14px">
         <div style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;gap:6px">
           <span>Listing</span>
