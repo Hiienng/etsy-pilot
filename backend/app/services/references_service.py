@@ -20,29 +20,46 @@ CREATE TABLE IF NOT EXISTS references_engine (
     ref_shop             TEXT,
     ref_url              TEXT,
     ref_price            INTEGER,
+    ref_discount         INTEGER,
     ref_rating           REAL,
     ref_review_count     INTEGER,
     ref_tag_ranking      INTEGER,
     ref_badge            TEXT,
+    ref_free_shipping    BOOLEAN,
+    ref_product_type     TEXT,
+    ref_import_date      DATE,
     match_method         VARCHAR(16)  DEFAULT 'category',
     refreshed_at         TIMESTAMPTZ  DEFAULT now(),
     PRIMARY KEY (listing_id, reference_listing_id)
 )
 """
 
+# Migration: add columns if table đã tồn tại với schema cũ.
+_MIGRATE_COLUMNS_SQL = """
+ALTER TABLE references_engine
+    ADD COLUMN IF NOT EXISTS ref_discount      INTEGER,
+    ADD COLUMN IF NOT EXISTS ref_free_shipping BOOLEAN,
+    ADD COLUMN IF NOT EXISTS ref_product_type  TEXT,
+    ADD COLUMN IF NOT EXISTS ref_import_date   DATE
+"""
+
 _SELECT_CANDIDATES_SQL = """
 WITH ranked AS (
     SELECT
         l.listing_id,
-        ml.id        AS reference_listing_id,
-        ml.title     AS ref_title,
-        ml.shop_name AS ref_shop,
-        ml.url       AS ref_url,
-        ml.price     AS ref_price,
-        ml.rating    AS ref_rating,
+        ml.id           AS reference_listing_id,
+        ml.title        AS ref_title,
+        ml.shop_name    AS ref_shop,
+        ml.url          AS ref_url,
+        ml.price        AS ref_price,
+        ml.discount     AS ref_discount,
+        ml.rating       AS ref_rating,
         ml.review_count AS ref_review_count,
         ml.tag_ranking  AS ref_tag_ranking,
         ml.badge        AS ref_badge,
+        ml.free_shipping AS ref_free_shipping,
+        ml.product_type AS ref_product_type,
+        ml.import_date  AS ref_import_date,
         ROW_NUMBER() OVER (
             PARTITION BY l.listing_id
             ORDER BY ml.tag_ranking ASC NULLS LAST, ml.review_count DESC NULLS LAST
@@ -65,26 +82,32 @@ SELECT * FROM ranked WHERE rnk <= :top_n
 _UPSERT_SQL = """
 INSERT INTO references_engine (
     listing_id, reference_listing_id, ref_rank,
-    ref_title, ref_shop, ref_url, ref_price,
+    ref_title, ref_shop, ref_url, ref_price, ref_discount,
     ref_rating, ref_review_count, ref_tag_ranking, ref_badge,
+    ref_free_shipping, ref_product_type, ref_import_date,
     match_method, refreshed_at
 ) VALUES (
     :listing_id, :reference_listing_id, :rnk,
-    :ref_title, :ref_shop, :ref_url, :ref_price,
+    :ref_title, :ref_shop, :ref_url, :ref_price, :ref_discount,
     :ref_rating, :ref_review_count, :ref_tag_ranking, :ref_badge,
+    :ref_free_shipping, :ref_product_type, :ref_import_date,
     'category', now()
 )
 ON CONFLICT (listing_id, reference_listing_id) DO UPDATE SET
-    ref_rank         = EXCLUDED.ref_rank,
-    ref_title        = COALESCE(EXCLUDED.ref_title,        references_engine.ref_title),
-    ref_shop         = COALESCE(EXCLUDED.ref_shop,         references_engine.ref_shop),
-    ref_url          = COALESCE(EXCLUDED.ref_url,          references_engine.ref_url),
-    ref_price        = COALESCE(EXCLUDED.ref_price,        references_engine.ref_price),
-    ref_rating       = COALESCE(EXCLUDED.ref_rating,       references_engine.ref_rating),
-    ref_review_count = COALESCE(EXCLUDED.ref_review_count, references_engine.ref_review_count),
-    ref_tag_ranking  = COALESCE(EXCLUDED.ref_tag_ranking,  references_engine.ref_tag_ranking),
-    ref_badge        = COALESCE(EXCLUDED.ref_badge,        references_engine.ref_badge),
-    refreshed_at     = now()
+    ref_rank          = EXCLUDED.ref_rank,
+    ref_title         = COALESCE(EXCLUDED.ref_title,         references_engine.ref_title),
+    ref_shop          = COALESCE(EXCLUDED.ref_shop,          references_engine.ref_shop),
+    ref_url           = COALESCE(EXCLUDED.ref_url,           references_engine.ref_url),
+    ref_price         = COALESCE(EXCLUDED.ref_price,         references_engine.ref_price),
+    ref_discount      = COALESCE(EXCLUDED.ref_discount,      references_engine.ref_discount),
+    ref_rating        = COALESCE(EXCLUDED.ref_rating,        references_engine.ref_rating),
+    ref_review_count  = COALESCE(EXCLUDED.ref_review_count,  references_engine.ref_review_count),
+    ref_tag_ranking   = COALESCE(EXCLUDED.ref_tag_ranking,   references_engine.ref_tag_ranking),
+    ref_badge         = COALESCE(EXCLUDED.ref_badge,         references_engine.ref_badge),
+    ref_free_shipping = COALESCE(EXCLUDED.ref_free_shipping, references_engine.ref_free_shipping),
+    ref_product_type  = COALESCE(EXCLUDED.ref_product_type,  references_engine.ref_product_type),
+    ref_import_date   = COALESCE(EXCLUDED.ref_import_date,   references_engine.ref_import_date),
+    refreshed_at      = now()
 """
 
 
@@ -94,6 +117,7 @@ async def refresh_references(
     listing_id: str | None = None,
 ) -> dict:
     await db.execute(text(_CREATE_TABLE_SQL))
+    await db.execute(text(_MIGRATE_COLUMNS_SQL))
 
     # Xoá refs cũ của scope đang refresh — tránh tồn đọng khi top-N thay đổi.
     await db.execute(
@@ -146,8 +170,9 @@ async def get_references(
         text(
             """
             SELECT listing_id, reference_listing_id, ref_rank,
-                   ref_title, ref_shop, ref_url, ref_price,
+                   ref_title, ref_shop, ref_url, ref_price, ref_discount,
                    ref_rating, ref_review_count, ref_tag_ranking, ref_badge,
+                   ref_free_shipping, ref_product_type, ref_import_date,
                    refreshed_at
             FROM references_engine
             WHERE (CAST(:listing_id AS VARCHAR) IS NULL OR listing_id = CAST(:listing_id AS VARCHAR))

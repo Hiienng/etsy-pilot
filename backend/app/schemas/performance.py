@@ -27,19 +27,14 @@ class ListingDashboardItem(BaseModel):
     badge: str | None = None
     free_shipping: bool | None = None
     is_ad: bool | None = None
+    tag_ranking: int | None = None
     # scenario (from scenarios_rules JOIN)
     scenario_action: str | None = None
     scenario_label: str | None = None
     scenario_cause: str | None = None
     scenario_fix_listing: str | None = None
     scenario_fix_ads: str | None = None
-    # reference: competitor with better market performance
-    ref_id: str | None = None
-    ref_title: str | None = None
-    ref_shop: str | None = None
-    ref_url: str | None = None
-    ref_review_count: int | None = None
-    ref_rating: float | None = None
-    ref_badge: str | None = None
+    # references: top-N market listings from references_engine (ordered by ref_rank)
+    references: list[dict] | None = None
     # keywords: list of dicts from keyword_report at latest import_time
     keywords: list[dict] | None = None

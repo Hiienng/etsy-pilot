@@ -1253,8 +1253,8 @@
                   <th style="text-align:center">CTR</th>
                   <th style="text-align:center">CR</th>
                   <th style="text-align:center">ROAS</th>
+                  <th>Case</th>
                   <th>Scenario</th>
-                  <th>Reference</th>
                 </tr>
               </thead>
               <tbody id="imprTableBody"></tbody>
@@ -2494,8 +2494,9 @@
         if (crF   === 'fail' && d.cr   >= 3)   return false;
         if (roasF === 'pass' && d.roas <  2)   return false;
         if (roasF === 'fail' && d.roas >= 2)   return false;
-        if (vmF   === 'yes'  && !d.ref_title)  return false;
-        if (vmF   === 'no'   &&  d.ref_title)  return false;
+        const hasRef = Array.isArray(d.references) && d.references.length > 0;
+        if (vmF   === 'yes'  && !hasRef) return false;
+        if (vmF   === 'no'   &&  hasRef) return false;
         return true;
       });
     }
@@ -2514,12 +2515,8 @@
       const ctrChip  = d.ctr  >= 1.5 ? `<span class="metric-chip chip-ok">${d.ctr}%</span>`  : `<span class="metric-chip chip-warn">${d.ctr}%</span>`;
       const crChip   = d.cr   >= 3   ? `<span class="metric-chip chip-ok">${d.cr}%</span>`   : `<span class="metric-chip chip-warn">${d.cr}%</span>`;
       const roasChip = d.roas >= 2   ? `<span class="metric-chip chip-ok">${d.roas}x</span>` : `<span class="metric-chip chip-neu">${d.roas}x</span>`;
-      const refLabel = d.ref_title ? (d.ref_title.length > 36 ? d.ref_title.slice(0, 34) + '…' : d.ref_title) : null;
-      const refShopLabel = d.ref_shop ? `<span style="font-size:0.70rem;color:var(--stone);display:block">${d.ref_shop}</span>` : '';
-      const refCell  = d.ref_title
-        ? (d.ref_url
-          ? `<a href="${d.ref_url}" target="_blank" rel="noopener" style="font-size:0.78rem;color:var(--terracotta);text-decoration:none">${refLabel}</a>${refShopLabel}`
-          : `<span style="font-size:0.78rem;color:var(--charcoal)">${refLabel}</span>${refShopLabel}`)
+      const caseCell = d.scenario_label
+        ? `<span style="font-size:0.82rem;color:var(--charcoal)">${_imprEsc(d.scenario_label)}</span>`
         : `<span style="font-size:0.78rem;color:var(--stone)">—</span>`;
       const actionLabel = act === 'keep' ? 'Giữ nguyên' : act === 'improve' ? 'Cải thiện' : 'Cải thiện / Tắt';
       const idCell = d.url
@@ -2542,8 +2539,8 @@
         <td style="text-align:center">${ctrChip}</td>
         <td style="text-align:center">${crChip}</td>
         <td style="text-align:center">${roasChip}</td>
+        <td>${caseCell}</td>
         <td><span class="pri-badge ${ac.pri}">${actionLabel}</span></td>
-        <td style="font-size:0.78rem">${refCell}</td>
       </tr>`;
     }
 
@@ -2578,27 +2575,101 @@
       </div>`;
     }
 
-    // Row mở rộng: case + cause + fix_listing + fix_ads cho đúng kỳ d (span toàn chiều ngang).
-    // `withKeywords` = true → kèm bảng keywords (chỉ gắn trên row latest).
-    function _imprDetailRow(d, groupKey, withKeywords) {
+    // Format helpers cho sub-table LISTING.
+    function _imprFmtNum(v) { return (v == null || v === '') ? '—' : Number(v).toLocaleString('en-US'); }
+    function _imprFmtPrice(v) { return (v == null || v === '') ? '—' : `$${(Number(v) / 100).toFixed(2)}`; }
+    function _imprFmtDiscount(v) { return (v == null || v === '' || v === 0) ? '—' : `-${v}%`; }
+    function _imprFmtRating(v) { return (v == null || v === '') ? '—' : Number(v).toFixed(1); }
+    function _imprFmtBool(v) { return v === true ? '✓' : v === false ? '—' : '—'; }
+
+    // Bảng LISTING: internal listing row + top-N reference rows.
+    // 13 cols: ID | Sản phẩm | Import date | CTR | CR | ROAS | Price | Discount | Rating | #review | badge | freeship | rank
+    function _imprListingTable(d) {
+      const headCells = ['ID','Sản phẩm','Import date','CTR','CR','ROAS','Price','Discount','Rating','#review','badge','freeship','rank'];
+      const head = `<thead><tr style="font-family:var(--font-sans);font-size:0.70rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.04em">
+        ${headCells.map((h, i) => `<th style="text-align:${i >= 3 ? 'right' : 'left'};padding:4px 8px;font-weight:600;white-space:nowrap">${h}</th>`).join('')}
+      </tr></thead>`;
+
+      // Internal listing row — có đủ metrics + own market data.
+      const ctrChip  = d.ctr  >= 1.5 ? `<span class="metric-chip chip-ok">${d.ctr}%</span>`  : `<span class="metric-chip chip-warn">${d.ctr}%</span>`;
+      const crChip   = d.cr   >= 3   ? `<span class="metric-chip chip-ok">${d.cr}%</span>`   : `<span class="metric-chip chip-warn">${d.cr}%</span>`;
+      const roasChip = d.roas >= 2   ? `<span class="metric-chip chip-ok">${d.roas}x</span>` : `<span class="metric-chip chip-neu">${d.roas}x</span>`;
+      const internalRow = `<tr style="font-family:var(--font-sans);font-size:0.76rem;color:var(--charcoal);border-top:1px solid var(--border-cream)">
+        <td style="padding:4px 8px">${d.url
+          ? `<a href="${d.url}" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--terracotta);text-decoration:underline">${d.listing_id}</a>`
+          : `<span style="font-family:var(--font-mono);font-size:0.76rem">${d.listing_id || '—'}</span>`}</td>
+        <td style="padding:4px 8px"><span class="metric-chip chip-neu" style="font-size:0.68rem">${d.product || '—'}</span></td>
+        <td style="padding:4px 8px;font-family:var(--font-mono);white-space:nowrap">${_imprEsc(d.period || '—')}</td>
+        <td style="padding:4px 8px;text-align:right">${ctrChip}</td>
+        <td style="padding:4px 8px;text-align:right">${crChip}</td>
+        <td style="padding:4px 8px;text-align:right">${roasChip}</td>
+        <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtPrice(d.price)}</td>
+        <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtDiscount(d.discount_price)}</td>
+        <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtRating(d.rating)}</td>
+        <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtNum(d.review_count)}</td>
+        <td style="padding:4px 8px;text-align:right">${d.badge ? `<span class="metric-chip chip-neu" style="font-size:0.68rem">${_imprEsc(d.badge)}</span>` : '—'}</td>
+        <td style="padding:4px 8px;text-align:right">${_imprFmtBool(d.free_shipping)}</td>
+        <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtNum(d.tag_ranking)}</td>
+      </tr>`;
+
+      // Reference rows — market listings, không có CTR/CR/ROAS.
+      const refs = Array.isArray(d.references) ? d.references : [];
+      const refRows = refs.map(r => `<tr style="font-family:var(--font-sans);font-size:0.76rem;color:var(--charcoal);border-top:1px solid var(--border-cream);background:var(--parchment)">
+        <td style="padding:4px 8px">${r.ref_url
+          ? `<a href="${r.ref_url}" target="_blank" rel="noopener" title="${_imprEsc(r.ref_title || '')}" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--terracotta);text-decoration:underline">${r.reference_listing_id}</a>`
+          : `<span style="font-family:var(--font-mono);font-size:0.76rem">${r.reference_listing_id}</span>`}</td>
+        <td style="padding:4px 8px">${r.ref_product_type ? `<span class="metric-chip chip-neu" style="font-size:0.68rem">${_imprEsc(r.ref_product_type)}</span>` : '—'}</td>
+        <td style="padding:4px 8px;font-family:var(--font-mono);white-space:nowrap">${_imprEsc(r.ref_import_date || '—')}</td>
+        <td style="padding:4px 8px;text-align:right;color:var(--stone)">—</td>
+        <td style="padding:4px 8px;text-align:right;color:var(--stone)">—</td>
+        <td style="padding:4px 8px;text-align:right;color:var(--stone)">—</td>
+        <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtPrice(r.ref_price)}</td>
+        <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtDiscount(r.ref_discount)}</td>
+        <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtRating(r.ref_rating)}</td>
+        <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtNum(r.ref_review_count)}</td>
+        <td style="padding:4px 8px;text-align:right">${r.ref_badge ? `<span class="metric-chip chip-neu" style="font-size:0.68rem">${_imprEsc(r.ref_badge)}</span>` : '—'}</td>
+        <td style="padding:4px 8px;text-align:right">${_imprFmtBool(r.ref_free_shipping)}</td>
+        <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtNum(r.ref_tag_ranking)}</td>
+      </tr>`).join('');
+
+      return `<div style="margin-top:14px">
+        <div style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;margin-bottom:4px">Listing</div>
+        <div style="overflow-x:auto;border:1px solid var(--border-cream);border-radius:4px;background:var(--parchment)">
+          <table style="width:100%;border-collapse:collapse">${head}<tbody>${internalRow}${refRows}</tbody></table>
+        </div>
+      </div>`;
+    }
+
+    // Row mở rộng — 2 cột: detail text (trái) + recommendation placeholder (phải), sau đó LISTING sub-table + KEYWORDS.
+    // `withExtras` = true → kèm LISTING sub-table và KEYWORDS (chỉ gắn trên row latest).
+    function _imprDetailRow(d, groupKey, withExtras) {
       const items = [
-        ['Case',        d.scenario_label],
         ['Nguyên nhân', d.scenario_cause],
         ['Sửa listing', d.scenario_fix_listing],
         ['Sửa ads',     d.scenario_fix_ads],
       ].filter(([, v]) => v);
-      const body = items.length
+      const detailBody = items.length
         ? items.map(([k, v]) =>
-            `<div style="margin-bottom:6px"><span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;display:block;margin-bottom:2px">${k}</span><span style="font-family:var(--font-sans);font-size:0.80rem;color:var(--charcoal);line-height:1.5">${_imprEsc(v)}</span></div>`
+            `<div style="margin-bottom:10px"><span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;display:block;margin-bottom:2px">${k}</span><span style="font-family:var(--font-sans);font-size:0.80rem;color:var(--charcoal);line-height:1.5">${_imprEsc(v)}</span></div>`
           ).join('')
         : `<span style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);font-style:italic">Không có scenario mapping cho kỳ này.</span>`;
-      const kwBlock = withKeywords ? _imprKeywordTable(d.keywords) : '';
+
+      const recoBox = `<div style="border:1px solid var(--border-cream);border-radius:6px;background:var(--parchment);padding:14px;min-height:140px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-family:var(--font-serif);font-size:0.95rem;font-weight:600;color:var(--charcoal);text-decoration:underline">Reconmendation Box</div>
+        <div style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);text-decoration:underline">Available in phase 2</div>
+      </div>`;
+
+      const extras = withExtras ? (_imprListingTable(d) + _imprKeywordTable(d.keywords)) : '';
+
       return `<tr class="impr-sub-row impr-sub-${groupKey}" style="display:none;background:var(--warm-sand)">
         <td></td>
-        <td colspan="8" style="padding:10px 14px 14px;border-top:1px dashed var(--border-cream)">
-          <div style="font-family:var(--font-sans);font-size:0.70rem;font-weight:600;color:var(--terracotta);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">Chi tiết kỳ ${_imprEsc(d.period || '—')}</div>
-          ${body}
-          ${kwBlock}
+        <td colspan="8" style="padding:12px 14px 16px;border-top:1px dashed var(--border-cream)">
+          <div style="font-family:var(--font-sans);font-size:0.70rem;font-weight:600;color:var(--terracotta);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px">Chi tiết kỳ ${_imprEsc(d.period || '—')}</div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,340px);gap:18px;align-items:start">
+            <div>${detailBody}</div>
+            ${recoBox}
+          </div>
+          ${extras}
         </td>
       </tr>`;
     }
@@ -2610,9 +2681,9 @@
         const older  = group.slice(1);
         const key = (latest.listing_id || '').replace(/[^a-zA-Z0-9]/g, '');
         let out = _imprMetricRow(latest, { isMain: true, groupKey: key });
-        // Details của kỳ latest (nằm trong phần sổ ra) — kèm bảng keywords.
+        // Details của kỳ latest — kèm LISTING sub-table + KEYWORDS.
         out += _imprDetailRow(latest, key, true);
-        // Các kỳ cũ hơn: mỗi kỳ gồm row metric + row detail (không lặp keywords).
+        // Các kỳ cũ hơn: metric + detail text (không lặp LISTING/KEYWORDS).
         older.forEach(d => {
           out += _imprMetricRow(d, { isMain: false, groupKey: key });
           out += _imprDetailRow(d, key, false);

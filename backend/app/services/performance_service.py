@@ -193,23 +193,18 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
             own.badge,
             own.free_shipping,
             own.is_ad,
+            own.tag_ranking,
             sr.action                              AS scenario_action,
             sr.case_name                           AS scenario_label,
             sr.cause                               AS scenario_cause,
             sr.fix_listing                         AS scenario_fix_listing,
             sr.fix_ads                             AS scenario_fix_ads,
-            re.reference_listing_id                AS ref_id,
-            re.ref_title                           AS ref_title,
-            re.ref_shop                            AS ref_shop,
-            re.ref_url                             AS ref_url,
-            re.ref_review_count                    AS ref_review_count,
-            re.ref_rating                          AS ref_rating,
-            re.ref_badge                           AS ref_badge,
+            refs.references                        AS "references",
             kw.keywords                            AS keywords
         FROM listings l
         LEFT JOIN lr ON lr.listing_id = l.listing_id
         LEFT JOIN LATERAL (
-            SELECT price, discount, rating, review_count, badge, free_shipping, is_ad
+            SELECT price, discount, rating, review_count, badge, free_shipping, is_ad, tag_ranking
             FROM market_listing
             WHERE id = l.listing_id
             ORDER BY import_date DESC
@@ -219,9 +214,28 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
             ON  sr.roas_band = lr.roas_band
             AND sr.cr_level  = lr.cr_level
             AND sr.ctr_level = lr.ctr_level
-        LEFT JOIN references_engine re
-            ON re.listing_id = l.listing_id
-           AND re.ref_rank   = 1
+        LEFT JOIN LATERAL (
+            SELECT json_agg(
+                json_build_object(
+                    'reference_listing_id', re.reference_listing_id,
+                    'ref_rank',             re.ref_rank,
+                    'ref_title',            re.ref_title,
+                    'ref_shop',             re.ref_shop,
+                    'ref_url',              re.ref_url,
+                    'ref_price',            re.ref_price,
+                    'ref_discount',         re.ref_discount,
+                    'ref_rating',           re.ref_rating,
+                    'ref_review_count',     re.ref_review_count,
+                    'ref_tag_ranking',      re.ref_tag_ranking,
+                    'ref_badge',            re.ref_badge,
+                    'ref_free_shipping',    re.ref_free_shipping,
+                    'ref_product_type',     re.ref_product_type,
+                    'ref_import_date',      re.ref_import_date
+                ) ORDER BY re.ref_rank
+            ) AS "references"
+            FROM references_engine re
+            WHERE re.listing_id = l.listing_id
+        ) refs ON true
         LEFT JOIN LATERAL (
             SELECT json_agg(
                 json_build_object(
