@@ -2628,16 +2628,39 @@
         <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtNum(r.ref_tag_ranking)}</td>
       </tr>`).join('');
 
-      const mappingTip = "Mapping: ILIKE internal category vào market_listing.search_tag / product_type / title. Top-N sắp theo tag_ranking ASC, tie-break review_count DESC. Cho phép self-inclusion (internal có thể là rank-1 nếu cùng nằm trong market_listing).";
+      const mappingTip = `Mapping references engine:<br>\u2022 Match: <code>ILIKE</code> <b>internal category</b> vào <b>market_listing.search_tag / product_type / title</b>.<br>\u2022 Sort: <code>tag_ranking ASC NULLS LAST</code>, tie-break <code>review_count DESC</code>.<br>\u2022 Self-inclusion: OK — internal listing có thể xuất hiện làm rank-1 nếu cũng nằm trong market_listing.`;
       return `<div style="margin-top:14px">
         <div style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;gap:6px">
           <span>Listing</span>
-          <span title="${mappingTip}" aria-label="mapping info" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;border:1px solid var(--stone);color:var(--stone);font-size:0.64rem;font-weight:700;cursor:help;user-select:none">?</span>
+          <span style="position:relative;display:inline-block">
+            <span onclick="imprHelp(this)" aria-label="mapping info" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;border:1px solid var(--stone);color:var(--stone);font-size:0.64rem;font-weight:700;cursor:pointer;user-select:none">?</span>
+            <span class="impr-help-pop" style="display:none;position:absolute;top:20px;left:0;z-index:50;width:340px;padding:10px 12px;background:var(--parchment);border:1px solid var(--border-cream);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.08);font-family:var(--font-sans);font-size:0.78rem;font-weight:400;color:var(--charcoal);letter-spacing:normal;text-transform:none;line-height:1.5">${mappingTip}</span>
+          </span>
         </div>
         <div style="overflow-x:auto;border:1px solid var(--border-cream);border-radius:4px;background:var(--parchment)">
           <table style="width:100%;border-collapse:collapse">${head}<tbody>${internalRow}${refRows}</tbody></table>
         </div>
       </div>`;
+    }
+
+    // Toggle popover ? — đóng tất cả popover khác, mở cái được click.
+    function imprHelp(triggerEl) {
+      const pop = triggerEl.parentElement.querySelector('.impr-help-pop');
+      const isOpen = pop.style.display === 'block';
+      document.querySelectorAll('.impr-help-pop').forEach(p => { p.style.display = 'none'; });
+      if (!isOpen) {
+        pop.style.display = 'block';
+        // Close on outside click
+        setTimeout(() => {
+          const handler = (e) => {
+            if (!pop.contains(e.target) && e.target !== triggerEl) {
+              pop.style.display = 'none';
+              document.removeEventListener('click', handler);
+            }
+          };
+          document.addEventListener('click', handler);
+        }, 0);
+      }
     }
 
     // Row mở rộng — 2 cột: detail text (trái) + recommendation placeholder (phải), sau đó LISTING sub-table + KEYWORDS.
