@@ -1188,10 +1188,6 @@
       <div id="perf-sub-improvement" style="display:none">
 
         <h2 class="section-heading" style="margin-bottom:6px">Listing Improvement</h2>
-        <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone);margin-bottom:24px">
-          Nguồn: <code style="font-family:var(--font-mono);font-size:0.88rem;background:var(--warm-sand);padding:1px 6px;border-radius:4px">market_listing</code>
-          · 128 listings · cập nhật 2026-04-16
-        </p>
 
         <!-- Filter + table -->
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
@@ -2570,7 +2566,7 @@
         <td style="text-align:right;padding:4px 8px;font-family:var(--font-mono)">${fmtRoas(k.roas)}</td>
       </tr>`).join('');
       return `<div style="margin-top:12px">
-        <div style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;margin-bottom:4px">Keywords (latest import)</div>
+        <div style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;margin-bottom:4px">Keywords</div>
         <table style="width:100%;border-collapse:collapse;background:var(--parchment);border:1px solid var(--border-cream);border-radius:4px;overflow:hidden">${head}<tbody>${body}</tbody></table>
       </div>`;
     }
@@ -2632,8 +2628,12 @@
         <td style="padding:4px 8px;text-align:right;font-family:var(--font-mono)">${_imprFmtNum(r.ref_tag_ranking)}</td>
       </tr>`).join('');
 
+      const mappingTip = "Mapping: ILIKE internal category vào market_listing.search_tag / product_type / title. Top-N sắp theo tag_ranking ASC, tie-break review_count DESC. Cho phép self-inclusion (internal có thể là rank-1 nếu cùng nằm trong market_listing).";
       return `<div style="margin-top:14px">
-        <div style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;margin-bottom:4px">Listing</div>
+        <div style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;gap:6px">
+          <span>Listing</span>
+          <span title="${mappingTip}" aria-label="mapping info" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;border:1px solid var(--stone);color:var(--stone);font-size:0.64rem;font-weight:700;cursor:help;user-select:none">?</span>
+        </div>
         <div style="overflow-x:auto;border:1px solid var(--border-cream);border-radius:4px;background:var(--parchment)">
           <table style="width:100%;border-collapse:collapse">${head}<tbody>${internalRow}${refRows}</tbody></table>
         </div>
@@ -2656,7 +2656,11 @@
 
       const recoBox = `<div style="border:1px solid var(--border-cream);border-radius:6px;background:var(--parchment);padding:14px;min-height:140px;display:flex;flex-direction:column;gap:8px">
         <div style="font-family:var(--font-serif);font-size:0.95rem;font-weight:600;color:var(--charcoal);text-decoration:underline">Reconmendation Box</div>
-        <div style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);text-decoration:underline">Available in phase 2</div>
+        <div style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);text-decoration">Available in phase 2</div>
+        <div style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);text-decoration">+ Ideal image:</div>
+        <div style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);text-decoration">+ Ideal price (base on market pricing):</div>
+        <div style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);text-decoration">+ Ideal discount percentage:</div>
+        <div style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);text-decoration">+ Recommended for hacking Etsy boosting algorithm</div>
       </div>`;
 
       const extras = withExtras ? (_imprListingTable(d) + _imprKeywordTable(d.keywords)) : '';
