@@ -242,7 +242,7 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
             SELECT json_agg(
                 json_build_object(
                     'keyword',          kr.keyword,
-                    'currently_status', kr.currently_status,
+                    'currently_status', kr.relevant,
                     'views',            kr.views,
                     'clicks',           kr.clicks,
                     'orders',           kr.orders,

@@ -49,7 +49,6 @@ async def create_tables() -> None:
         ("keyword_report", "import_time", "TIMESTAMPTZ"),
         ("keyword_report", "importer", "VARCHAR(64)"),
         ("keyword_report", "relevant", "VARCHAR(8)"),
-        ("keyword_report", "currently_status", "VARCHAR(8)"),
     ]
     async with engine.begin() as conn:
         for table, col, ddl_type in _MIGRATIONS:

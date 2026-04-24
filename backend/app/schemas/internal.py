@@ -31,7 +31,7 @@ class KeywordReportRow(BaseModel):
     listing_id: str
     keyword: str
     no_vm: str | None = None
-    currently_status: str | None = None
+    relevant: str | None = None
     period: str
     roas: float = 0
     orders: int = 0

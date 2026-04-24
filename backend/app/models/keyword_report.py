@@ -17,7 +17,6 @@ class KeywordReport(Base):
     clicks = Column(Integer, default=0)
     click_rate = Column(String(8), nullable=True)
     views = Column(Integer, default=0)
-    currently_status = Column(String(8), nullable=True)
     relevant = Column(String(8), nullable=True)
     import_time = Column(DateTime(timezone=True), nullable=True)
     importer = Column(String(64), nullable=True)
