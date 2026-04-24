@@ -133,6 +133,7 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
             SELECT DISTINCT ON (listing_id, period)
                 listing_id,
                 title,
+                no_vm,
                 category                           AS product,
                 period,
                 import_time                        AS reference_date,
@@ -181,6 +182,7 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
             lr.cr,
             lr.roas,
             COALESCE(l.url, 'https://www.etsy.com/listing/' || l.listing_id) AS url,
+            lr.no_vm,
             lr.views,
             lr.clicks,
             lr.orders,
@@ -239,14 +241,15 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
         LEFT JOIN LATERAL (
             SELECT json_agg(
                 json_build_object(
-                    'keyword',    kr.keyword,
-                    'views',      kr.views,
-                    'clicks',     kr.clicks,
-                    'orders',     kr.orders,
-                    'revenue',    kr.revenue,
-                    'spend',      kr.spend,
-                    'roas',       kr.roas,
-                    'click_rate', kr.click_rate
+                    'keyword',          kr.keyword,
+                    'currently_status', kr.currently_status,
+                    'views',            kr.views,
+                    'clicks',           kr.clicks,
+                    'orders',           kr.orders,
+                    'revenue',          kr.revenue,
+                    'spend',            kr.spend,
+                    'roas',             kr.roas,
+                    'click_rate',       kr.click_rate
                 ) ORDER BY COALESCE(kr.orders, 0) DESC, COALESCE(kr.clicks, 0) DESC
             ) AS keywords
             FROM keyword_report kr

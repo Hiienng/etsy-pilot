@@ -66,12 +66,13 @@ Return JSON:
 }
 
 TYPE B — Keyword performance table:
-Contains a table of keywords with columns: keyword, ROAS, orders, spend, revenue, clicks, click rate, views.
+Contains a table of keywords with columns: keyword, ROAS, orders, spend, revenue, clicks, click rate, views, and a status toggle (on/off).
 
 If TYPE B, extract:
 - listing_id: from URL bar
 - no_vm: if visible; otherwise null
-- keywords: array of objects with {keyword, roas, orders, spend, revenue, clicks, click_rate, views}
+- keywords: array of objects with {keyword, currently_status, roas, orders, spend, revenue, clicks, click_rate, views}
+  - currently_status: the on/off toggle state for the keyword — "on" if active, "off" if paused/disabled; null if not visible
   - click_rate: keep as string with % (e.g. "1.1%")
   - spend/revenue: float, no $
   - roas: float
@@ -82,7 +83,7 @@ Return JSON:
   "listing_id": "4438225302",
   "no_vm": "vm08",
   "keywords": [
-    {"keyword": "custom sweatshirts", "roas": 0, "orders": 0, "spend": 0.85, "revenue": 0, "clicks": 2, "click_rate": "1.1%", "views": 181}
+    {"keyword": "custom sweatshirts", "currently_status": "on", "roas": 0, "orders": 0, "spend": 0.85, "revenue": 0, "clicks": 2, "click_rate": "1.1%", "views": 181}
   ]
 }
 

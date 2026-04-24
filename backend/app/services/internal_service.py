@@ -323,6 +323,7 @@ async def confirm_import(
             listing_id=row["listing_id"],
             keyword=row["keyword"],
             no_vm=vm or row.get("no_vm"),
+            currently_status=row.get("currently_status"),
             period=row.get("period", ""),
             roas=row.get("roas", 0),
             orders=row.get("orders", 0),
