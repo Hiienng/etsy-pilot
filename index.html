@@ -969,223 +969,15 @@
       <!-- Pill toggle -->
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;">
         <div class="perf-pill-wrap" style="margin-bottom:0;">
-          <button class="perf-pill active" data-perf="performance">Listing Performance</button>
-          <button class="perf-pill"        data-perf="improvement">Listing Improvement</button>
-          <button class="perf-pill"        data-perf="scaleup">Listing Scale Up</button>
+          <button class="perf-pill active" data-perf="improvement">Listing Improvement</button>
           <button class="perf-pill"        data-perf="import">Internal Import</button>
         </div>
       </div>
 
       <!-- ── Sub-panel: Listing Performance ─────── -->
-      <div id="perf-sub-performance">
-
-      <h2 class="section-heading" style="margin-bottom:6px">Listing Performance</h2>
-      <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone);margin-bottom:24px">
-        Nguồn: <code style="font-family:var(--font-mono);font-size:0.88rem;background:var(--warm-sand);padding:1px 6px;border-radius:4px">internal_listing</code>
-        · 128 listings · 3 sản phẩm · cập nhật 2026-04-16
-      </p>
-
-      <!-- ── 03: Chi tiết theo sản phẩm ─────────────── -->
-      <p class="hub-section-label">03 — Phân tích chi tiết theo sản phẩm</p>
-
-      <div class="three-col" style="margin-bottom:24px">
-
-        <!-- Baby Blanket card -->
-        <div class="chart-card">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
-            <div>
-              <p class="chart-card-title" style="margin-bottom:2px">Baby Blanket</p>
-              <span style="font-family:var(--font-sans);font-size:0.75rem;color:var(--stone)">56 listings · 44% portfolio</span>
-            </div>
-            <span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:500;background:rgba(181,51,51,0.08);color:#b53333;padding:3px 8px;border-radius:6px">CTR 0/56 ⚠</span>
-          </div>
-          <div class="skill-list">
-            <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">CTR avg 1.41%</span><span class="skill-pct" style="color:#b53333">0/56 pass</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:70.5%;background:#b53333"></div></div>
-            </div>
-            <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">CR avg 4.28%</span><span class="skill-pct" style="color:#4a8c60">29/56 pass</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:51.8%;background:#4a8c60"></div></div>
-            </div>
-            <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">ROAS avg 1.88x</span><span class="skill-pct">24/56 pass</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:42.9%"></div></div>
-            </div>
-          </div>
-          <p style="font-family:var(--font-sans);font-size:0.80rem;color:var(--olive);margin-top:12px;padding-top:12px;border-top:1px solid var(--border-cream);line-height:1.5">
-            Buyer vào listing thì mua (CR ok) nhưng không click vào ban đầu. Thumbnail/title chưa đủ hấp dẫn trong feed.
-          </p>
-        </div>
-
-        <!-- Baby Onesie card -->
-        <div class="chart-card">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
-            <div>
-              <p class="chart-card-title" style="margin-bottom:2px">Baby Onesie</p>
-              <span style="font-family:var(--font-sans);font-size:0.75rem;color:var(--stone)">42 listings · 33% portfolio</span>
-            </div>
-            <span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:500;background:rgba(181,51,51,0.08);color:#b53333;padding:3px 8px;border-radius:6px">ROAS 0/42 ⚠</span>
-          </div>
-          <div class="skill-list">
-            <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">CTR avg 1.75%</span><span class="skill-pct">11/42 pass</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:87.5%"></div></div>
-            </div>
-            <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">CR avg 3.75%</span><span class="skill-pct" style="color:#b53333">18/42 pass</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:43.75%;background:#b53333"></div></div>
-            </div>
-            <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">ROAS avg 1.22x</span><span class="skill-pct" style="color:#b53333">0/42 pass</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:0%;background:#b53333"></div></div>
-            </div>
-          </div>
-          <p style="font-family:var(--font-sans);font-size:0.80rem;color:var(--olive);margin-top:12px;padding-top:12px;border-top:1px solid var(--border-cream);line-height:1.5">
-            ROAS thấp nhất nhóm — cần xem lại giá và chi phí quảng cáo. Market hot rate 100%, có room tăng giá.
-          </p>
-        </div>
-
-        <!-- Baby Romper card -->
-        <div class="chart-card" style="border-color:rgba(74,140,96,0.30);box-shadow:0 0 0 1px rgba(74,140,96,0.12),rgba(0,0,0,0.05) 0px 4px 24px">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
-            <div>
-              <p class="chart-card-title" style="margin-bottom:2px">Baby Romper</p>
-              <span style="font-family:var(--font-sans);font-size:0.75rem;color:var(--stone)">30 listings · 23% portfolio</span>
-            </div>
-            <span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:500;background:rgba(74,140,96,0.10);color:#4a8c60;padding:3px 8px;border-radius:6px">Best performer</span>
-          </div>
-          <div class="skill-list">
-            <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">CTR avg 1.71%</span><span class="skill-pct" style="color:#4a8c60">9/30 pass</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:85.5%;background:#4a8c60"></div></div>
-            </div>
-            <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">CR avg 4.53%</span><span class="skill-pct" style="color:#4a8c60">18/30 pass</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:60%;background:#4a8c60"></div></div>
-            </div>
-            <div class="skill-row">
-              <div class="skill-meta"><span class="skill-name">ROAS avg 1.64x</span><span class="skill-pct">8/30 pass</span></div>
-              <div class="skill-bar"><div class="skill-fill" style="width:26.7%"></div></div>
-            </div>
-          </div>
-          <p style="font-family:var(--font-sans);font-size:0.80rem;color:var(--olive);margin-top:12px;padding-top:12px;border-top:1px solid var(--border-cream);line-height:1.5">
-            Duy nhất có listing đạt cả 3 chỉ số. Market hot rate 71% — under-indexed (23% portfolio). Đây là sản phẩm cần đầu tư mạnh nhất.
-          </p>
-        </div>
-
-      </div>
-
-      <!-- CTR/CR/ROAS charts -->
-      <div class="three-col" style="margin-bottom:24px">
-        <div class="chart-card">
-          <p class="chart-card-title">CTR trung bình theo sản phẩm</p>
-          <p class="chart-card-sub">Đường đỏ đứt = ngưỡng 2%. Blanket không có listing nào vượt qua.</p>
-          <div class="chart-wrap chart-wrap-md"><canvas id="perfCTR"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <p class="chart-card-title">CR trung bình theo sản phẩm</p>
-          <p class="chart-card-sub">Đường đứt = ngưỡng 4%. Onesie 3.75% chưa đạt — cần cải thiện hình/tags.</p>
-          <div class="chart-wrap chart-wrap-md"><canvas id="perfCR"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <p class="chart-card-title">ROAS trung bình theo sản phẩm</p>
-          <p class="chart-card-sub">Đường đứt = ngưỡng tạm 2x. Onesie 1.22x cần xem lại bid/giá sản phẩm.</p>
-          <div class="chart-wrap chart-wrap-md"><canvas id="perfROAS"></canvas></div>
-        </div>
-      </div>
-
-      <div class="two-col" style="margin-bottom:28px">
-        <div class="chart-card">
-          <p class="chart-card-title">Phân bổ listings đạt / chưa đạt CTR 2%</p>
-          <p class="chart-card-sub">Blanket toàn bộ màu đỏ — đây là vấn đề cần ưu tiên nhất.</p>
-          <div class="chart-wrap chart-wrap-sm"><canvas id="perfCTRStack"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <p class="chart-card-title">Phân bổ listings đạt / chưa đạt CR 4%</p>
-          <p class="chart-card-sub">Romper tỷ lệ tốt nhất (18/30). Onesie cần cải thiện landing page/giá.</p>
-          <div class="chart-wrap chart-wrap-sm"><canvas id="perfCRStack"></canvas></div>
-        </div>
-      </div>
-
-      <!-- ── 04: Market context (secondary) ────────── -->
-      <p class="hub-section-label">04 — Bối cảnh thị trường</p>
-
-      <div class="two-col" style="margin-bottom:28px">
-        <div class="chart-card">
-          <p class="chart-card-title">Portfolio weight vs Market hot rate</p>
-          <p class="chart-card-sub">
-            Onesie under-indexed nặng nhất (33% portfolio vs 100% hot rate). Đây là gap chiến lược lớn nhất.
-          </p>
-          <div class="chart-wrap chart-wrap-md"><canvas id="perfChartGap"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <p class="chart-card-title">Cơ cấu 128 listings hiện tại</p>
-          <p class="chart-card-sub">Blanket chiếm 44% nhưng hiệu quả quảng cáo kém nhất. Cần cân bằng lại.</p>
-          <div class="chart-wrap chart-wrap-md"><canvas id="perfChartPortfolio"></canvas></div>
-        </div>
-      </div>
-
-      <!-- ── 05: Hành động ──────────────────────────── -->
-      <p class="hub-section-label">05 — Hành động ưu tiên</p>
-
-      <div class="chart-card">
-        <p class="chart-card-title">Ưu tiên cải thiện theo tác động</p>
-        <p class="chart-card-sub" style="margin-bottom:20px">Sắp xếp theo mức độ impact: quick win trước, chiến lược sau</p>
-        <table class="shop-table">
-          <thead>
-            <tr>
-              <th style="width:28px">#</th>
-              <th>Hành động</th>
-              <th style="text-align:center">Sản phẩm</th>
-              <th style="text-align:center">Impact</th>
-              <th>Lý do</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="color:var(--terracotta);font-weight:700">1</td>
-              <td><strong>Cải thiện thumbnail & title cho 54 listing CR tốt</strong></td>
-              <td style="text-align:center"><span style="font-size:0.72rem;background:var(--warm-sand);padding:1px 6px;border-radius:4px">tất cả</span></td>
-              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(74,140,96,0.10);color:#4a8c60;padding:2px 8px;border-radius:5px;font-weight:500">Quick win</span></td>
-              <td style="color:var(--charcoal);font-size:0.88rem">CR đã tốt — chỉ cần tăng CTR để chuyển thành doanh thu ngay</td>
-            </tr>
-            <tr>
-              <td style="color:var(--terracotta);font-weight:700">2</td>
-              <td><strong>Dùng 3 romper best-performer làm template</strong></td>
-              <td style="text-align:center"><span style="font-size:0.72rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:1px 6px;border-radius:4px;font-weight:500">romper</span></td>
-              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(74,140,96,0.10);color:#4a8c60;padding:2px 8px;border-radius:5px;font-weight:500">Quick win</span></td>
-              <td style="color:var(--charcoal);font-size:0.88rem">Nhân bản title/thumbnail pattern đã thành công sang listing khác</td>
-            </tr>
-            <tr>
-              <td style="color:var(--stone);font-weight:600">3</td>
-              <td><strong>Xác định break-even ROAS từng sản phẩm</strong></td>
-              <td style="text-align:center"><span style="font-size:0.72rem;background:var(--warm-sand);padding:1px 6px;border-radius:4px">tất cả</span></td>
-              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(181,51,51,0.08);color:#b53333;padding:2px 8px;border-radius:5px">Cần dữ liệu</span></td>
-              <td style="color:var(--charcoal);font-size:0.88rem">Onesie avg ROAS 1.22x — chưa rõ lời hay lỗ nếu không có break-even</td>
-            </tr>
-            <tr>
-              <td style="color:var(--stone);font-weight:600">4</td>
-              <td><strong>Review giá onesie — nâng giá thử nghiệm</strong></td>
-              <td style="text-align:center"><span style="font-size:0.72rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:1px 6px;border-radius:4px;font-weight:500">onesie</span></td>
-              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:2px 8px;border-radius:5px">Chiến lược</span></td>
-              <td style="color:var(--charcoal);font-size:0.88rem">Market hot rate 100%, avg $62 — có room tăng giá để cải thiện ROAS</td>
-            </tr>
-            <tr>
-              <td style="color:var(--stone);font-weight:600">5</td>
-              <td><strong>Tăng listing romper — đang under-indexed</strong></td>
-              <td style="text-align:center"><span style="font-size:0.72rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:1px 6px;border-radius:4px;font-weight:500">romper</span></td>
-              <td style="text-align:center"><span style="font-size:0.75rem;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:2px 8px;border-radius:5px">Chiến lược</span></td>
-              <td style="color:var(--charcoal);font-size:0.88rem">23% portfolio vs 71% market hot rate — gap lớn nhất cần lấp dần</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      </div><!-- /perf-sub-performance -->
 
       <!-- ── Sub-panel: Listing Improvement ──────── -->
-      <div id="perf-sub-improvement" style="display:none">
+      <div id="perf-sub-improvement">
 
         <h2 class="section-heading" style="margin-bottom:6px">Listing Improvement</h2>
 
@@ -1233,8 +1025,9 @@
               <label for="fVM" style="font-size:0.78rem;color:var(--stone);font-family:var(--font-sans)">VM</label>
               <select id="fVM" class="impr-select">
                 <option value="all">Tất cả</option>
-                <option value="yes">Có VM</option>
-                <option value="no">Không có</option>
+                <option value="VM01">VM01</option>
+                <option value="VM08">VM08</option>
+                <option value="nan">nan</option>
               </select>
             </div>
           </div>
@@ -1245,6 +1038,7 @@
                   <th style="width:32px"></th>
                   <th style="width:10%">ID</th>
                   <th>Sản phẩm</th>
+                  <th>VM</th>
                   <th>Import date</th>
                   <th style="text-align:center">CTR</th>
                   <th style="text-align:center">CR</th>
@@ -1264,122 +1058,6 @@
 
       </div><!-- /perf-sub-improvement -->
 
-      <!-- ── Sub-panel: Listing Scale Up ─────────── -->
-      <div id="perf-sub-scaleup" style="display:none">
-
-        <h2 class="section-heading" style="margin-bottom:6px">Listing Scale Up</h2>
-        <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone);margin-bottom:20px">
-          Nguồn <code style="font-family:var(--font-mono);font-size:0.88rem;background:var(--warm-sand);padding:1px 6px;border-radius:4px">market_listing</code>
-          · 180 listings · 95 product types → <strong>22 sewable</strong> · snapshot 2026-04-16
-        </p>
-
-        <!-- Signal callout -->
-        <div style="background:rgba(201,100,66,0.06);border:1px solid rgba(201,100,66,0.22);border-left:3px solid var(--terracotta);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:24px">
-          <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--charcoal);line-height:1.65">
-            <strong>Cơ hội lớn nhất đang bỏ lỡ:</strong> Baby bodysuit — 30 listings thị trường, avg <strong>22,192 reviews</strong>, hot rate 43%.
-            Kỹ năng may thêu y hệt baby onesie đang sản xuất nhưng <strong>chưa có một listing nào</strong> trong portfolio hiện tại.
-          </p>
-        </div>
-
-        <!-- 4 KPI cards -->
-        <p class="hub-section-label">01 — Tổng quan thị trường sewable</p>
-        <div class="mini-stat-row" style="margin-bottom:28px">
-          <div class="mini-stat">
-            <div class="mini-stat-value">22</div>
-            <div class="mini-stat-label">Sewable product types</div>
-            <div class="mini-stat-note">Lọc từ 95 loại sản phẩm</div>
-          </div>
-          <div class="mini-stat">
-            <div class="mini-stat-value" style="color:#4a8c60">3</div>
-            <div class="mini-stat-label">Đang có trong portfolio</div>
-            <div class="mini-stat-note">Blanket · Onesie · Romper</div>
-          </div>
-          <div class="mini-stat">
-            <div class="mini-stat-value" style="color:var(--terracotta)">19</div>
-            <div class="mini-stat-label">Cơ hội scale up</div>
-            <div class="mini-stat-note">Chưa khai thác</div>
-          </div>
-          <div class="mini-stat">
-            <div class="mini-stat-value" style="color:var(--terracotta)">4</div>
-            <div class="mini-stat-label">Tier S — Làm ngay</div>
-            <div class="mini-stat-note">Hot rate cao + demand lớn</div>
-          </div>
-        </div>
-
-        <!-- Opportunity matrix + top picks -->
-        <p class="hub-section-label">02 — Ma trận cơ hội</p>
-        <div class="two-col" style="margin-bottom:28px">
-          <div class="chart-card">
-            <p class="chart-card-title">Hot rate × Avg price × Demand</p>
-            <p class="chart-card-sub">Trục Y = hot rate (%), trục X = avg price ($). Kích thước bong bóng = demand (avg reviews). <span style="color:var(--terracotta);font-weight:500">■</span> = chưa làm · <span style="color:#4a8c60;font-weight:500">■</span> = đang có</p>
-            <div class="chart-wrap" style="height:300px"><canvas id="scaleupBubble"></canvas></div>
-          </div>
-          <div class="chart-card">
-            <p class="chart-card-title">Top 4 — Scale up ngay</p>
-            <p class="chart-card-sub" style="margin-bottom:16px">Sản phẩm sewable chưa có trong portfolio, hot rate cao, demand được validate</p>
-            <div style="display:flex;flex-direction:column;gap:14px">
-              <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-                  <strong style="font-size:0.88rem">Baby Bodysuit</strong>
-                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">43% hot · $41</span>
-                </div>
-                <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">30 market listings · avg 22,192 reviews · kỹ năng y hệt onesie đang làm → biggest miss</p>
-              </div>
-              <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-                  <strong style="font-size:0.88rem">Keepsake Album</strong>
-                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">100% hot · $110</span>
-                </div>
-                <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">Album bìa vải thêu tên & ngày sinh · avg 4,630 reviews · giá trị cao · kỹ năng lõi</p>
-              </div>
-              <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-                  <strong style="font-size:0.88rem">Name Pillow</strong>
-                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">100% hot · $62</span>
-                </div>
-                <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">Gối thêu tên · 1,183 reviews · sản phẩm đơn giản, kỹ năng thêu thuần tuý</p>
-              </div>
-              <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-                  <strong style="font-size:0.88rem">Sweatshirt (thêu)</strong>
-                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">100% hot · $83</span>
-                </div>
-                <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">Áo thêu tên · 807 reviews · giá cao · thêu trên vải dày = kỹ năng có sẵn</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Priority table -->
-        <p class="hub-section-label">03 — Danh sách sản phẩm scale up</p>
-        <div class="chart-card">
-          <div class="impr-filter-bar" id="scaleupFilters">
-            <button class="impr-filter active" data-sf="all">Tất cả</button>
-            <button class="impr-filter" data-sf="S">Tier S — Làm ngay</button>
-            <button class="impr-filter" data-sf="A">Tier A — Khuyến nghị</button>
-            <button class="impr-filter" data-sf="B">Tier B — Theo dõi</button>
-            <button class="impr-filter" data-sf="C">Emerging</button>
-          </div>
-          <div class="impr-table-wrap">
-            <table class="impr-table">
-              <thead>
-                <tr>
-                  <th>Sản phẩm</th>
-                  <th style="text-align:center">Tier</th>
-                  <th style="text-align:center">Hot rate</th>
-                  <th style="text-align:right">Avg price</th>
-                  <th style="text-align:right">Avg reviews</th>
-                  <th style="text-align:center">Market n</th>
-                  <th style="text-align:center">Portfolio</th>
-                  <th>Hành động</th>
-                </tr>
-              </thead>
-              <tbody id="scaleupTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-
-      </div><!-- /perf-sub-scaleup -->
 
       <!-- ── Sub-panel: Internal Import ──────────── -->
       <div id="perf-sub-import" style="display:none">
@@ -1500,7 +1178,117 @@
     <!-- ── Panel 2: Intelligence Hub ──────────────── -->
     <section class="hub-panel" id="tab-intelligence" role="tabpanel">
 
-      <h2 class="section-heading">Under Development ...</h2>
+        <h2 class="section-heading" style="margin-bottom:6px">Listing Scale Up</h2>
+        <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone);margin-bottom:20px">
+          Nguồn <code style="font-family:var(--font-mono);font-size:0.88rem;background:var(--warm-sand);padding:1px 6px;border-radius:4px">market_listing</code>
+          · 180 listings · 95 product types → <strong>22 sewable</strong> · snapshot 2026-04-16
+        </p>
+
+        <!-- Signal callout -->
+        <div style="background:rgba(201,100,66,0.06);border:1px solid rgba(201,100,66,0.22);border-left:3px solid var(--terracotta);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:24px">
+          <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--charcoal);line-height:1.65">
+            <strong>Cơ hội lớn nhất đang bỏ lỡ:</strong> Baby bodysuit — 30 listings thị trường, avg <strong>22,192 reviews</strong>, hot rate 43%.
+            Kỹ năng may thêu y hệt baby onesie đang sản xuất nhưng <strong>chưa có một listing nào</strong> trong portfolio hiện tại.
+          </p>
+        </div>
+
+        <!-- 4 KPI cards -->
+        <p class="hub-section-label">01 — Tổng quan thị trường sewable</p>
+        <div class="mini-stat-row" style="margin-bottom:28px">
+          <div class="mini-stat">
+            <div class="mini-stat-value">22</div>
+            <div class="mini-stat-label">Sewable product types</div>
+            <div class="mini-stat-note">Lọc từ 95 loại sản phẩm</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-value" style="color:#4a8c60">3</div>
+            <div class="mini-stat-label">Đang có trong portfolio</div>
+            <div class="mini-stat-note">Blanket · Onesie · Romper</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-value" style="color:var(--terracotta)">19</div>
+            <div class="mini-stat-label">Cơ hội scale up</div>
+            <div class="mini-stat-note">Chưa khai thác</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-value" style="color:var(--terracotta)">4</div>
+            <div class="mini-stat-label">Tier S — Làm ngay</div>
+            <div class="mini-stat-note">Hot rate cao + demand lớn</div>
+          </div>
+        </div>
+
+        <!-- Opportunity matrix + top picks -->
+        <p class="hub-section-label">02 — Ma trận cơ hội</p>
+        <div class="two-col" style="margin-bottom:28px">
+          <div class="chart-card">
+            <p class="chart-card-title">Hot rate × Avg price × Demand</p>
+            <p class="chart-card-sub">Trục Y = hot rate (%), trục X = avg price ($). Kích thước bong bóng = demand (avg reviews). <span style="color:var(--terracotta);font-weight:500">■</span> = chưa làm · <span style="color:#4a8c60;font-weight:500">■</span> = đang có</p>
+            <div class="chart-wrap" style="height:300px"><canvas id="scaleupBubble"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <p class="chart-card-title">Top 4 — Scale up ngay</p>
+            <p class="chart-card-sub" style="margin-bottom:16px">Sản phẩm sewable chưa có trong portfolio, hot rate cao, demand được validate</p>
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                  <strong style="font-size:0.88rem">Baby Bodysuit</strong>
+                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">43% hot · $41</span>
+                </div>
+                <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">30 market listings · avg 22,192 reviews · kỹ năng y hệt onesie đang làm → biggest miss</p>
+              </div>
+              <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                  <strong style="font-size:0.88rem">Keepsake Album</strong>
+                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">100% hot · $110</span>
+                </div>
+                <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">Album bìa vải thêu tên & ngày sinh · avg 4,630 reviews · giá trị cao · kỹ năng lõi</p>
+              </div>
+              <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                  <strong style="font-size:0.88rem">Name Pillow</strong>
+                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">100% hot · $62</span>
+                </div>
+                <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">Gối thêu tên · 1,183 reviews · sản phẩm đơn giản, kỹ năng thêu thuần tuý</p>
+              </div>
+              <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                  <strong style="font-size:0.88rem">Sweatshirt (thêu)</strong>
+                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">100% hot · $83</span>
+                </div>
+                <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">Áo thêu tên · 807 reviews · giá cao · thêu trên vải dày = kỹ năng có sẵn</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Priority table -->
+        <p class="hub-section-label">03 — Danh sách sản phẩm scale up</p>
+        <div class="chart-card">
+          <div class="impr-filter-bar" id="scaleupFilters">
+            <button class="impr-filter active" data-sf="all">Tất cả</button>
+            <button class="impr-filter" data-sf="S">Tier S — Làm ngay</button>
+            <button class="impr-filter" data-sf="A">Tier A — Khuyến nghị</button>
+            <button class="impr-filter" data-sf="B">Tier B — Theo dõi</button>
+            <button class="impr-filter" data-sf="C">Emerging</button>
+          </div>
+          <div class="impr-table-wrap">
+            <table class="impr-table">
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th style="text-align:center">Tier</th>
+                  <th style="text-align:center">Hot rate</th>
+                  <th style="text-align:right">Avg price</th>
+                  <th style="text-align:right">Avg reviews</th>
+                  <th style="text-align:center">Market n</th>
+                  <th style="text-align:center">Portfolio</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="scaleupTableBody"></tbody>
+            </table>
+          </div>
+        </div>
 
     </section>
 
@@ -2154,253 +1942,10 @@
       });
     }
 
-    // ── Performance Hub charts ────────────────────
-    function initPerfCharts() {
-      // Portfolio donut
-      new Chart(document.getElementById('perfChartPortfolio'), {
-        type: 'doughnut',
-        data: {
-          labels: ['baby blanket', 'baby onesie', 'baby romper'],
-          datasets: [{
-            data: [56, 42, 30],
-            backgroundColor: [ST, CO, TC],
-            borderWidth: 2, borderColor: '#faf9f5', hoverOffset: 6
-          }]
-        },
-        options: {
-          cutout: '62%',
-          plugins: {
-            legend: { position: 'right' },
-            tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} listings (${((ctx.parsed/128)*100).toFixed(1)}%)` } }
-          },
-          maintainAspectRatio: false
-        }
-      });
-
-      // Count bar grouped by status (all Closed)
-      // Gap chart: internal weight vs market hot rate
-      new Chart(document.getElementById('perfChartGap'), {
-        type: 'bar',
-        data: {
-          labels: ['baby blanket', 'baby onesie', 'baby romper'],
-          datasets: [
-            {
-              label: 'Portfolio weight (% listing internal)',
-              data: [43.8, 32.8, 23.4],
-              backgroundColor: ST,
-              borderRadius: 4, borderSkipped: false
-            },
-            {
-              label: 'Market hot rate (%)',
-              data: [50, 100, 71.4],
-              backgroundColor: TC,
-              borderRadius: 4, borderSkipped: false
-            }
-          ]
-        },
-        options: {
-          plugins: {
-            legend: { position: 'bottom' },
-            tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%` } }
-          },
-          scales: {
-            x: SCALE_X_CLEAN,
-            y: {
-              ...SCALE_Y_CLEAN,
-              max: 110,
-              ticks: { callback: v => v + '%' }
-            }
-          },
-          maintainAspectRatio: false
-        }
-      });
-
-      // CTR avg by product (bar) — threshold line at 2%
-      new Chart(document.getElementById('perfCTR'), {
-        type: 'bar',
-        data: {
-          labels: ['baby blanket', 'baby onesie', 'baby romper'],
-          datasets: [
-            {
-              label: 'Avg CTR (%)',
-              data: [1.41, 1.75, 1.71],
-              backgroundColor: [ST, CO, TC],
-              borderRadius: 6, borderSkipped: false,
-              order: 2
-            },
-            {
-              label: 'Ngưỡng 2%',
-              data: [2, 2, 2],
-              type: 'line',
-              borderColor: '#b53333',
-              borderWidth: 1.5,
-              borderDash: [5, 4],
-              pointRadius: 0,
-              fill: false,
-              order: 1
-            }
-          ]
-        },
-        options: {
-          plugins: {
-            legend: { position: 'bottom' },
-            tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%` } }
-          },
-          scales: {
-            x: SCALE_X_CLEAN,
-            y: { ...SCALE_Y_CLEAN, max: 3, ticks: { callback: v => v + '%' } }
-          },
-          maintainAspectRatio: false
-        }
-      });
-
-      // CR avg by product (bar) — threshold line at 4%
-      new Chart(document.getElementById('perfCR'), {
-        type: 'bar',
-        data: {
-          labels: ['baby blanket', 'baby onesie', 'baby romper'],
-          datasets: [
-            {
-              label: 'Avg CR (%)',
-              data: [4.28, 3.75, 4.53],
-              backgroundColor: [ST, CO, TC],
-              borderRadius: 6, borderSkipped: false,
-              order: 2
-            },
-            {
-              label: 'Ngưỡng 4%',
-              data: [4, 4, 4],
-              type: 'line',
-              borderColor: '#b53333',
-              borderWidth: 1.5,
-              borderDash: [5, 4],
-              pointRadius: 0,
-              fill: false,
-              order: 1
-            }
-          ]
-        },
-        options: {
-          plugins: {
-            legend: { position: 'bottom' },
-            tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%` } }
-          },
-          scales: {
-            x: SCALE_X_CLEAN,
-            y: { ...SCALE_Y_CLEAN, max: 7, ticks: { callback: v => v + '%' } }
-          },
-          maintainAspectRatio: false
-        }
-      });
-
-      // ROAS avg by product (bar) — threshold line at 2.0
-      new Chart(document.getElementById('perfROAS'), {
-        type: 'bar',
-        data: {
-          labels: ['baby blanket', 'baby onesie', 'baby romper'],
-          datasets: [
-            {
-              label: 'Avg ROAS',
-              data: [1.88, 1.22, 1.64],
-              backgroundColor: [ST, CO, TC],
-              borderRadius: 6, borderSkipped: false,
-              order: 2
-            },
-            {
-              label: 'Ngưỡng tạm (2.0)',
-              data: [2, 2, 2],
-              type: 'line',
-              borderColor: '#b53333',
-              borderWidth: 1.5,
-              borderDash: [5, 4],
-              pointRadius: 0,
-              fill: false,
-              order: 1
-            }
-          ]
-        },
-        options: {
-          plugins: {
-            legend: { position: 'bottom' },
-            tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}` } }
-          },
-          scales: {
-            x: SCALE_X_CLEAN,
-            y: { ...SCALE_Y_CLEAN, max: 3.5, ticks: { callback: v => 'x' + v } }
-          },
-          maintainAspectRatio: false
-        }
-      });
-
-      // CTR stacked: pass vs fail per product
-      new Chart(document.getElementById('perfCTRStack'), {
-        type: 'bar',
-        data: {
-          labels: ['baby blanket', 'baby onesie', 'baby romper'],
-          datasets: [
-            {
-              label: 'CTR ≥ 2% (đạt)',
-              data: [0, 11, 9],
-              backgroundColor: 'rgba(89,150,110,0.82)',
-              borderRadius: 4, borderSkipped: false
-            },
-            {
-              label: 'CTR < 2% (cần cải thiện)',
-              data: [56, 31, 21],
-              backgroundColor: 'rgba(181,51,51,0.65)',
-              borderRadius: 4, borderSkipped: false
-            }
-          ]
-        },
-        options: {
-          plugins: {
-            legend: { position: 'bottom' },
-            tooltip: { mode: 'index', intersect: false }
-          },
-          scales: {
-            x: { ...SCALE_X_CLEAN, stacked: true },
-            y: { ...SCALE_Y_CLEAN, stacked: true }
-          },
-          maintainAspectRatio: false
-        }
-      });
-
-      // CR stacked: pass vs fail per product
-      new Chart(document.getElementById('perfCRStack'), {
-        type: 'bar',
-        data: {
-          labels: ['baby blanket', 'baby onesie', 'baby romper'],
-          datasets: [
-            {
-              label: 'CR ≥ 4% (đạt)',
-              data: [29, 18, 18],
-              backgroundColor: 'rgba(89,150,110,0.82)',
-              borderRadius: 4, borderSkipped: false
-            },
-            {
-              label: 'CR < 4% (cần cải thiện)',
-              data: [27, 24, 12],
-              backgroundColor: 'rgba(181,51,51,0.65)',
-              borderRadius: 4, borderSkipped: false
-            }
-          ]
-        },
-        options: {
-          plugins: {
-            legend: { position: 'bottom' },
-            tooltip: { mode: 'index', intersect: false }
-          },
-          scales: {
-            x: { ...SCALE_X_CLEAN, stacked: true },
-            y: { ...SCALE_Y_CLEAN, stacked: true }
-          },
-          maintainAspectRatio: false
-        }
-      });
-    }
 
     // Init Performance Hub on load (active by default)
-    requestAnimationFrame(initPerfCharts);
+    loadListingsDashboard();
+    window._imprRendered = true;
 
     let chartsInitialized = false;
     document.querySelectorAll('.hub-tab').forEach(tab => {
@@ -2408,6 +1953,11 @@
         if (tab.dataset.tab === 'research' && !chartsInitialized) {
           chartsInitialized = true;
           requestAnimationFrame(initCharts);
+        }
+        if (tab.dataset.tab === 'intelligence' && !window._scaleupRendered) {
+          window._scaleupRendered = true;
+          requestAnimationFrame(initScaleupChart);
+          renderScaleupTable('all');
         }
       });
     });
@@ -2418,18 +1968,11 @@
         document.querySelectorAll('.perf-pill').forEach(p => p.classList.remove('active'));
         pill.classList.add('active');
         const target = pill.dataset.perf;
-        document.getElementById('perf-sub-performance').style.display = target === 'performance' ? '' : 'none';
         document.getElementById('perf-sub-improvement').style.display  = target === 'improvement'  ? '' : 'none';
-        document.getElementById('perf-sub-scaleup').style.display      = target === 'scaleup'      ? '' : 'none';
         document.getElementById('perf-sub-import').style.display        = target === 'import'       ? '' : 'none';
         if (target === 'improvement' && !window._imprRendered) {
           window._imprRendered = true;
           loadListingsDashboard();
-        }
-        if (target === 'scaleup' && !window._scaleupRendered) {
-          window._scaleupRendered = true;
-          requestAnimationFrame(initScaleupChart);
-          renderScaleupTable('all');
         }
         if (target === 'import' && !window._importRendered) {
           window._importRendered = true;
@@ -2490,9 +2033,10 @@
         if (crF   === 'fail' && d.cr   >= 3)   return false;
         if (roasF === 'pass' && d.roas <  2)   return false;
         if (roasF === 'fail' && d.roas >= 2)   return false;
-        const hasRef = Array.isArray(d.references) && d.references.length > 0;
-        if (vmF   === 'yes'  && !hasRef) return false;
-        if (vmF   === 'no'   &&  hasRef) return false;
+        if (vmF !== 'all') {
+          const itemVm = (d.no_vm || 'nan').toString().toLowerCase();
+          if (itemVm !== vmF.toLowerCase()) return false;
+        }
         return true;
       });
     }
@@ -2531,6 +2075,7 @@
         ${toggleCell}
         <td>${idCell}</td>
         <td><span class="metric-chip chip-neu" style="font-size:0.70rem">${d.product || ''}</span></td>
+        <td style="font-family:var(--font-mono);font-size:0.78rem;color:var(--stone)">${d.no_vm || 'nan'}</td>
         <td style="font-family:var(--font-mono);font-size:0.78rem;color:var(--charcoal);white-space:nowrap">${importDate}</td>
         <td style="text-align:center">${ctrChip}</td>
         <td style="text-align:center">${crChip}</td>
@@ -2545,8 +2090,16 @@
       if (!Array.isArray(keywords) || !keywords.length) return '';
       const fmtNum = v => (v == null || v === '') ? '—' : Number(v).toLocaleString('en-US');
       const fmtRoas = v => (v == null || v === '') ? '—' : `${Number(v).toFixed(2)}x`;
+      const fmtStatus = v => {
+        const s = (v == null || v === '' || v === 'nan') ? null : String(v).toLowerCase();
+        if (s === 'on')  return `<span class="metric-chip chip-ok"  style="font-size:0.68rem;min-width:28px;text-align:center;display:inline-block">on</span>`;
+        if (s === 'off') return `<span class="metric-chip chip-warn" style="font-size:0.68rem;min-width:28px;text-align:center;display:inline-block">off</span>`;
+        return `<span style="color:var(--stone);font-size:0.76rem">—</span>`;
+      };
       const head = `<thead><tr style="font-family:var(--font-sans);font-size:0.70rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.04em">
         <th style="text-align:left;padding:4px 8px;font-weight:600">Keyword</th>
+        <th style="text-align:center;padding:4px 8px;font-weight:600">Currently</th>
+        <th style="text-align:center;padding:4px 8px;font-weight:600;color:var(--terracotta);opacity:0.7" title="Chưa có dữ liệu — sẽ cập nhật sau">Suggestion</th>
         <th style="text-align:right;padding:4px 8px;font-weight:600">Views</th>
         <th style="text-align:right;padding:4px 8px;font-weight:600">Clicks</th>
         <th style="text-align:right;padding:4px 8px;font-weight:600">CTR</th>
@@ -2557,6 +2110,8 @@
       </tr></thead>`;
       const body = keywords.map(k => `<tr style="font-family:var(--font-sans);font-size:0.76rem;color:var(--charcoal);border-top:1px solid var(--border-cream)">
         <td style="padding:4px 8px">${_imprEsc(k.keyword)}</td>
+        <td style="text-align:center;padding:4px 8px">${fmtStatus(k.currently_status)}</td>
+        <td style="text-align:center;padding:4px 8px"><span class="metric-chip chip-neu" style="font-size:0.68rem;min-width:28px;text-align:center;display:inline-block;opacity:0.45;font-style:italic" title="Chưa có dữ liệu">—</span></td>
         <td style="text-align:right;padding:4px 8px;font-family:var(--font-mono)">${fmtNum(k.views)}</td>
         <td style="text-align:right;padding:4px 8px;font-family:var(--font-mono)">${fmtNum(k.clicks)}</td>
         <td style="text-align:right;padding:4px 8px;font-family:var(--font-mono)">${_imprEsc(k.click_rate || '—')}</td>

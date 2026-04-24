@@ -1,4 +1,4 @@
-name: Weekly Etsy Crawl
+name: Weekly Etsy Market Crawl
 
 on:
   schedule:
@@ -29,7 +29,7 @@ jobs:
       - name: Install Playwright Chromium
         run: python -m playwright install --with-deps chromium
 
-      - name: Run weekly crawl
+      - name: Run Weekly Etsy Market Crawl
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python data/crawler/crawl_weekly.py

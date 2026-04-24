@@ -1,5 +1,5 @@
 """
-Weekly Etsy Crawl — headless Playwright (GitHub Actions compatible)
+Weekly Etsy Market Crawl — headless Playwright (GitHub Actions compatible)
 ====================================================================
 Chạy mỗi thứ 6 via GitHub Actions. Không cần real Chrome / CDP.
 
@@ -367,7 +367,7 @@ async def crawl_all(search_rows: list[dict], dsn: str):
 
 async def main():
     print("=" * 62)
-    print("  Weekly Etsy Crawl")
+    print("  Weekly Etsy Market Crawl")
     print("=" * 62)
 
     dsn = pg_dsn()

@@ -1,4 +1,6 @@
-name: Monday ETL — listing_report → listings
+name: ETL internal listing
+# table listing_report → table listings
+
 
 on:
   schedule:
