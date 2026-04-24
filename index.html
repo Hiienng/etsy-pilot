@@ -2255,19 +2255,20 @@
 
       const extras = withExtras ? (_imprListingTable(d) + _imprKeywordTable(d.keywords)) : '';
 
-      return `<tr class="impr-sub-row impr-sub-${groupKey}" style="display:none;background:var(--warm-sand)">
-        <td style="padding:0;border-bottom:2px solid var(--border-cream)"></td>
-        <td colspan="9" style="padding:14px 16px 18px;border-top:1px solid var(--border-cream);border-bottom:2px solid var(--border-cream)">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-            <span style="display:inline-block;width:3px;height:14px;background:var(--terracotta);border-radius:2px;flex-shrink:0"></span>
-            <span style="font-family:var(--font-sans);font-size:0.70rem;font-weight:700;color:var(--terracotta);letter-spacing:0.07em;text-transform:uppercase">Chi tiết kỳ</span>
-            <span style="font-family:var(--font-mono);font-size:0.76rem;color:var(--charcoal)">${_imprEsc(d.period || '—')}</span>
+      return `<tr class="impr-sub-row impr-sub-${groupKey}" style="display:none">
+        <td colspan="10" style="padding:0;border-top:1px solid var(--border-cream);border-bottom:2px solid var(--border-cream);background:var(--warm-sand)">
+          <div style="position:sticky;left:0;background:var(--warm-sand);padding:14px 16px 18px;box-sizing:border-box">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+              <span style="display:inline-block;width:3px;height:14px;background:var(--terracotta);border-radius:2px;flex-shrink:0"></span>
+              <span style="font-family:var(--font-sans);font-size:0.70rem;font-weight:700;color:var(--terracotta);letter-spacing:0.07em;text-transform:uppercase">Chi tiết kỳ</span>
+              <span style="font-family:var(--font-mono);font-size:0.76rem;color:var(--charcoal)">${_imprEsc(d.period || '—')}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:12px;align-items:start">
+              <div style="min-width:0">${detailBody}</div>
+              <div style="min-width:0">${recoBox}</div>
+            </div>
+            ${extras}
           </div>
-          <div style="display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:12px;align-items:start">
-            <div style="min-width:0">${detailBody}</div>
-            <div style="min-width:0">${recoBox}</div>
-          </div>
-          ${extras}
         </td>
       </tr>`;
     }
