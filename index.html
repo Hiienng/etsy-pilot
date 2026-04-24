@@ -983,7 +983,6 @@
 
         <!-- Filter + table -->
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <p class="hub-section-label" style="margin:0">Danh sách listing</p>
           <button id="imprReloadBtn" onclick="imprReload()" style="font-family:var(--font-sans);font-size:0.78rem;color:var(--terracotta);background:transparent;border:1px solid var(--terracotta);border-radius:6px;padding:4px 12px;cursor:pointer;opacity:0.85" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.85'">Tải lại</button>
         </div>
         <div class="chart-card">
@@ -2221,35 +2220,52 @@
     // Row mở rộng — 2 cột: detail text (trái) + recommendation placeholder (phải), sau đó LISTING sub-table + KEYWORDS.
     // `withExtras` = true → kèm LISTING sub-table và KEYWORDS (chỉ gắn trên row latest).
     function _imprDetailRow(d, groupKey, withExtras) {
+      const _sectionStyle = {
+        'Nguyên nhân': { bg:'rgba(181,51,51,0.05)',  border:'rgba(181,51,51,0.18)',  label:'#b53333' },
+        'Sửa listing': { bg:'rgba(74,140,96,0.05)',  border:'rgba(74,140,96,0.18)',  label:'#4a8c60' },
+        'Sửa ads':     { bg:'rgba(120,100,60,0.05)', border:'rgba(120,100,60,0.18)', label:'#7a6428' },
+      };
       const items = [
         ['Nguyên nhân', d.scenario_cause],
         ['Sửa listing', d.scenario_fix_listing],
         ['Sửa ads',     d.scenario_fix_ads],
       ].filter(([, v]) => v);
       const detailBody = items.length
-        ? items.map(([k, v]) =>
-            `<div style="margin-bottom:10px"><span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;display:block;margin-bottom:2px">${k}</span><span style="font-family:var(--font-sans);font-size:0.80rem;color:var(--charcoal);line-height:1.5">${_imprEsc(v)}</span></div>`
-          ).join('')
-        : `<span style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);font-style:italic">Không có scenario mapping cho kỳ này.</span>`;
+        ? items.map(([label, v]) => {
+            const s = _sectionStyle[label] || { bg:'var(--warm-sand)', border:'var(--border-cream)', label:'var(--stone)' };
+            return `<div style="margin-bottom:8px;border-radius:6px;border:1px solid ${s.border};overflow:hidden">
+              <div style="background:${s.bg};padding:4px 10px;border-bottom:1px solid ${s.border}">
+                <span style="font-family:var(--font-sans);font-size:0.68rem;font-weight:700;color:${s.label};letter-spacing:0.07em;text-transform:uppercase">${label}</span>
+              </div>
+              <div style="padding:8px 10px;font-family:var(--font-sans);font-size:0.80rem;color:var(--charcoal);line-height:1.65;background:var(--parchment)">${_imprEsc(v)}</div>
+            </div>`;
+          }).join('')
+        : `<div style="padding:16px 10px;font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);font-style:italic;text-align:center;border:1px dashed var(--border-cream);border-radius:6px">Không có scenario mapping cho kỳ này.</div>`;
 
-      const recoBox = `<div style="border:1px solid var(--border-cream);border-radius:6px;background:var(--parchment);padding:14px;min-height:140px;display:flex;flex-direction:column;gap:8px">
-        <div style="font-family:var(--font-serif);font-size:0.95rem;font-weight:600;color:var(--charcoal);text-decoration:underline">Reconmendation Box</div>
-        <div style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);text-decoration">Available in phase 2</div>
-        <div style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);text-decoration">+ Ideal image:</div>
-        <div style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);text-decoration">+ Ideal price (base on market pricing):</div>
-        <div style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);text-decoration">+ Ideal discount percentage:</div>
-        <div style="font-family:var(--font-sans);font-size:0.80rem;color:var(--stone);text-decoration">+ Recommended for hacking Etsy boosting algorithm</div>
+      const recoItems = ['Ideal image', 'Ideal price (based on market pricing)', 'Ideal discount %', 'Etsy boosting algorithm tips'];
+      const recoBox = `<div style="border:1px solid var(--border-cream);border-radius:8px;background:var(--parchment);padding:14px 14px 12px;display:flex;flex-direction:column;gap:0;position:relative">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px">
+          <span style="font-family:var(--font-serif);font-size:0.90rem;font-weight:600;color:var(--charcoal)">Recommendation Box</span>
+          <span style="font-family:var(--font-sans);font-size:0.60rem;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;background:var(--warm-sand);color:var(--stone);padding:2px 7px;border-radius:10px;border:1px solid var(--border-cream)">Phase 2</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;opacity:0.50">
+          ${recoItems.map(item => `<div style="display:flex;align-items:baseline;gap:6px;font-family:var(--font-sans);font-size:0.78rem;color:var(--charcoal)"><span style="color:var(--terracotta);font-weight:700;flex-shrink:0">+</span><span>${item}</span></div>`).join('')}
+        </div>
       </div>`;
 
       const extras = withExtras ? (_imprListingTable(d) + _imprKeywordTable(d.keywords)) : '';
 
       return `<tr class="impr-sub-row impr-sub-${groupKey}" style="display:none;background:var(--warm-sand)">
-        <td></td>
-        <td colspan="8" style="padding:12px 14px 16px;border-top:1px dashed var(--border-cream)">
-          <div style="font-family:var(--font-sans);font-size:0.70rem;font-weight:600;color:var(--terracotta);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px">Chi tiết kỳ ${_imprEsc(d.period || '—')}</div>
-          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,340px);gap:18px;align-items:start">
-            <div>${detailBody}</div>
-            ${recoBox}
+        <td style="padding:0;border-bottom:2px solid var(--border-cream)"></td>
+        <td colspan="9" style="padding:14px 16px 18px;border-top:1px solid var(--border-cream);border-bottom:2px solid var(--border-cream)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+            <span style="display:inline-block;width:3px;height:14px;background:var(--terracotta);border-radius:2px;flex-shrink:0"></span>
+            <span style="font-family:var(--font-sans);font-size:0.70rem;font-weight:700;color:var(--terracotta);letter-spacing:0.07em;text-transform:uppercase">Chi tiết kỳ</span>
+            <span style="font-family:var(--font-mono);font-size:0.76rem;color:var(--charcoal)">${_imprEsc(d.period || '—')}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:12px;align-items:start">
+            <div style="min-width:0">${detailBody}</div>
+            <div style="min-width:0">${recoBox}</div>
           </div>
           ${extras}
         </td>
