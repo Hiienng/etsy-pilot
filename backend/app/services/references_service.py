@@ -8,6 +8,22 @@ bộ pipeline rồi UPSERT vào bảng references_engine (composite PK
 """
 
 from sqlalchemy import text
+
+# Map internal category → market product_type keywords to match against
+_CATEGORY_KEYWORDS: dict[str, list[str]] = {
+    "onesie":   ["onesie", "bodysuit", "baby bodysuit", "baby shower onesie", "custom baby onesie",
+                 "monogram onesie", "custom name onesie", "personalized baby onesie", "baby onesie"],
+    "blanket":  ["blanket", "swaddle", "custom baby blanket", "birth stat blanket",
+                 "knit baby blanket", "embroidered blanket", "heirloom baby blanket",
+                 "monogrammed blanket", "keepsake blanket", "baby name blanket"],
+    "blankets": ["blanket", "swaddle", "custom baby blanket", "birth stat blanket",
+                 "knit baby blanket", "embroidered blanket", "heirloom baby blanket",
+                 "monogrammed blanket", "keepsake blanket", "baby name blanket"],
+    "sweater":  ["sweater", "baby zip romper", "romper", "knit", "coming home outfit",
+                 "newborn outfit", "baby clothes"],
+    "crown":    ["crown", "first birthday", "first birthday gift", "baby milestone",
+                 "birthday gift"],
+}
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -104,33 +120,43 @@ async def refresh_references(
     )
     internal_listings = [dict(r._mapping) for r in listings_result]
 
-    cat_filter = " OR ".join(
-        [f"LOWER(ml.search_tag) LIKE '%' || LOWER(:cat_{i}) || '%'"
-         f" OR LOWER(ml.product_type) LIKE '%' || LOWER(:cat_{i}) || '%'"
-         f" OR LOWER(ml.title) LIKE '%' || LOWER(:cat_{i}) || '%'"
-         for i in range(len(internal_listings))]
-    ) or "1=0"
-    cat_params = {f"cat_{i}": r["category"] for i, r in enumerate(internal_listings)}
+    # Build SQL filter from _CATEGORY_KEYWORDS mapping
+    all_keywords: list[str] = []
+    for lst in internal_listings:
+        cat = (lst["category"] or "").lower()
+        kws = _CATEGORY_KEYWORDS.get(cat, [cat])
+        all_keywords.extend(kws)
+    unique_kws = list(dict.fromkeys(all_keywords))  # dedupe, preserve order
+
+    if not unique_kws:
+        return {"upserted": 0, "listings_with_ref": 0, "total_refs": 0, "top_n": top_n, "scope": listing_id or "all"}
+
+    kw_filter = " OR ".join(
+        f"LOWER(ml.product_type) LIKE '%' || :kw_{i} || '%' OR LOWER(ml.search_tag) LIKE '%' || :kw_{i} || '%'"
+        for i in range(len(unique_kws))
+    )
+    kw_params = {f"kw_{i}": kw for i, kw in enumerate(unique_kws)}
 
     mkt_sql = text(f"""
         SELECT id AS reference_listing_id, title, shop_name, url, price, discount,
                rating, review_count, tag_ranking, badge, free_shipping, product_type,
                search_tag, import_date
-        FROM market_listing
-        WHERE tag_ranking IS NOT NULL AND ({cat_filter})
+        FROM market_listing ml
+        WHERE tag_ranking IS NOT NULL AND ({kw_filter})
     """)
-    mkt_result = await market_db.execute(mkt_sql, cat_params)
+    mkt_result = await market_db.execute(mkt_sql, kw_params)
     market_rows = [dict(r._mapping) for r in mkt_result]
 
-    # Match & rank in Python
+    # Match & rank in Python using keyword mapping
     rows = []
     for lst in internal_listings:
         cat = (lst["category"] or "").lower()
+        kws = _CATEGORY_KEYWORDS.get(cat, [cat])
         matches = [
             m for m in market_rows
-            if cat in (m.get("search_tag") or "").lower()
-            or cat in (m.get("product_type") or "").lower()
-            or cat in (m.get("title") or "").lower()
+            if any(kw in (m.get("product_type") or "").lower()
+                   or kw in (m.get("search_tag") or "").lower()
+                   for kw in kws)
         ]
         matches.sort(key=lambda m: (m.get("tag_ranking") or 99999, -(m.get("review_count") or 0)))
         for rnk, m in enumerate(matches[:top_n], start=1):
