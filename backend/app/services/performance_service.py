@@ -169,7 +169,7 @@ async def get_dashboard_listings(db: AsyncSession, market_db: AsyncSession) -> l
                     ELSE 'low'
                 END                                AS ctr_level
             FROM listing_report
-            WHERE period LIKE '% - %'
+            WHERE period LIKE '% - %' OR period LIKE '%/%-%'
             ORDER BY listing_id, period, import_time DESC
         )
         SELECT
