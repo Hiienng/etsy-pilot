@@ -72,7 +72,8 @@ nguyenphamdieuhien.online/
 
 | Biến | Dùng cho | Nơi đọc |
 |---|---|---|
-| `DATABASE_URL` | Neon PostgreSQL connection string | `core/config.py` |
+| `DATABASE_URL` | Neon PostgreSQL — internal data (listings, reports) | `core/config.py` |
+| `ETSY_MARKET_DB` | PostgreSQL — market data DB (etsy_star_engine output, bảng `market_listing`) | `core/config.py` |
 | `ANTHROPIC_API_KEY` | Claude API | `services/claude_service.py` |
 | `CLAUDE_MODEL` | Model ID (default: `claude-sonnet-4-6`) | `core/config.py` |
 | `APP_ENV` | `development` / `production` | `core/config.py` |

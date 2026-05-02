@@ -19,6 +19,21 @@ AsyncSessionLocal = async_sessionmaker(
     expire_on_commit=False,
 )
 
+# Second engine — market data DB (ETSY_MARKET_DB / etsy_star_engine output)
+market_engine = create_async_engine(
+    settings.async_market_db_url,
+    echo=settings.APP_ENV == "development",
+    pool_size=3,
+    max_overflow=5,
+    connect_args={"ssl": True},
+)
+
+MarketSessionLocal = async_sessionmaker(
+    bind=market_engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+)
+
 
 class Base(DeclarativeBase):
     pass

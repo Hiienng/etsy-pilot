@@ -2,7 +2,7 @@ import traceback
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
-from ...core.database import get_db
+from ...core.database import get_db, MarketSessionLocal
 from ...services import references_service
 
 router = APIRouter(prefix="/references", tags=["references"])
@@ -15,7 +15,8 @@ async def refresh(
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        result = await references_service.refresh_references(db, top_n=top_n, listing_id=listing_id)
+        async with MarketSessionLocal() as market_db:
+            result = await references_service.refresh_references(db, market_db, top_n=top_n, listing_id=listing_id)
         return {"status": "ok", **result}
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e), "trace": traceback.format_exc()})

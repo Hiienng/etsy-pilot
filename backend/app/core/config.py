@@ -3,8 +3,10 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    # Database (Neon PostgreSQL)
+    # Database (Neon PostgreSQL) — internal data
     DATABASE_URL: str = ""
+    # Market data DB (etsy_star_engine output)
+    ETSY_MARKET_DB: str = ""
 
     # AI Vision — Gemini for screenshot extraction
     GEMINI_API_KEY: str = ""
@@ -23,19 +25,23 @@ class Settings(BaseSettings):
     def origins(self) -> list[str]:
         return [o.strip() for o in self.ALLOWED_ORIGINS.split(",")]
 
-    @property
-    def async_db_url(self) -> str:
-        """Build asyncpg-compatible URL. SSL is passed via connect_args, not URL param."""
+    @staticmethod
+    def _normalize_asyncpg_url(raw: str) -> str:
         import re
-        url = self.DATABASE_URL
-        # Normalize driver prefix
-        url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        url = raw.replace("postgresql://", "postgresql+asyncpg://", 1)
         url = url.replace("postgres://", "postgresql+asyncpg://", 1)
-        # Strip params unsupported by asyncpg — SSL handled via connect_args
         url = re.sub(r"[?&]sslmode=[^&]*", "", url)
         url = re.sub(r"[?&]ssl=[^&]*", "", url)
         url = re.sub(r"[?&]channel_binding=[^&]*", "", url)
         return url
+
+    @property
+    def async_db_url(self) -> str:
+        return self._normalize_asyncpg_url(self.DATABASE_URL)
+
+    @property
+    def async_market_db_url(self) -> str:
+        return self._normalize_asyncpg_url(self.ETSY_MARKET_DB or self.DATABASE_URL)
 
     class Config:
         env_file = ("../.env", ".env")

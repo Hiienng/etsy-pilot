@@ -8,6 +8,8 @@ services:
     envVars:
       - key: DATABASE_URL
         sync: false
+      - key: ETSY_MARKET_DB
+        sync: false
       - key: ANTHROPIC_API_KEY
         sync: false
       - key: SECRET_KEY

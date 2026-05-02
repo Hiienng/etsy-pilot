@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from sqlalchemy import text
-from ...core.database import AsyncSessionLocal
+from ...core.database import MarketSessionLocal
 
 router = APIRouter(prefix="/market", tags=["market"])
 
@@ -12,7 +12,7 @@ async def get_market_samples():
     cho mỗi product_type trong bảng market_listing.
     Nếu chưa có link nào thì trả về null cho product_type đó.
     """
-    async with AsyncSessionLocal() as session:
+    async with MarketSessionLocal() as session:
         result = await session.execute(text("""
             SELECT DISTINCT ON (product_type)
                 product_type,

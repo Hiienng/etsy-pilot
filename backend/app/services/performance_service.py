@@ -119,7 +119,7 @@ async def seed_scenarios(db: AsyncSession) -> None:
     await db.commit()
 
 
-async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
+async def get_dashboard_listings(db: AsyncSession, market_db: AsyncSession) -> list[dict]:
     """
     listings (all) → JOIN listing_report (all range-period rows, dedup listing_id+period)
         → compute CTR/CR per row, classify bands
@@ -188,14 +188,6 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
             lr.orders,
             lr.revenue,
             lr.spend,
-            own.price,
-            own.discount                           AS discount_price,
-            own.rating,
-            own.review_count,
-            own.badge,
-            own.free_shipping,
-            own.is_ad,
-            own.tag_ranking,
             sr.action                              AS scenario_action,
             sr.case_name                           AS scenario_label,
             sr.cause                               AS scenario_cause,
@@ -205,13 +197,6 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
             kw.keywords                            AS keywords
         FROM listings l
         LEFT JOIN lr ON lr.listing_id = l.listing_id
-        LEFT JOIN LATERAL (
-            SELECT price, discount, rating, review_count, badge, free_shipping, is_ad, tag_ranking
-            FROM market_listing
-            WHERE id = l.listing_id
-            ORDER BY import_date DESC
-            LIMIT 1
-        ) own ON true
         LEFT JOIN scenarios_rules sr
             ON  sr.roas_band = lr.roas_band
             AND sr.cr_level  = lr.cr_level
@@ -262,7 +247,35 @@ async def get_dashboard_listings(db: AsyncSession) -> list[dict]:
         ORDER BY l.listing_id ASC, lr.period ASC
     """)
     result = await db.execute(sql)
-    return [dict(r) for r in result.mappings().all()]
+    rows = [dict(r) for r in result.mappings().all()]
+
+    # Fetch own market data from ETSY_MARKET_DB, merge by listing_id
+    listing_ids = list({r["listing_id"] for r in rows if r.get("listing_id")})
+    market_map: dict = {}
+    if listing_ids:
+        mkt_sql = text("""
+            SELECT DISTINCT ON (id)
+                id, price, discount, rating, review_count, badge, free_shipping, is_ad, tag_ranking
+            FROM market_listing
+            WHERE id = ANY(:ids)
+            ORDER BY id, import_date DESC
+        """)
+        mkt_result = await market_db.execute(mkt_sql, {"ids": listing_ids})
+        for row in mkt_result.mappings().all():
+            market_map[row["id"]] = dict(row)
+
+    for r in rows:
+        own = market_map.get(r.get("listing_id"), {})
+        r["price"] = own.get("price")
+        r["discount_price"] = own.get("discount")
+        r["rating"] = own.get("rating")
+        r["review_count"] = own.get("review_count")
+        r["badge"] = own.get("badge")
+        r["free_shipping"] = own.get("free_shipping")
+        r["is_ad"] = own.get("is_ad")
+        r["tag_ranking"] = own.get("tag_ranking")
+
+    return rows
 
 
 def write_dashboard_json(listings: list[dict], out_path: Path) -> None:
