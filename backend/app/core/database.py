@@ -20,19 +20,33 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 # Second engine — market data DB (ETSY_MARKET_DB / etsy_star_engine output)
-market_engine = create_async_engine(
-    settings.async_market_db_url,
-    echo=settings.APP_ENV == "development",
-    pool_size=3,
-    max_overflow=5,
-    connect_args={"ssl": True},
-)
+# Built lazily so env var is read at first use, not at import time.
+_market_engine = None
+_MarketSessionLocal = None
 
-MarketSessionLocal = async_sessionmaker(
-    bind=market_engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-)
+
+def _get_market_session_factory() -> async_sessionmaker:
+    global _market_engine, _MarketSessionLocal
+    if _MarketSessionLocal is None:
+        _market_engine = create_async_engine(
+            get_settings().async_market_db_url,
+            echo=get_settings().APP_ENV == "development",
+            pool_size=3,
+            max_overflow=5,
+            connect_args={"ssl": True},
+        )
+        _MarketSessionLocal = async_sessionmaker(
+            bind=_market_engine,
+            class_=AsyncSession,
+            expire_on_commit=False,
+        )
+    return _MarketSessionLocal
+
+
+class MarketSessionLocal:
+    """Context manager proxy — creates engine lazily on first use."""
+    def __new__(cls):
+        return _get_market_session_factory()()
 
 
 class Base(DeclarativeBase):

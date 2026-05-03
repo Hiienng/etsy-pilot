@@ -47,18 +47,6 @@ async def health():
     return {"status": "ok", "env": settings.APP_ENV}
 
 
-@app.get("/debug/db-urls")
-async def debug_db_urls():
-    import os
-    raw_env = os.environ.get("ETSY_MARKET_DB", "NOT_IN_OS_ENVIRON")
-    mdb = settings.async_market_db_url
-    host = mdb.split("@")[-1].split("/")[0] if "@" in mdb else "unknown"
-    return {
-        "market_db_host": host,
-        "etsy_market_db_set": bool(settings.ETSY_MARKET_DB),
-        "etsy_market_db_len": len(settings.ETSY_MARKET_DB),
-        "os_environ_len": len(raw_env) if raw_env != "NOT_IN_OS_ENVIRON" else "NOT_SET",
-    }
 
 # Serve frontend static files (index.html, css/, js/) — must be AFTER API routes
 _frontend_dir = Path(__file__).resolve().parents[2]
