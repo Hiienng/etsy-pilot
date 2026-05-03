@@ -46,6 +46,13 @@ app.include_router(references.router, prefix="/api/v1")
 async def health():
     return {"status": "ok", "env": settings.APP_ENV}
 
+
+@app.get("/debug/db-urls")
+async def debug_db_urls():
+    mdb = settings.async_market_db_url
+    host = mdb.split("@")[-1].split("/")[0] if "@" in mdb else "unknown"
+    return {"market_db_host": host, "etsy_market_db_set": bool(settings.ETSY_MARKET_DB)}
+
 # Serve frontend static files (index.html, css/, js/) — must be AFTER API routes
 _frontend_dir = Path(__file__).resolve().parents[2]
 if (_frontend_dir / "index.html").exists():
