@@ -144,8 +144,11 @@ async def refresh_references(
         FROM market_listing ml
         WHERE tag_ranking IS NOT NULL AND ({kw_filter})
     """)
-    mkt_result = await market_db.execute(mkt_sql, kw_params)
-    market_rows = [dict(r._mapping) for r in mkt_result]
+    try:
+        mkt_result = await market_db.execute(mkt_sql, kw_params)
+        market_rows = [dict(r._mapping) for r in mkt_result]
+    except Exception:
+        market_rows = []  # ETSY_MARKET_DB chưa set hoặc market_listing chưa tồn tại
 
     # Match & rank in Python using keyword mapping
     rows = []

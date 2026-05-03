@@ -253,16 +253,19 @@ async def get_dashboard_listings(db: AsyncSession, market_db: AsyncSession) -> l
     listing_ids = list({r["listing_id"] for r in rows if r.get("listing_id")})
     market_map: dict = {}
     if listing_ids:
-        mkt_sql = text("""
-            SELECT DISTINCT ON (id)
-                id, price, discount, rating, review_count, badge, free_shipping, is_ad, tag_ranking
-            FROM market_listing
-            WHERE id = ANY(:ids)
-            ORDER BY id, import_date DESC
-        """)
-        mkt_result = await market_db.execute(mkt_sql, {"ids": listing_ids})
-        for row in mkt_result.mappings().all():
-            market_map[row["id"]] = dict(row)
+        try:
+            mkt_sql = text("""
+                SELECT DISTINCT ON (id)
+                    id, price, discount, rating, review_count, badge, free_shipping, is_ad, tag_ranking
+                FROM market_listing
+                WHERE id = ANY(:ids)
+                ORDER BY id, import_date DESC
+            """)
+            mkt_result = await market_db.execute(mkt_sql, {"ids": listing_ids})
+            for row in mkt_result.mappings().all():
+                market_map[row["id"]] = dict(row)
+        except Exception:
+            pass  # ETSY_MARKET_DB chưa set hoặc market_listing chưa tồn tại — bỏ qua, trả — về null
 
     for r in rows:
         own = market_map.get(r.get("listing_id"), {})
