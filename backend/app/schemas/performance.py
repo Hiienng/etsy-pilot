@@ -8,6 +8,7 @@ class ListingDashboardItem(BaseModel):
     url: str | None = None
     title: str | None = None
     product: str | None = None
+    no_vm: str | None = None
     period: str | None = None
     reference_date: datetime | None = None
     # performance (from listing_report latest)
