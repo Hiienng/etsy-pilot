@@ -2144,14 +2144,11 @@
       const ctrChip  = d.ctr  >= 1.5 ? `<span class="metric-chip chip-ok">${d.ctr}%</span>`  : `<span class="metric-chip chip-warn">${d.ctr}%</span>`;
       const crChip   = d.cr   >= 3   ? `<span class="metric-chip chip-ok">${d.cr}%</span>`   : `<span class="metric-chip chip-warn">${d.cr}%</span>`;
       const roasChip = d.roas >= 2   ? `<span class="metric-chip chip-ok">${d.roas}x</span>` : `<span class="metric-chip chip-neu">${d.roas}x</span>`;
-      const internalRow = `<tr style="font-family:var(--font-sans);font-size:0.76rem;color:var(--charcoal);border-top:1px solid var(--border-cream);background:#fffaf7">
+      const internalRow = `<tr style="font-family:var(--font-sans);font-size:0.76rem;color:var(--charcoal);border-top:1px solid var(--border-cream);background:#fff7f4">
         <td style="padding:4px 8px;border-left:3px solid var(--terracotta)">
-          <div style="display:flex;flex-direction:column;gap:2px">
-            <span style="font-family:var(--font-sans);font-size:0.60rem;font-weight:700;color:var(--terracotta);letter-spacing:0.06em;text-transform:uppercase">Internal</span>
-            ${d.url
-              ? `<a href="${d.url}" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--terracotta);text-decoration:underline">${d.listing_id}</a>`
-              : `<span style="font-family:var(--font-mono);font-size:0.76rem">${d.listing_id || '—'}</span>`}
-          </div>
+          ${d.url
+            ? `<a href="${d.url}" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--terracotta);text-decoration:underline;font-weight:600">${d.listing_id}</a>`
+            : `<span style="font-family:var(--font-mono);font-size:0.76rem;font-weight:600">${d.listing_id || '—'}</span>`}
         </td>
         <td style="padding:4px 8px"><span class="metric-chip chip-neu" style="font-size:0.68rem">${d.product || '—'}</span></td>
         <td style="padding:4px 8px;font-family:var(--font-mono);white-space:nowrap">${_imprEsc(d.period || '—')}</td>
@@ -2169,14 +2166,11 @@
 
       // Reference rows — market listings, không có CTR/CR/ROAS.
       const refs = Array.isArray(d.references) ? d.references : [];
-      const refRows = refs.map(r => `<tr style="font-family:var(--font-sans);font-size:0.76rem;color:var(--charcoal);border-top:1px solid var(--border-cream);background:var(--parchment)">
-        <td style="padding:4px 8px;border-left:3px solid var(--stone)">
-          <div style="display:flex;flex-direction:column;gap:2px">
-            <span style="font-family:var(--font-sans);font-size:0.60rem;font-weight:700;color:var(--stone);letter-spacing:0.06em;text-transform:uppercase">Market ref</span>
-            ${r.ref_url
-              ? `<a href="${r.ref_url}" target="_blank" rel="noopener" title="${_imprEsc(r.ref_title || '')}" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--terracotta);text-decoration:underline">${r.reference_listing_id}</a>`
-              : `<span style="font-family:var(--font-mono);font-size:0.76rem">${r.reference_listing_id}</span>`}
-          </div>
+      const refRows = refs.map(r => `<tr style="font-family:var(--font-sans);font-size:0.76rem;color:var(--stone);border-top:1px solid var(--border-cream);background:var(--parchment)">
+        <td style="padding:4px 8px;border-left:3px solid var(--border-cream)">
+          ${r.ref_url
+            ? `<a href="${r.ref_url}" target="_blank" rel="noopener" title="${_imprEsc(r.ref_title || '')}" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--stone);text-decoration:underline">${r.reference_listing_id}</a>`
+            : `<span style="font-family:var(--font-mono);font-size:0.76rem">${r.reference_listing_id}</span>`}
         </td>
         <td style="padding:4px 8px">${r.ref_product_type ? `<span class="metric-chip chip-neu" style="font-size:0.68rem">${_imprEsc(r.ref_product_type)}</span>` : '—'}</td>
         <td style="padding:4px 8px;font-family:var(--font-mono);white-space:nowrap">${_imprEsc(r.ref_import_date || '—')}</td>
@@ -2194,8 +2188,12 @@
 
       const mappingTip = `Cách chọn reference:<br>Hệ thống tìm các listing trên thị trường có chứa <b>tên sản phẩm</b> (category) của listing nội bộ — thường xuất hiện trong <b>tiêu đề</b>, cũng có khi trong từ khoá tìm kiếm hoặc loại sản phẩm.<br><br>Sau đó xếp hạng theo <b>thứ hạng tìm kiếm trên Etsy</b> (xuất hiện sớm ⇒ tốt), lấy <b>top 3</b>.`;
       return `<div style="margin-top:14px">
-        <div style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;gap:6px">
+        <div style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;gap:10px">
           <span>Listing</span>
+          <span style="display:flex;align-items:center;gap:10px;font-weight:400;font-size:0.68rem;letter-spacing:0;text-transform:none;color:var(--stone)">
+            <span style="display:flex;align-items:center;gap:4px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#c0714a;opacity:0.85"></span>Internal</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--stone);opacity:0.4"></span>Market ref</span>
+          </span>
           <span style="position:relative;display:inline-block">
             <span onclick="imprHelp(this)" aria-label="mapping info" style="display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;border:1px solid var(--stone);color:var(--stone);font-size:0.64rem;font-weight:700;cursor:pointer;user-select:none">?</span>
             <span class="impr-help-pop" style="display:none;position:absolute;top:20px;left:0;z-index:50;width:340px;padding:10px 12px;background:var(--parchment);border:1px solid var(--border-cream);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,0.08);font-family:var(--font-sans);font-size:0.78rem;font-weight:400;color:var(--charcoal);letter-spacing:normal;text-transform:none;line-height:1.5">${mappingTip}</span>
