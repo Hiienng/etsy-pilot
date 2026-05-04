@@ -1495,8 +1495,8 @@
       const fmtRoas = v => (v == null || v === '') ? '—' : `${Number(v).toFixed(2)}x`;
       const fmtStatus = v => {
         const s = (v == null || v === '' || v === 'nan') ? null : String(v).toLowerCase();
-        if (s === 'on')  return `<span class="metric-chip chip-ok"  style="font-size:0.68rem;min-width:28px;text-align:center;display:inline-block">on</span>`;
-        if (s === 'off') return `<span class="metric-chip chip-warn" style="font-size:0.68rem;min-width:28px;text-align:center;display:inline-block">off</span>`;
+        if (s === 'on'  || s === 'true')  return `<span class="metric-chip chip-ok"  style="font-size:0.68rem;min-width:28px;text-align:center;display:inline-block">on</span>`;
+        if (s === 'off' || s === 'false') return `<span class="metric-chip chip-warn" style="font-size:0.68rem;min-width:28px;text-align:center;display:inline-block">off</span>`;
         return `<span style="color:var(--stone);font-size:0.76rem">—</span>`;
       };
       const head = `<thead><tr style="font-family:var(--font-sans);font-size:0.70rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.04em">
