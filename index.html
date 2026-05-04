@@ -2144,10 +2144,15 @@
       const ctrChip  = d.ctr  >= 1.5 ? `<span class="metric-chip chip-ok">${d.ctr}%</span>`  : `<span class="metric-chip chip-warn">${d.ctr}%</span>`;
       const crChip   = d.cr   >= 3   ? `<span class="metric-chip chip-ok">${d.cr}%</span>`   : `<span class="metric-chip chip-warn">${d.cr}%</span>`;
       const roasChip = d.roas >= 2   ? `<span class="metric-chip chip-ok">${d.roas}x</span>` : `<span class="metric-chip chip-neu">${d.roas}x</span>`;
-      const internalRow = `<tr style="font-family:var(--font-sans);font-size:0.76rem;color:var(--charcoal);border-top:1px solid var(--border-cream)">
-        <td style="padding:4px 8px">${d.url
-          ? `<a href="${d.url}" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--terracotta);text-decoration:underline">${d.listing_id}</a>`
-          : `<span style="font-family:var(--font-mono);font-size:0.76rem">${d.listing_id || '—'}</span>`}</td>
+      const internalRow = `<tr style="font-family:var(--font-sans);font-size:0.76rem;color:var(--charcoal);border-top:1px solid var(--border-cream);background:#fffaf7">
+        <td style="padding:4px 8px;border-left:3px solid var(--terracotta)">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-family:var(--font-sans);font-size:0.60rem;font-weight:700;color:var(--terracotta);letter-spacing:0.06em;text-transform:uppercase">Internal</span>
+            ${d.url
+              ? `<a href="${d.url}" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--terracotta);text-decoration:underline">${d.listing_id}</a>`
+              : `<span style="font-family:var(--font-mono);font-size:0.76rem">${d.listing_id || '—'}</span>`}
+          </div>
+        </td>
         <td style="padding:4px 8px"><span class="metric-chip chip-neu" style="font-size:0.68rem">${d.product || '—'}</span></td>
         <td style="padding:4px 8px;font-family:var(--font-mono);white-space:nowrap">${_imprEsc(d.period || '—')}</td>
         <td style="padding:4px 8px;text-align:right">${ctrChip}</td>
@@ -2165,9 +2170,14 @@
       // Reference rows — market listings, không có CTR/CR/ROAS.
       const refs = Array.isArray(d.references) ? d.references : [];
       const refRows = refs.map(r => `<tr style="font-family:var(--font-sans);font-size:0.76rem;color:var(--charcoal);border-top:1px solid var(--border-cream);background:var(--parchment)">
-        <td style="padding:4px 8px">${r.ref_url
-          ? `<a href="${r.ref_url}" target="_blank" rel="noopener" title="${_imprEsc(r.ref_title || '')}" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--terracotta);text-decoration:underline">${r.reference_listing_id}</a>`
-          : `<span style="font-family:var(--font-mono);font-size:0.76rem">${r.reference_listing_id}</span>`}</td>
+        <td style="padding:4px 8px;border-left:3px solid var(--stone)">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <span style="font-family:var(--font-sans);font-size:0.60rem;font-weight:700;color:var(--stone);letter-spacing:0.06em;text-transform:uppercase">Market ref</span>
+            ${r.ref_url
+              ? `<a href="${r.ref_url}" target="_blank" rel="noopener" title="${_imprEsc(r.ref_title || '')}" style="font-family:var(--font-mono);font-size:0.76rem;color:var(--terracotta);text-decoration:underline">${r.reference_listing_id}</a>`
+              : `<span style="font-family:var(--font-mono);font-size:0.76rem">${r.reference_listing_id}</span>`}
+          </div>
+        </td>
         <td style="padding:4px 8px">${r.ref_product_type ? `<span class="metric-chip chip-neu" style="font-size:0.68rem">${_imprEsc(r.ref_product_type)}</span>` : '—'}</td>
         <td style="padding:4px 8px;font-family:var(--font-mono);white-space:nowrap">${_imprEsc(r.ref_import_date || '—')}</td>
         <td style="padding:4px 8px;text-align:right;color:var(--stone)">—</td>
