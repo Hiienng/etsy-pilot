@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research Report — 2026-04-15</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --parchment:    #f5f4ed;
+      --ivory:        #faf9f5;
+      --warm-sand:    #e8e6dc;
+      --near-black:   #141413;
+      --charcoal:     #4d4c48;
+      --olive:        #5e5d59;
+      --stone:        #87867f;
+      --terracotta:   #c96442;
+      --border-cream: #f0eee6;
+      --border-warm:  #e8e6dc;
+      --font-serif: Georgia, 'Times New Roman', serif;
+      --font-sans:  system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+      --font-mono:  'Courier New', Courier, monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-sans); background: var(--parchment); color: var(--near-black); line-height: 1.6; min-height: 100vh; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--parchment); border-bottom: 1px solid var(--border-cream);
+      padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 60px;
+    }
+    .nav-brand { font-family: var(--font-serif); font-size: 1.06rem; font-weight: 500; color: var(--near-black); text-decoration: none; }
+    .nav-brand span { color: var(--terracotta); }
+    .nav-back { font-family: var(--font-sans); font-size: 0.88rem; color: var(--stone); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.15s; }
+    .nav-back:hover { color: var(--near-black); }
+
+    .page-wrap { max-width: 1200px; margin: 0 auto; padding: 40px 40px 100px; }
+
+    .hub-section-label { font-family: var(--font-sans); font-size: 0.63rem; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; color: var(--stone); margin-bottom: 14px; }
+
+    .mini-stat-row { display: flex; gap: 12px; margin-bottom: 32px; }
+    .mini-stat { flex: 1; background: var(--ivory); border: 1px solid var(--border-cream); border-radius: 12px; padding: 20px; box-shadow: rgba(0,0,0,0.04) 0px 2px 12px; }
+    .mini-stat-value { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 500; line-height: 1.10; color: var(--near-black); }
+    .mini-stat-label { font-family: var(--font-sans); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12px; text-transform: uppercase; color: var(--stone); margin-top: 6px; }
+    .mini-stat-note { font-family: var(--font-sans); font-size: 0.88rem; color: var(--stone); margin-top: 4px; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+
+    .chart-card { background: var(--ivory); border: 1px solid var(--border-cream); border-radius: 12px; padding: 28px 28px 20px; box-shadow: rgba(0,0,0,0.05) 0px 4px 24px; }
+    .chart-card-title { font-family: var(--font-serif); font-size: 1.06rem; font-weight: 500; color: var(--near-black); margin-bottom: 4px; }
+    .chart-card-sub { font-family: var(--font-sans); font-size: 0.88rem; color: var(--stone); margin-bottom: 20px; }
+    .chart-wrap { position: relative; }
+    .chart-wrap-md { height: 240px; }
+    .chart-wrap-lg { height: 280px; }
+
+    .rating-pill { display: inline-block; background: rgba(201,100,66,0.10); color: var(--terracotta); font-size: 0.75rem; font-weight: 500; padding: 2px 8px; border-radius: 6px; }
+
+    .shop-table { width: 100%; border-collapse: collapse; }
+    .shop-table th { font-family: var(--font-sans); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12px; text-transform: uppercase; color: var(--stone); text-align: left; padding: 0 0 10px; border-bottom: 1px solid var(--border-warm); }
+    .shop-table td { font-family: var(--font-sans); font-size: 0.94rem; color: var(--charcoal); padding: 10px 0; border-bottom: 1px solid var(--border-cream); vertical-align: middle; }
+    .shop-table tr:last-child td { border-bottom: none; }
+    .shop-table td:not(:first-child) { text-align: right; color: var(--olive); }
+
+    @media (max-width: 768px) {
+      .nav { padding: 0 16px; }
+      .page-wrap { padding: 24px 16px 60px; }
+      .two-col { grid-template-columns: 1fr; }
+      .mini-stat-row { flex-wrap: wrap; }
+      .mini-stat { min-width: calc(50% - 6px); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">Etsy - Internal portal<span>.</span></a>
+    <a href="/" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
+      Quay lại portal
+    </a>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:28px;flex-wrap:wrap">
+      <div>
+        <p style="font-size:0.63rem;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;color:var(--stone);margin-bottom:8px">Research Report · snapshot 2026-04-15</p>
+        <h1 style="font-family:var(--font-serif);font-size:2.2rem;font-weight:500;color:var(--near-black);margin-bottom:6px">Market Trend Intelligence</h1>
+        <p style="font-size:0.94rem;color:var(--stone)">Top platform recommendations · 4 search tags · 180 star_seller listings</p>
+      </div>
+      <a href="data-dictionary.html" target="_blank" style="
+        display:inline-flex;align-items:center;gap:6px;
+        font-family:var(--font-sans);font-size:0.88rem;font-weight:500;
+        color:var(--terracotta);text-decoration:none;
+        background:rgba(201,100,66,0.08);border:1px solid rgba(201,100,66,0.20);
+        padding:6px 14px;border-radius:8px;white-space:nowrap;transition:background 0.15s
+      " onmouseover="this.style.background='rgba(201,100,66,0.14)'"
+         onmouseout="this.style.background='rgba(201,100,66,0.08)'">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="1" width="10" height="13" rx="1.5"/>
+          <line x1="4.5" y1="5" x2="9.5" y2="5"/><line x1="4.5" y1="7.5" x2="9.5" y2="7.5"/><line x1="4.5" y1="10" x2="7.5" y2="10"/>
+        </svg>
+        Data Dictionary
+      </a>
+    </div>
+
+    <!-- KPIs -->
+    <div class="mini-stat-row">
+      <div class="mini-stat">
+        <div class="mini-stat-value">180</div>
+        <div class="mini-stat-label">Listings Analyzed</div>
+        <div class="mini-stat-note">All star_seller</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-value">46%</div>
+        <div class="mini-stat-label">Hot Rate</div>
+        <div class="mini-stat-note">84 listings có badge</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-value">$53</div>
+        <div class="mini-stat-label">Median Price</div>
+        <div class="mini-stat-note">Range $4 – $324</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-value">100%</div>
+        <div class="mini-stat-label">Dùng Discount</div>
+        <div class="mini-stat-note">Phổ biến 41–60% off</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-value">99%</div>
+        <div class="mini-stat-label">Organic</div>
+        <div class="mini-stat-note">Chỉ 2 paid ads</div>
+      </div>
+    </div>
+
+    <!-- 01 -->
+    <p class="hub-section-label">01 — Thị phần sản phẩm</p>
+    <div class="two-col">
+      <div class="chart-card">
+        <p class="chart-card-title">Thị phần theo loại sản phẩm</p>
+        <p class="chart-card-sub">% listings trên tổng 180. Jewelry dish dẫn đầu (7.8%), ring dish thứ 2 (6.7%), photo album thứ 3 (5.0%).</p>
+        <div class="chart-wrap chart-wrap-md"><canvas id="chartMarketShare"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <p class="chart-card-title">Số listing theo sản phẩm (top 12)</p>
+        <p class="chart-card-sub">Số lượng listing được platform đề xuất — phản ánh mức độ cạnh tranh và sự phổ biến trong từng category.</p>
+        <div class="chart-wrap chart-wrap-md"><canvas id="chartListingCount"></canvas></div>
+      </div>
+    </div>
+
+    <!-- 02 -->
+    <p class="hub-section-label">02 — Sản phẩm đang HOT</p>
+    <div class="chart-card" style="margin-bottom:24px">
+      <p class="chart-card-title">Ranking sản phẩm hot nhất — "Popular now" &amp; "Bestseller"</p>
+      <p class="chart-card-sub">Jewelry dish có nhiều badge nhất (9), ring dish thứ 2 (8). Các sản phẩm nhỏ như musical carousel, flower bracelet đạt 100% hot rate.</p>
+      <div class="chart-wrap chart-wrap-lg"><canvas id="chartHotRanking"></canvas></div>
+    </div>
+    <div class="two-col">
+      <div class="chart-card">
+        <p class="chart-card-title">Hot rate theo sản phẩm (%)</p>
+        <p class="chart-card-sub">% listings có badge trên tổng listing của product type đó. 100% = mọi listing đều đang trending.</p>
+        <div class="chart-wrap chart-wrap-lg"><canvas id="chartHotRate"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <p class="chart-card-title">Hot rate theo search tag</p>
+        <p class="chart-card-sub">"keepsake" có hot rate cao nhất (65.6%) dù avg price thấp nhất ($18). "birth announcement" chỉ 17.5% — ít cạnh tranh badge hơn.</p>
+        <div class="chart-wrap chart-wrap-lg"><canvas id="chartTagHotRate"></canvas></div>
+      </div>
+    </div>
+
+    <!-- 03 -->
+    <p class="hub-section-label">03 — Định giá &amp; vị thế cạnh tranh</p>
+    <div class="two-col">
+      <div class="chart-card">
+        <p class="chart-card-title">Khoảng giá theo search tag (USD)</p>
+        <p class="chart-card-sub">"birth announcement" có biên giá rộng nhất ($16–$324). "keepsake" bị nén giá ($4–$58). Đây là benchmark để định giá sản phẩm mới.</p>
+        <div class="chart-wrap chart-wrap-md"><canvas id="chartPriceRange"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <p class="chart-card-title">Mức discount phổ biến</p>
+        <p class="chart-card-sub">100% listing dùng discount. Chiến lược chuẩn: đặt original price cao rồi giảm 41–60% — tạo cảm giác deal tốt cho buyer.</p>
+        <div class="chart-wrap chart-wrap-md"><canvas id="chartDiscount"></canvas></div>
+      </div>
+    </div>
+
+    <!-- 04 -->
+    <p class="hub-section-label">04 — Cơ hội sản phẩm</p>
+    <div class="two-col">
+      <div class="chart-card">
+        <p class="chart-card-title">Sản phẩm emerging (rating cao, ít review)</p>
+        <p class="chart-card-sub">Rating ≥ 4.8 nhưng avg review &lt; 500 — chất lượng đã được xác nhận, thị trường chưa bão hoà. Cơ hội gia nhập còn rộng.</p>
+        <div class="chart-wrap chart-wrap-lg"><canvas id="chartEmerging"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <p class="chart-card-title">Sản phẩm đã có nhu cầu lớn (1k+ reviews)</p>
+        <p class="chart-card-sub">Demand đã được validate. Baby book (41k), baptism gift (69k) — cạnh tranh cao nhưng biết chắc thị trường tồn tại.</p>
+        <div class="chart-wrap chart-wrap-lg"><canvas id="chartEstablished"></canvas></div>
+      </div>
+    </div>
+
+    <!-- 05 -->
+    <p class="hub-section-label">05 — Tổng hợp &amp; đề xuất sản phẩm</p>
+    <div class="chart-card">
+      <p class="chart-card-title">Bảng tín hiệu thị trường — sản phẩm may &amp; thêu</p>
+      <p class="chart-card-sub" style="margin-bottom:4px">Chỉ hiển thị sản phẩm <strong>có thể gia công may/thêu</strong> · sorted theo mức độ ưu tiên · nguồn: market_listing 2026-04-15</p>
+      <p style="font-family:var(--font-sans);font-size:0.82rem;color:var(--stone);margin-bottom:20px">
+        ✂️ = may được &nbsp;·&nbsp; 🧵 = thêu được &nbsp;·&nbsp; Hot rate = % listings có badge "Popular now" hoặc "Bestseller"
+      </p>
+      <table class="shop-table">
+        <thead>
+          <tr>
+            <th>Sản phẩm</th>
+            <th style="text-align:center">Gia công</th>
+            <th style="text-align:center">Tín hiệu thị trường</th>
+            <th style="text-align:right">Hot rate</th>
+            <th style="text-align:right">Avg price</th>
+            <th style="text-align:right">Đề xuất</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:rgba(201,100,66,0.04)">
+            <td><strong>baby romper</strong></td>
+            <td style="text-align:center">✂️ 🧵</td>
+            <td style="text-align:center"><span class="rating-pill">🔥 Popular now</span></td>
+            <td style="text-align:right;color:var(--terracotta);font-weight:500">71%</td>
+            <td style="text-align:right">$58</td>
+            <td style="text-align:right;color:#5a7a5e;font-weight:500">Ưu tiên cao nhất</td>
+          </tr>
+          <tr style="background:rgba(201,100,66,0.04)">
+            <td><strong>baby onesie / bodysuit</strong></td>
+            <td style="text-align:center">✂️ 🧵</td>
+            <td style="text-align:center"><span class="rating-pill">🔥 100% hot rate</span></td>
+            <td style="text-align:right;color:var(--terracotta);font-weight:500">67–100%</td>
+            <td style="text-align:right">$62</td>
+            <td style="text-align:right;color:#5a7a5e;font-weight:500">Ưu tiên cao nhất</td>
+          </tr>
+          <tr style="background:rgba(201,100,66,0.04)">
+            <td><strong>baby blanket</strong></td>
+            <td style="text-align:center">✂️ 🧵</td>
+            <td style="text-align:center"><span class="rating-pill">📈 Bestseller</span></td>
+            <td style="text-align:right;color:var(--terracotta);font-weight:500">50%</td>
+            <td style="text-align:right">$92</td>
+            <td style="text-align:right;color:#5a7a5e;font-weight:500">Margin cao</td>
+          </tr>
+          <tr style="background:rgba(201,100,66,0.04)">
+            <td><strong>keepsake album (vải)</strong></td>
+            <td style="text-align:center">✂️ 🧵</td>
+            <td style="text-align:center"><span class="rating-pill">🔥 100% hot rate</span></td>
+            <td style="text-align:right;color:var(--terracotta);font-weight:500">100%</td>
+            <td style="text-align:right">$110</td>
+            <td style="text-align:right;color:#5a7a5e;font-weight:500">Premium · thêu tên</td>
+          </tr>
+          <tr>
+            <td><strong>denim jacket</strong></td>
+            <td style="text-align:center">✂️ 🧵</td>
+            <td style="text-align:center"><span class="rating-pill">🔥 Popular now</span></td>
+            <td style="text-align:right;color:var(--terracotta);font-weight:500">100%</td>
+            <td style="text-align:right">$66</td>
+            <td style="text-align:right;color:var(--olive)">1 listing · explore</td>
+          </tr>
+          <tr>
+            <td><strong>name pillow</strong></td>
+            <td style="text-align:center">✂️ 🧵</td>
+            <td style="text-align:center"><span class="rating-pill">🔥 Popular now</span></td>
+            <td style="text-align:right;color:var(--terracotta);font-weight:500">100%</td>
+            <td style="text-align:right">$62</td>
+            <td style="text-align:right;color:var(--olive)">1 listing · explore</td>
+          </tr>
+          <tr>
+            <td><strong>diaper caddy basket</strong></td>
+            <td style="text-align:center">✂️</td>
+            <td style="text-align:center"><span class="rating-pill">🔥 Popular now</span></td>
+            <td style="text-align:right;color:var(--terracotta);font-weight:500">100%</td>
+            <td style="text-align:right">$45</td>
+            <td style="text-align:right;color:var(--olive)">Emerging · ít cạnh tranh</td>
+          </tr>
+          <tr>
+            <td><strong>milestone blanket</strong></td>
+            <td style="text-align:center">✂️ 🧵</td>
+            <td style="text-align:center"><span class="rating-pill">⭐ Emerging</span></td>
+            <td style="text-align:right">0%</td>
+            <td style="text-align:right">$138</td>
+            <td style="text-align:right;color:var(--olive)">Giá cao · 1 listing</td>
+          </tr>
+          <tr>
+            <td><strong>embroidered album</strong></td>
+            <td style="text-align:center">🧵</td>
+            <td style="text-align:center"><span class="rating-pill">⭐ Niche</span></td>
+            <td style="text-align:right">0%</td>
+            <td style="text-align:right">$133</td>
+            <td style="text-align:right;color:var(--olive)">Core skill · cần push</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:20px;padding:14px 16px;background:var(--warm-sand);border-radius:8px">
+        <p style="font-family:var(--font-sans);font-size:0.88rem;color:var(--charcoal);line-height:1.60">
+          <strong>Lưu ý:</strong> Jewelry dish (9 badges) và ring dish (8 badges) dẫn đầu thị trường về hot rate
+          nhưng là sản phẩm gốm sứ — <strong>ngoài năng lực gia công</strong>. Tập trung vào baby romper,
+          baby onesie/bodysuit và baby blanket là lựa chọn tối ưu nhất trong năng lực hiện tại.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    Chart.defaults.font.family = "system-ui, -apple-system, 'Segoe UI', Arial, sans-serif";
+    Chart.defaults.color = '#87867f';
+    Chart.defaults.plugins.legend.labels.boxWidth  = 12;
+    Chart.defaults.plugins.legend.labels.padding   = 16;
+    Chart.defaults.plugins.tooltip.backgroundColor = '#141413';
+    Chart.defaults.plugins.tooltip.titleColor      = '#faf9f5';
+    Chart.defaults.plugins.tooltip.bodyColor       = '#b0aea5';
+    Chart.defaults.plugins.tooltip.cornerRadius    = 8;
+    Chart.defaults.plugins.tooltip.padding         = 10;
+
+    const TC  = '#c96442';
+    const CO  = '#d97757';
+    const LT  = '#e8b99d';
+    const WS  = '#e8e6dc';
+    const CH  = '#4d4c48';
+    const ST  = '#87867f';
+
+    const SCALE_X_CLEAN = { grid: { display: false }, border: { display: false } };
+    const SCALE_Y_CLEAN = { grid: { color: '#f0eee6' }, border: { display: false } };
+    const SCALE_Y_GRID  = { grid: { display: false }, border: { display: false } };
+    const SCALE_X_GRID  = { grid: { color: '#f0eee6' }, border: { display: false } };
+
+    // 01 — Market share donut
+    new Chart(document.getElementById('chartMarketShare'), {
+      type: 'doughnut',
+      data: {
+        labels: ['jewelry dish','ring dish','photo album','baby romper',
+                 'name sign','keepsake plaque','baby blanket','baby book','Khác'],
+        datasets: [{
+          data: [7.8, 6.7, 5.0, 3.9, 3.9, 3.9, 3.3, 2.8, 62.7],
+          backgroundColor: [TC, CO, LT, CH, '#b0aea5', WS, ST, '#3d3d3a', '#e0ddd4'],
+          borderWidth: 2, borderColor: '#faf9f5', hoverOffset: 6
+        }]
+      },
+      options: {
+        cutout: '60%',
+        plugins: {
+          legend: { position: 'right', labels: { font: { size: 11 } } },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}%` } }
+        },
+        maintainAspectRatio: false
+      }
+    });
+
+    // 01 — Listing count bar
+    new Chart(document.getElementById('chartListingCount'), {
+      type: 'bar',
+      data: {
+        labels: ['jewelry dish','ring dish','photo album','baby romper',
+                 'name sign','keepsake plaque','baby blanket','baby book',
+                 'trinket dish','night light','birth ann. sign','baby bodysuit'],
+        datasets: [{
+          label: 'Listings',
+          data: [14, 12, 9, 7, 7, 7, 6, 5, 5, 4, 4, 3],
+          backgroundColor: [TC,TC,CO,CO,LT,LT,WS,WS,ST,ST,CH,CH],
+          borderRadius: 4, borderSkipped: false
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: { x: SCALE_X_GRID, y: SCALE_Y_GRID },
+        maintainAspectRatio: false
+      }
+    });
+
+    // 02 — Hot ranking stacked
+    new Chart(document.getElementById('chartHotRanking'), {
+      type: 'bar',
+      data: {
+        labels: ['jewelry dish','ring dish','baby romper','baby book',
+                 'baby blanket','photo album','trinket dish','night light',
+                 'flower bracelet','keepsake album','musical carousel','baby onesie','storybook'],
+        datasets: [
+          { label: 'Popular now', data: [6, 8, 4, 2, 1, 3, 3, 1, 2, 2, 2, 2, 0], backgroundColor: TC, borderRadius: 4, borderSkipped: false },
+          { label: 'Bestseller',  data: [3, 0, 1, 2, 2, 0, 0, 1, 0, 0, 0, 0, 2], backgroundColor: CH, borderRadius: 4, borderSkipped: false }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: { legend: { position: 'bottom' } },
+        scales: { x: SCALE_X_GRID, y: SCALE_Y_GRID },
+        maintainAspectRatio: false
+      }
+    });
+
+    // 02 — Hot rate %
+    new Chart(document.getElementById('chartHotRate'), {
+      type: 'bar',
+      data: {
+        labels: ['musical carousel','flower bracelet','baby onesie','keepsake album',
+                 'storybook','baby book','baby romper','ring dish',
+                 'jewelry dish','baby bodysuit','baby blanket','trinket dish'],
+        datasets: [{
+          label: 'Hot rate %',
+          data: [100, 100, 100, 100, 100, 80, 71, 67, 64, 67, 50, 60],
+          backgroundColor: ctx => {
+            const v = ctx.raw;
+            if (v === 100) return CH;
+            if (v >= 67)  return TC;
+            if (v >= 50)  return CO;
+            return LT;
+          },
+          borderRadius: 4, borderSkipped: false
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x}% listings có badge` } }
+        },
+        scales: {
+          x: { ...SCALE_X_GRID, max: 110, ticks: { callback: v => v + '%' } },
+          y: SCALE_Y_GRID
+        },
+        maintainAspectRatio: false
+      }
+    });
+
+    // 02 — Tag hot rate
+    new Chart(document.getElementById('chartTagHotRate'), {
+      type: 'bar',
+      data: {
+        labels: ['keepsake','baby girl gift','baby keepsake','birth announcement'],
+        datasets: [
+          {
+            label: 'Hot rate %',
+            data: [65.6, 56.7, 45.8, 17.5],
+            backgroundColor: [TC, TC, CO, LT],
+            borderRadius: 6, borderSkipped: false, yAxisID: 'y'
+          },
+          {
+            label: 'Avg reviews',
+            data: [811, 6342, 4300, 2697],
+            backgroundColor: 'transparent', borderColor: CH, borderWidth: 2,
+            type: 'line', tension: 0.3,
+            pointBackgroundColor: CH, pointRadius: 5,
+            yAxisID: 'y2'
+          }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          x: SCALE_X_CLEAN,
+          y: { ...SCALE_Y_CLEAN, ticks: { callback: v => v + '%' }, max: 80 },
+          y2: {
+            position: 'right',
+            grid: { display: false }, border: { display: false },
+            ticks: { callback: v => v >= 1000 ? (v/1000).toFixed(1)+'k' : v }
+          }
+        },
+        maintainAspectRatio: false
+      }
+    });
+
+    // 03 — Price range floating bar
+    new Chart(document.getElementById('chartPriceRange'), {
+      type: 'bar',
+      data: {
+        labels: ['birth announcement','baby girl gift','baby keepsake','keepsake'],
+        datasets: [
+          { label: 'Min → Median', data: [[16.12,69.45],[8.59,60.73],[6.28,59.06],[4.41,14.49]], backgroundColor: LT, borderRadius: 4, borderSkipped: false },
+          { label: 'Median → Max', data: [[69.45,323.53],[60.73,279.85],[59.06,178.79],[14.49,57.85]], backgroundColor: TC, borderRadius: 4, borderSkipped: false }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: { callbacks: { label: ctx => { const [lo, hi] = ctx.raw; return ` $${lo.toFixed(0)} – $${hi.toFixed(0)}`; } } }
+        },
+        scales: {
+          x: { ...SCALE_X_GRID, ticks: { callback: v => '$'+v } },
+          y: SCALE_Y_GRID
+        },
+        maintainAspectRatio: false
+      }
+    });
+
+    // 03 — Discount depth
+    new Chart(document.getElementById('chartDiscount'), {
+      type: 'bar',
+      data: {
+        labels: ['1–20%','21–40%','41–60%','60%+'],
+        datasets: [{ label: 'Listings', data: [22, 57, 66, 35], backgroundColor: [LT, CO, TC, CH], borderRadius: 6, borderSkipped: false }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: { x: SCALE_X_CLEAN, y: SCALE_Y_CLEAN },
+        maintainAspectRatio: false
+      }
+    });
+
+    // 04 — Emerging
+    new Chart(document.getElementById('chartEmerging'), {
+      type: 'bar',
+      data: {
+        labels: ['ring dish','jewelry dish','photo album','baby book',
+                 'trinket dish','birth ann. sign','birth stats sign','tooth fairy box'],
+        datasets: [{ label: 'Avg reviews', data: [81, 138, 112, 249, 341, 36, 146, 334], backgroundColor: TC, borderRadius: 4, borderSkipped: false }]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x} avg reviews` } } },
+        scales: { x: SCALE_X_GRID, y: SCALE_Y_GRID },
+        maintainAspectRatio: false
+      }
+    });
+
+    // 04 — Established demand
+    new Chart(document.getElementById('chartEstablished'), {
+      type: 'bar',
+      data: {
+        labels: ['baptism gift','time capsule box','baby book','ann. photo frame',
+                 'birth ann. sign','ballerina night light','christening gift',
+                 'baby sweater','night light','star map print'],
+        datasets: [{ label: 'Avg reviews', data: [69400,54300,41250,32000,14900,14800,13900,13300,13200,11700], backgroundColor: CH, borderRadius: 4, borderSkipped: false }]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x.toLocaleString()} avg reviews` } }
+        },
+        scales: {
+          x: { ...SCALE_X_GRID, ticks: { callback: v => v>=1000?(v/1000).toFixed(0)+'k':v } },
+          y: SCALE_Y_GRID
+        },
+        maintainAspectRatio: false
+      }
+    });
+  </script>
+</body>
+</html>

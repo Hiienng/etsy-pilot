@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intelligence Report — 2026-04-16</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --parchment:    #f5f4ed;
+      --ivory:        #faf9f5;
+      --white:        #ffffff;
+      --warm-sand:    #e8e6dc;
+      --dark-surface: #30302e;
+      --deep-dark:    #141413;
+      --near-black:   #141413;
+      --charcoal:     #4d4c48;
+      --olive:        #5e5d59;
+      --stone:        #87867f;
+      --dark-warm:    #3d3d3a;
+      --warm-silver:  #b0aea5;
+      --terracotta:   #c96442;
+      --coral:        #d97757;
+      --border-cream: #f0eee6;
+      --border-warm:  #e8e6dc;
+      --ring-warm:    #d1cfc5;
+      --ring-deep:    #c2c0b6;
+      --font-serif: Georgia, 'Times New Roman', serif;
+      --font-sans:  system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+      --font-mono:  'Courier New', Courier, monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-sans); background: var(--parchment); color: var(--near-black); line-height: 1.6; min-height: 100vh; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--parchment); border-bottom: 1px solid var(--border-cream);
+      padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 60px;
+    }
+    .nav-brand { font-family: var(--font-serif); font-size: 1.06rem; font-weight: 500; color: var(--near-black); text-decoration: none; }
+    .nav-brand span { color: var(--terracotta); }
+    .nav-back { font-family: var(--font-sans); font-size: 0.88rem; color: var(--stone); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.15s; }
+    .nav-back:hover { color: var(--near-black); }
+
+    .page-wrap { max-width: 1200px; margin: 0 auto; padding: 40px 40px 100px; }
+
+    .page-header { margin-bottom: 32px; }
+    .page-overline { font-size: 0.63rem; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; color: var(--stone); margin-bottom: 8px; }
+    .page-title { font-family: var(--font-serif); font-size: 2.2rem; font-weight: 500; color: var(--near-black); margin-bottom: 6px; }
+    .page-sub { font-size: 0.94rem; color: var(--stone); }
+
+    .section-heading { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 500; color: var(--near-black); margin-bottom: 20px; }
+
+    .hub-section-label { font-family: var(--font-sans); font-size: 0.63rem; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; color: var(--stone); margin-bottom: 14px; }
+
+    .mini-stat-row { display: flex; gap: 12px; margin-bottom: 32px; }
+    .mini-stat { flex: 1; background: var(--ivory); border: 1px solid var(--border-cream); border-radius: 12px; padding: 20px; box-shadow: rgba(0,0,0,0.04) 0px 2px 12px; }
+    .mini-stat-value { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 500; line-height: 1.10; color: var(--near-black); }
+    .mini-stat-label { font-family: var(--font-sans); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12px; text-transform: uppercase; color: var(--stone); margin-top: 6px; }
+    .mini-stat-note { font-family: var(--font-sans); font-size: 0.88rem; color: var(--stone); margin-top: 4px; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
+
+    .chart-card { background: var(--ivory); border: 1px solid var(--border-cream); border-radius: 12px; padding: 28px 28px 20px; box-shadow: rgba(0,0,0,0.05) 0px 4px 24px; }
+    .chart-card-title { font-family: var(--font-serif); font-size: 1.06rem; font-weight: 500; color: var(--near-black); margin-bottom: 4px; }
+    .chart-card-sub { font-family: var(--font-sans); font-size: 0.88rem; color: var(--stone); margin-bottom: 20px; }
+    .chart-wrap { position: relative; }
+
+    .impr-filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    .impr-filter { font-family: var(--font-sans); font-size: 0.80rem; font-weight: 500; padding: 5px 13px; border-radius: 20px; border: 1px solid var(--border-warm); background: var(--ivory); color: var(--stone); cursor: pointer; transition: all 0.12s; }
+    .impr-filter:hover { border-color: var(--ring-deep); color: var(--charcoal); }
+    .impr-filter.active { background: var(--near-black); color: var(--ivory); border-color: var(--near-black); }
+
+    .impr-table-wrap { overflow-x: auto; }
+    .impr-table { width: 100%; border-collapse: collapse; font-family: var(--font-sans); font-size: 0.84rem; }
+    .impr-table th { text-align: left; padding: 9px 12px; font-size: 0.72rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--stone); border-bottom: 1px solid var(--border-warm); white-space: nowrap; background: var(--ivory); position: sticky; top: 0; }
+    .impr-table td { padding: 9px 12px; border-bottom: 1px solid var(--border-cream); vertical-align: middle; }
+    .impr-table tr:last-child td { border-bottom: none; }
+    .impr-table tr:hover td { background: rgba(245,244,237,0.6); }
+
+    .metric-chip { display: inline-block; font-size: 0.78rem; font-weight: 500; padding: 2px 8px; border-radius: 5px; white-space: nowrap; }
+    .chip-ok   { background: rgba(74,140,96,0.10);  color: #4a8c60; }
+    .chip-warn { background: rgba(181,51,51,0.08);  color: #b53333; }
+    .chip-neu  { background: var(--warm-sand);      color: var(--charcoal); }
+
+    .impr-badge { display: inline-block; font-size: 0.72rem; font-weight: 500; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+    .badge-top  { background: rgba(74,140,96,0.10);  color: #4a8c60; }
+    .badge-qw   { background: rgba(201,100,66,0.10); color: var(--terracotta); }
+    .badge-roas { background: var(--warm-sand);      color: var(--charcoal); }
+
+    @media (max-width: 768px) {
+      .nav { padding: 0 16px; }
+      .page-wrap { padding: 24px 16px 60px; }
+      .two-col { grid-template-columns: 1fr; }
+      .mini-stat-row { flex-wrap: wrap; }
+      .mini-stat { min-width: calc(50% - 6px); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="nav-brand">Etsy - Internal portal<span>.</span></a>
+    <a href="/" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
+      Quay lại portal
+    </a>
+  </nav>
+
+  <div class="page-wrap">
+
+    <div class="page-header">
+      <p class="page-overline">Intelligence Report · snapshot 2026-04-16</p>
+      <h1 class="page-title">Listing Scale Up</h1>
+      <p class="page-sub">
+        Nguồn <code style="font-family:var(--font-mono);font-size:0.88rem;background:var(--warm-sand);padding:1px 6px;border-radius:4px">market_listing</code>
+        · 180 listings · 95 product types → <strong>22 sewable</strong>
+      </p>
+    </div>
+
+    <!-- Signal callout -->
+    <div style="background:rgba(201,100,66,0.06);border:1px solid rgba(201,100,66,0.22);border-left:3px solid var(--terracotta);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:32px">
+      <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--charcoal);line-height:1.65">
+        <strong>Cơ hội lớn nhất đang bỏ lỡ:</strong> Baby bodysuit — 30 listings thị trường, avg <strong>22,192 reviews</strong>, hot rate 43%.
+        Kỹ năng may thêu y hệt baby onesie đang sản xuất nhưng <strong>chưa có một listing nào</strong> trong portfolio hiện tại.
+      </p>
+    </div>
+
+    <!-- 01 — KPI -->
+    <p class="hub-section-label">01 — Tổng quan thị trường sewable</p>
+    <div class="mini-stat-row">
+      <div class="mini-stat">
+        <div class="mini-stat-value">22</div>
+        <div class="mini-stat-label">Sewable product types</div>
+        <div class="mini-stat-note">Lọc từ 95 loại sản phẩm</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-value" style="color:#4a8c60">3</div>
+        <div class="mini-stat-label">Đang có trong portfolio</div>
+        <div class="mini-stat-note">Blanket · Onesie · Romper</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-value" style="color:var(--terracotta)">19</div>
+        <div class="mini-stat-label">Cơ hội scale up</div>
+        <div class="mini-stat-note">Chưa khai thác</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-value" style="color:var(--terracotta)">4</div>
+        <div class="mini-stat-label">Tier S — Làm ngay</div>
+        <div class="mini-stat-note">Hot rate cao + demand lớn</div>
+      </div>
+    </div>
+
+    <!-- 02 — Matrix -->
+    <p class="hub-section-label">02 — Ma trận cơ hội</p>
+    <div class="two-col">
+      <div class="chart-card">
+        <p class="chart-card-title">Hot rate × Avg price × Demand</p>
+        <p class="chart-card-sub">Trục Y = hot rate (%), trục X = avg price ($). Kích thước bong bóng = demand (avg reviews). <span style="color:var(--terracotta);font-weight:500">■</span> = chưa làm · <span style="color:#4a8c60;font-weight:500">■</span> = đang có</p>
+        <div class="chart-wrap" style="height:300px"><canvas id="scaleupBubble"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <p class="chart-card-title">Top 4 — Scale up ngay</p>
+        <p class="chart-card-sub" style="margin-bottom:16px">Sản phẩm sewable chưa có trong portfolio, hot rate cao, demand được validate</p>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <strong style="font-size:0.88rem">Baby Bodysuit</strong>
+              <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">43% hot · $41</span>
+            </div>
+            <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">30 market listings · avg 22,192 reviews · kỹ năng y hệt onesie đang làm → biggest miss</p>
+          </div>
+          <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <strong style="font-size:0.88rem">Keepsake Album</strong>
+              <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">100% hot · $110</span>
+            </div>
+            <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">Album bìa vải thêu tên & ngày sinh · avg 4,630 reviews · giá trị cao · kỹ năng lõi</p>
+          </div>
+          <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <strong style="font-size:0.88rem">Name Pillow</strong>
+              <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">100% hot · $62</span>
+            </div>
+            <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">Gối thêu tên · 1,183 reviews · sản phẩm đơn giản, kỹ năng thêu thuần tuý</p>
+          </div>
+          <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <strong style="font-size:0.88rem">Sweatshirt (thêu)</strong>
+              <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">100% hot · $83</span>
+            </div>
+            <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">Áo thêu tên · 807 reviews · giá cao · thêu trên vải dày = kỹ năng có sẵn</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 — Table -->
+    <p class="hub-section-label">03 — Danh sách sản phẩm scale up</p>
+    <div class="chart-card">
+      <div class="impr-filter-bar" id="scaleupFilters">
+        <button class="impr-filter active" data-sf="all">Tất cả</button>
+        <button class="impr-filter" data-sf="S">Tier S — Làm ngay</button>
+        <button class="impr-filter" data-sf="A">Tier A — Khuyến nghị</button>
+        <button class="impr-filter" data-sf="B">Tier B — Theo dõi</button>
+        <button class="impr-filter" data-sf="C">Emerging</button>
+      </div>
+      <div class="impr-table-wrap">
+        <table class="impr-table">
+          <thead>
+            <tr>
+              <th>Sản phẩm</th>
+              <th style="text-align:center">Tier</th>
+              <th style="text-align:center">Hot rate</th>
+              <th style="text-align:right">Avg price</th>
+              <th style="text-align:right">Avg reviews</th>
+              <th style="text-align:center">Market n</th>
+              <th style="text-align:center">Portfolio</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="scaleupTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    Chart.defaults.font.family = "system-ui, -apple-system, 'Segoe UI', Arial, sans-serif";
+    Chart.defaults.color = '#87867f';
+    Chart.defaults.plugins.tooltip.backgroundColor = '#141413';
+    Chart.defaults.plugins.tooltip.titleColor      = '#faf9f5';
+    Chart.defaults.plugins.tooltip.bodyColor       = '#b0aea5';
+    Chart.defaults.plugins.tooltip.cornerRadius    = 8;
+    Chart.defaults.plugins.tooltip.padding         = 10;
+
+    const SCALE_X_CLEAN = { grid: { display: false }, border: { display: false } };
+    const SCALE_Y_CLEAN = { grid: { color: '#f0eee6' }, border: { display: false } };
+
+    const SEWABLE_PRODUCTS = [
+      {name:'baby bodysuit',        tier:'S', hot:43,  n:30, price:41,  reviews:22192, rating:4.85, portfolio:false, action:'Bắt đầu ngay — kỹ năng y hệt onesie, demand lớn nhất nhóm chưa khai thác'},
+      {name:'keepsake album',       tier:'S', hot:100, n:2,  price:110, reviews:4630,  rating:4.90, portfolio:false, action:'Album bìa vải thêu tên — kỹ năng lõi, giá cao, 100% hot'},
+      {name:'name pillow',          tier:'S', hot:100, n:1,  price:62,  reviews:1183,  rating:4.90, portfolio:false, action:'Gối thêu tên — đơn giản, demand có chiều sâu'},
+      {name:'sweatshirt (thêu)',    tier:'S', hot:100, n:1,  price:83,  reviews:807,   rating:4.90, portfolio:false, action:'Áo thêu tên — giá tốt $83, 100% hot, kỹ năng có sẵn'},
+      {name:'baby romper',          tier:'A', hot:60,  n:15, price:51,  reviews:8191,  rating:4.83, portfolio:true,  action:'Đang có — tăng thêm listing, hot rate 60% cần đẩy mạnh'},
+      {name:'denim jacket (thêu)',  tier:'A', hot:100, n:1,  price:66,  reviews:167,   rating:4.70, portfolio:false, action:'Áo jeans thêu tên — 100% hot, thị trường mới nổi'},
+      {name:'plush toy',            tier:'A', hot:100, n:2,  price:67,  reviews:119,   rating:4.70, portfolio:false, action:'Thú bông vải — 100% hot, cần thiết kế pattern riêng'},
+      {name:'baby lovey',           tier:'A', hot:67,  n:3,  price:25,  reviews:165,   rating:4.70, portfolio:false, action:'Lovey nhỏ (vải + thú nhồi) — hot 67%, entry dễ'},
+      {name:'baby sweater',         tier:'A', hot:50,  n:2,  price:30,  reviews:13300, rating:4.95, portfolio:false, action:'Áo len đan/may — 50% hot, 13k reviews = demand lớn, margin thấp'},
+      {name:'matching family shirts',tier:'A',hot:100, n:1,  price:28,  reviews:null,  rating:4.70, portfolio:false, action:'Áo gia đình thêu — 100% hot, thị trường mới nổi'},
+      {name:'diaper caddy basket',  tier:'A', hot:100, n:2,  price:45,  reviews:148,   rating:4.80, portfolio:false, action:'Giỏ vải đựng tã — 100% hot, cần kỹ năng đan/dệt'},
+      {name:'baby hamper',          tier:'A', hot:100, n:1,  price:127, reviews:null,  rating:4.80, portfolio:false, action:'Giỏ quà vải cao cấp $127 — premium segment, 100% hot'},
+      {name:'baby blanket',         tier:'B', hot:42,  n:53, price:59,  reviews:3764,  rating:4.81, portfolio:true,  action:'Đang có — maintain, CTR cần cải thiện'},
+      {name:'baby onesie',          tier:'B', hot:31,  n:26, price:57,  reviews:11627, rating:4.90, portfolio:true,  action:'Đang có — ROAS yếu, cần review giá quảng cáo'},
+      {name:'photo album (vải)',    tier:'B', hot:33,  n:9,  price:118, reviews:4693,  rating:4.88, portfolio:false, action:'Nếu bìa vải — 33% hot, giá cao $118, đánh giá kỹ trước khi làm'},
+      {name:'baby comforter',       tier:'B', hot:100, n:2,  price:23,  reviews:39,    rating:4.40, portfolio:false, action:'100% hot nhưng $23 thấp — margin khó, theo dõi thêm'},
+      {name:'storage basket',       tier:'B', hot:50,  n:2,  price:18,  reviews:234,   rating:4.70, portfolio:false, action:'$18 margin thấp — không ưu tiên trừ khi volume lớn'},
+      {name:'woven blanket',        tier:'C', hot:0,   n:4,  price:106, reviews:622,   rating:4.93, portfolio:false, action:'Hot rate 0% nhưng rating 4.93, giá $106 — chờ signal hot'},
+      {name:'milestone blanket',    tier:'C', hot:0,   n:2,  price:138, reviews:306,   rating:4.40, portfolio:false, action:'Premium $138, chưa hot — emerging window sớm'},
+      {name:'teddy bear',           tier:'C', hot:100, n:1,  price:71,  reviews:4,     rating:4.80, portfolio:false, action:'100% hot nhưng 4 reviews — quá sớm, theo dõi 3 tháng'},
+      {name:'embroidery hoop',      tier:'C', hot:0,   n:2,  price:81,  reviews:8,     rating:5.00, portfolio:false, action:'Rating 5.0, thị trường niche — chuyên biệt, xem xét dài hạn'},
+      {name:'baby shoes',           tier:'C', hot:0,   n:1,  price:67,  reviews:12,    rating:5.00, portfolio:false, action:'Rating 5.0, 12 reviews — quá sớm, cần pattern giày vải'},
+    ];
+
+    const TIER_META = {
+      S: { label: 'Tier S',   cls: 'badge-qw',   desc: 'Làm ngay' },
+      A: { label: 'Tier A',   cls: 'chip-ok',    desc: 'Khuyến nghị' },
+      B: { label: 'Tier B',   cls: 'chip-neu',   desc: 'Theo dõi' },
+      C: { label: 'Emerging', cls: 'badge-roas', desc: 'Mới nổi' },
+    };
+
+    function renderScaleupTable(filter) {
+      const body = document.getElementById('scaleupTableBody');
+      const data = filter === 'all' ? SEWABLE_PRODUCTS : SEWABLE_PRODUCTS.filter(d => d.tier === filter);
+      body.innerHTML = data.map(d => {
+        const tm = TIER_META[d.tier];
+        const hotChip = d.hot >= 67
+          ? `<span class="metric-chip chip-ok">${d.hot}%</span>`
+          : d.hot >= 30
+          ? `<span class="metric-chip chip-neu">${d.hot}%</span>`
+          : `<span class="metric-chip chip-warn">${d.hot}%</span>`;
+        const revStr = d.reviews == null ? '—' : d.reviews >= 1000 ? (d.reviews/1000).toFixed(1)+'k' : String(d.reviews);
+        const portBadge = d.portfolio
+          ? `<span class="metric-chip chip-ok" style="font-size:0.70rem">✓ ada</span>`
+          : `<span style="font-size:0.75rem;color:var(--stone)">—</span>`;
+        return `<tr>
+          <td style="font-weight:500;color:var(--charcoal)">${d.name}</td>
+          <td style="text-align:center"><span class="impr-badge ${tm.cls}">${tm.label}</span></td>
+          <td style="text-align:center">${hotChip}</td>
+          <td style="text-align:right;font-variant-numeric:tabular-nums">$${d.price}</td>
+          <td style="text-align:right;font-variant-numeric:tabular-nums;color:${(d.reviews||0)>=1000?'#4a8c60':'var(--charcoal)'}">${revStr}</td>
+          <td style="text-align:center;color:var(--stone)">${d.n}</td>
+          <td style="text-align:center">${portBadge}</td>
+          <td style="font-size:0.80rem;color:var(--olive);line-height:1.4">${d.action}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function initScaleupChart() {
+      const ctx = document.getElementById('scaleupBubble');
+      if (!ctx) return;
+      const scaleR = v => Math.max(5, Math.min(26, Math.sqrt(v || 30) * 0.55));
+      const notOwned = SEWABLE_PRODUCTS.filter(d => !d.portfolio);
+      const owned    = SEWABLE_PRODUCTS.filter(d =>  d.portfolio);
+      new Chart(ctx, {
+        type: 'bubble',
+        data: {
+          datasets: [
+            {
+              label: 'Chưa làm',
+              data: notOwned.map(d => ({ x: d.price, y: d.hot, r: scaleR(d.reviews), name: d.name, tier: d.tier })),
+              backgroundColor: 'rgba(201,100,66,0.55)', borderColor: 'rgba(201,100,66,0.85)', borderWidth: 1.5,
+            },
+            {
+              label: 'Đang có',
+              data: owned.map(d => ({ x: d.price, y: d.hot, r: scaleR(d.reviews), name: d.name, tier: d.tier })),
+              backgroundColor: 'rgba(74,140,96,0.55)', borderColor: 'rgba(74,140,96,0.85)', borderWidth: 1.5,
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: { callbacks: { label: ctx => ` ${ctx.raw.name} — hot ${ctx.raw.y}%, $${ctx.raw.x}, ${ctx.raw.tier}` } }
+          },
+          scales: {
+            x: { title: { display: true, text: 'Avg price ($)', color: '#87867f', font: { size: 11 } }, ...SCALE_X_CLEAN, min: 0, max: 145 },
+            y: { title: { display: true, text: 'Hot rate (%)', color: '#87867f', font: { size: 11 } }, ...SCALE_Y_CLEAN, min: 0, max: 115, ticks: { callback: v => v + '%' } }
+          }
+        }
+      });
+    }
+
+    document.getElementById('scaleupFilters').addEventListener('click', e => {
+      const btn = e.target.closest('.impr-filter');
+      if (!btn) return;
+      document.querySelectorAll('#scaleupFilters .impr-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderScaleupTable(btn.dataset.sf);
+    });
+
+    renderScaleupTable('all');
+    initScaleupChart();
+  </script>
+</body>
+</html>

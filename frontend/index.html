@@ -1178,117 +1178,28 @@
     <!-- ── Panel 2: Intelligence Hub ──────────────── -->
     <section class="hub-panel" id="tab-intelligence" role="tabpanel">
 
-        <h2 class="section-heading" style="margin-bottom:6px">Listing Scale Up</h2>
-        <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone);margin-bottom:20px">
-          Nguồn <code style="font-family:var(--font-mono);font-size:0.88rem;background:var(--warm-sand);padding:1px 6px;border-radius:4px">market_listing</code>
-          · 180 listings · 95 product types → <strong>22 sewable</strong> · snapshot 2026-04-16
-        </p>
+      <h2 class="section-heading" style="margin-bottom:6px">Intelligence Hub</h2>
+      <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone);margin-bottom:28px">Phân tích cơ hội thị trường · danh sách báo cáo</p>
 
-        <!-- Signal callout -->
-        <div style="background:rgba(201,100,66,0.06);border:1px solid rgba(201,100,66,0.22);border-left:3px solid var(--terracotta);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:24px">
-          <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--charcoal);line-height:1.65">
-            <strong>Cơ hội lớn nhất đang bỏ lỡ:</strong> Baby bodysuit — 30 listings thị trường, avg <strong>22,192 reviews</strong>, hot rate 43%.
-            Kỹ năng may thêu y hệt baby onesie đang sản xuất nhưng <strong>chưa có một listing nào</strong> trong portfolio hiện tại.
-          </p>
-        </div>
-
-        <!-- 4 KPI cards -->
-        <p class="hub-section-label">01 — Tổng quan thị trường sewable</p>
-        <div class="mini-stat-row" style="margin-bottom:28px">
-          <div class="mini-stat">
-            <div class="mini-stat-value">22</div>
-            <div class="mini-stat-label">Sewable product types</div>
-            <div class="mini-stat-note">Lọc từ 95 loại sản phẩm</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <a href="/Intelligence_report_2026-04-16.html" style="
+          display:flex;align-items:center;justify-content:space-between;
+          background:var(--ivory);border:1px solid var(--border-cream);border-radius:12px;
+          padding:20px 24px;text-decoration:none;
+          box-shadow:rgba(0,0,0,0.05) 0px 4px 24px;
+          transition:box-shadow 0.15s,border-color 0.15s
+        " onmouseover="this.style.boxShadow='rgba(0,0,0,0.08) 0px 8px 32px, 0 0 0 1px var(--ring-warm)';this.style.borderColor='var(--ring-warm)'"
+           onmouseout="this.style.boxShadow='rgba(0,0,0,0.05) 0px 4px 24px';this.style.borderColor='var(--border-cream)'">
+          <div>
+            <p style="font-family:var(--font-serif);font-size:1.1rem;font-weight:500;color:var(--near-black);margin-bottom:4px">Listing Scale Up — 22 sewable products</p>
+            <p style="font-family:var(--font-sans);font-size:0.88rem;color:var(--stone)">180 market listings · 95 product types · snapshot 2026-04-16</p>
           </div>
-          <div class="mini-stat">
-            <div class="mini-stat-value" style="color:#4a8c60">3</div>
-            <div class="mini-stat-label">Đang có trong portfolio</div>
-            <div class="mini-stat-note">Blanket · Onesie · Romper</div>
+          <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+            <span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:3px 10px;border-radius:20px">Intelligence</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#87867f" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
           </div>
-          <div class="mini-stat">
-            <div class="mini-stat-value" style="color:var(--terracotta)">19</div>
-            <div class="mini-stat-label">Cơ hội scale up</div>
-            <div class="mini-stat-note">Chưa khai thác</div>
-          </div>
-          <div class="mini-stat">
-            <div class="mini-stat-value" style="color:var(--terracotta)">4</div>
-            <div class="mini-stat-label">Tier S — Làm ngay</div>
-            <div class="mini-stat-note">Hot rate cao + demand lớn</div>
-          </div>
-        </div>
-
-        <!-- Opportunity matrix + top picks -->
-        <p class="hub-section-label">02 — Ma trận cơ hội</p>
-        <div class="two-col" style="margin-bottom:28px">
-          <div class="chart-card">
-            <p class="chart-card-title">Hot rate × Avg price × Demand</p>
-            <p class="chart-card-sub">Trục Y = hot rate (%), trục X = avg price ($). Kích thước bong bóng = demand (avg reviews). <span style="color:var(--terracotta);font-weight:500">■</span> = chưa làm · <span style="color:#4a8c60;font-weight:500">■</span> = đang có</p>
-            <div class="chart-wrap" style="height:300px"><canvas id="scaleupBubble"></canvas></div>
-          </div>
-          <div class="chart-card">
-            <p class="chart-card-title">Top 4 — Scale up ngay</p>
-            <p class="chart-card-sub" style="margin-bottom:16px">Sản phẩm sewable chưa có trong portfolio, hot rate cao, demand được validate</p>
-            <div style="display:flex;flex-direction:column;gap:14px">
-              <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-                  <strong style="font-size:0.88rem">Baby Bodysuit</strong>
-                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">43% hot · $41</span>
-                </div>
-                <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">30 market listings · avg 22,192 reviews · kỹ năng y hệt onesie đang làm → biggest miss</p>
-              </div>
-              <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-                  <strong style="font-size:0.88rem">Keepsake Album</strong>
-                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">100% hot · $110</span>
-                </div>
-                <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">Album bìa vải thêu tên & ngày sinh · avg 4,630 reviews · giá trị cao · kỹ năng lõi</p>
-              </div>
-              <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-                  <strong style="font-size:0.88rem">Name Pillow</strong>
-                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">100% hot · $62</span>
-                </div>
-                <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">Gối thêu tên · 1,183 reviews · sản phẩm đơn giản, kỹ năng thêu thuần tuý</p>
-              </div>
-              <div style="padding:12px;background:var(--parchment);border-radius:8px;border-left:3px solid var(--terracotta)">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-                  <strong style="font-size:0.88rem">Sweatshirt (thêu)</strong>
-                  <span style="font-size:0.72rem;background:rgba(201,100,66,0.12);color:var(--terracotta);padding:2px 7px;border-radius:4px;font-weight:500">100% hot · $83</span>
-                </div>
-                <p style="font-size:0.78rem;color:var(--olive);line-height:1.4">Áo thêu tên · 807 reviews · giá cao · thêu trên vải dày = kỹ năng có sẵn</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Priority table -->
-        <p class="hub-section-label">03 — Danh sách sản phẩm scale up</p>
-        <div class="chart-card">
-          <div class="impr-filter-bar" id="scaleupFilters">
-            <button class="impr-filter active" data-sf="all">Tất cả</button>
-            <button class="impr-filter" data-sf="S">Tier S — Làm ngay</button>
-            <button class="impr-filter" data-sf="A">Tier A — Khuyến nghị</button>
-            <button class="impr-filter" data-sf="B">Tier B — Theo dõi</button>
-            <button class="impr-filter" data-sf="C">Emerging</button>
-          </div>
-          <div class="impr-table-wrap">
-            <table class="impr-table">
-              <thead>
-                <tr>
-                  <th>Sản phẩm</th>
-                  <th style="text-align:center">Tier</th>
-                  <th style="text-align:center">Hot rate</th>
-                  <th style="text-align:right">Avg price</th>
-                  <th style="text-align:right">Avg reviews</th>
-                  <th style="text-align:center">Market n</th>
-                  <th style="text-align:center">Portfolio</th>
-                  <th>Hành động</th>
-                </tr>
-              </thead>
-              <tbody id="scaleupTableBody"></tbody>
-            </table>
-          </div>
-        </div>
+        </a>
+      </div>
 
     </section>
 
@@ -1384,250 +1295,27 @@
     <!-- ── Panel 4: Research Hub ────────────────────── -->
     <section class="hub-panel" id="tab-research" role="tabpanel">
 
-      <!-- Header -->
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:28px;flex-wrap:wrap">
-        <div>
-          <h2 class="section-heading" style="margin-bottom:6px">Market Trend Intelligence</h2>
-          <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone)">
-            Top platform recommendations · 4 search tags · 180 star_seller listings · snapshot 2026-04-15
-          </p>
-        </div>
-        <a href="data-dictionary.html" target="_blank" style="
-          display:inline-flex;align-items:center;gap:6px;
-          font-family:var(--font-sans);font-size:0.88rem;font-weight:500;
-          color:var(--terracotta);text-decoration:none;
-          background:rgba(201,100,66,0.08);border:1px solid rgba(201,100,66,0.20);
-          padding:6px 14px;border-radius:8px;white-space:nowrap;transition:background 0.15s
-        " onmouseover="this.style.background='rgba(201,100,66,0.14)'"
-           onmouseout="this.style.background='rgba(201,100,66,0.08)'">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-            <rect x="2" y="1" width="10" height="13" rx="1.5"/>
-            <line x1="4.5" y1="5" x2="9.5" y2="5"/><line x1="4.5" y1="7.5" x2="9.5" y2="7.5"/><line x1="4.5" y1="10" x2="7.5" y2="10"/>
-          </svg>
-          Data Dictionary
+      <h2 class="section-heading" style="margin-bottom:6px">Research Hub</h2>
+      <p style="font-family:var(--font-sans);font-size:0.94rem;color:var(--stone);margin-bottom:28px">Phân tích xu hướng thị trường · danh sách báo cáo</p>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <a href="/Research_report_2026-04-15.html" style="
+          display:flex;align-items:center;justify-content:space-between;
+          background:var(--ivory);border:1px solid var(--border-cream);border-radius:12px;
+          padding:20px 24px;text-decoration:none;
+          box-shadow:rgba(0,0,0,0.05) 0px 4px 24px;
+          transition:box-shadow 0.15s,border-color 0.15s
+        " onmouseover="this.style.boxShadow='rgba(0,0,0,0.08) 0px 8px 32px, 0 0 0 1px var(--ring-warm)';this.style.borderColor='var(--ring-warm)'"
+           onmouseout="this.style.boxShadow='rgba(0,0,0,0.05) 0px 4px 24px';this.style.borderColor='var(--border-cream)'">
+          <div>
+            <p style="font-family:var(--font-serif);font-size:1.1rem;font-weight:500;color:var(--near-black);margin-bottom:4px">Market Trend Intelligence — 4 search tags</p>
+            <p style="font-family:var(--font-sans);font-size:0.88rem;color:var(--stone)">180 star_seller listings · hot rate 46% · median price $53 · snapshot 2026-04-15</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+            <span style="font-family:var(--font-sans);font-size:0.72rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;background:rgba(201,100,66,0.10);color:var(--terracotta);padding:3px 10px;border-radius:20px">Research</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#87867f" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+          </div>
         </a>
-      </div>
-
-      <!-- KPIs -->
-      <div class="mini-stat-row">
-        <div class="mini-stat">
-          <div class="mini-stat-value">180</div>
-          <div class="mini-stat-label">Listings Analyzed</div>
-          <div class="mini-stat-note">All star_seller</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-value">46%</div>
-          <div class="mini-stat-label">Hot Rate</div>
-          <div class="mini-stat-note">84 listings có badge</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-value">$53</div>
-          <div class="mini-stat-label">Median Price</div>
-          <div class="mini-stat-note">Range $4 – $324</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-value">100%</div>
-          <div class="mini-stat-label">Dùng Discount</div>
-          <div class="mini-stat-note">Phổ biến 41–60% off</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-value">99%</div>
-          <div class="mini-stat-label">Organic</div>
-          <div class="mini-stat-note">Chỉ 2 paid ads</div>
-        </div>
-      </div>
-
-      <!-- ── 01: Thị phần sản phẩm ──────────────────── -->
-      <p class="hub-section-label">01 — Thị phần sản phẩm</p>
-
-      <div class="two-col" style="margin-bottom:24px">
-        <div class="chart-card">
-          <p class="chart-card-title">Thị phần theo loại sản phẩm</p>
-          <p class="chart-card-sub">% listings trên tổng 180. Jewelry dish dẫn đầu (7.8%), ring dish thứ 2 (6.7%), photo album thứ 3 (5.0%).</p>
-          <div class="chart-wrap chart-wrap-md">
-            <canvas id="chartMarketShare"></canvas>
-          </div>
-        </div>
-        <div class="chart-card">
-          <p class="chart-card-title">Số listing theo sản phẩm (top 12)</p>
-          <p class="chart-card-sub">Số lượng listing được platform đề xuất — phản ánh mức độ cạnh tranh và sự phổ biến trong từng category.</p>
-          <div class="chart-wrap chart-wrap-md">
-            <canvas id="chartListingCount"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── 02: Sản phẩm đang HOT ─────────────────── -->
-      <p class="hub-section-label">02 — Sản phẩm đang HOT</p>
-
-      <div class="chart-card" style="margin-bottom:24px">
-        <p class="chart-card-title">Ranking sản phẩm hot nhất — "Popular now" &amp; "Bestseller"</p>
-        <p class="chart-card-sub">Jewelry dish có nhiều badge nhất (9), ring dish thứ 2 (8). Các sản phẩm nhỏ như musical carousel, flower bracelet đạt 100% hot rate.</p>
-        <div class="chart-wrap chart-wrap-lg">
-          <canvas id="chartHotRanking"></canvas>
-        </div>
-      </div>
-
-      <div class="two-col" style="margin-bottom:24px">
-        <div class="chart-card">
-          <p class="chart-card-title">Hot rate theo sản phẩm (%)</p>
-          <p class="chart-card-sub">% listings có badge trên tổng listing của product type đó. 100% = mọi listing đều đang trending.</p>
-          <div class="chart-wrap chart-wrap-lg">
-            <canvas id="chartHotRate"></canvas>
-          </div>
-        </div>
-        <div class="chart-card">
-          <p class="chart-card-title">Hot rate theo search tag</p>
-          <p class="chart-card-sub">"keepsake" có hot rate cao nhất (65.6%) dù avg price thấp nhất ($18). "birth announcement" chỉ 17.5% — ít cạnh tranh badge hơn.</p>
-          <div class="chart-wrap chart-wrap-lg">
-            <canvas id="chartTagHotRate"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── 03: Giá & vị thế cạnh tranh ───────────── -->
-      <p class="hub-section-label">03 — Định giá &amp; vị thế cạnh tranh</p>
-
-      <div class="two-col" style="margin-bottom:24px">
-        <div class="chart-card">
-          <p class="chart-card-title">Khoảng giá theo search tag (USD)</p>
-          <p class="chart-card-sub">"birth announcement" có biên giá rộng nhất ($16–$324). "keepsake" bị nén giá ($4–$58). Đây là benchmark để định giá sản phẩm mới.</p>
-          <div class="chart-wrap chart-wrap-md">
-            <canvas id="chartPriceRange"></canvas>
-          </div>
-        </div>
-        <div class="chart-card">
-          <p class="chart-card-title">Mức discount phổ biến</p>
-          <p class="chart-card-sub">100% listing dùng discount. Chiến lược chuẩn: đặt original price cao rồi giảm 41–60% — tạo cảm giác deal tốt cho buyer.</p>
-          <div class="chart-wrap chart-wrap-md">
-            <canvas id="chartDiscount"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── 04: Cơ hội sản phẩm ────────────────────── -->
-      <p class="hub-section-label">04 — Cơ hội sản phẩm</p>
-
-      <div class="two-col" style="margin-bottom:24px">
-        <div class="chart-card">
-          <p class="chart-card-title">Sản phẩm emerging (rating cao, ít review)</p>
-          <p class="chart-card-sub">Rating ≥ 4.8 nhưng avg review &lt; 500 — chất lượng đã được xác nhận, thị trường chưa bão hoà. Cơ hội gia nhập còn rộng.</p>
-          <div class="chart-wrap chart-wrap-lg">
-            <canvas id="chartEmerging"></canvas>
-          </div>
-        </div>
-        <div class="chart-card">
-          <p class="chart-card-title">Sản phẩm đã có nhu cầu lớn (1k+ reviews)</p>
-          <p class="chart-card-sub">Demand đã được validate. Baby book (41k), baptism gift (69k) — cạnh tranh cao nhưng biết chắc thị trường tồn tại.</p>
-          <div class="chart-wrap chart-wrap-lg">
-            <canvas id="chartEstablished"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── 05: Tổng hợp & đề xuất ─────────────────── -->
-      <p class="hub-section-label">05 — Tổng hợp &amp; đề xuất sản phẩm</p>
-
-      <div class="chart-card">
-        <p class="chart-card-title">Bảng tín hiệu thị trường — sản phẩm may &amp; thêu</p>
-        <p class="chart-card-sub" style="margin-bottom:4px">Chỉ hiển thị sản phẩm <strong>có thể gia công may/thêu</strong> · sorted theo mức độ ưu tiên · nguồn: market_listing 2026-04-15</p>
-        <p style="font-family:var(--font-sans);font-size:0.82rem;color:var(--stone);margin-bottom:20px">
-          ✂️ = may được &nbsp;·&nbsp; 🧵 = thêu được &nbsp;·&nbsp; Hot rate = % listings có badge "Popular now" hoặc "Bestseller"
-        </p>
-        <table class="shop-table">
-          <thead>
-            <tr>
-              <th>Sản phẩm</th>
-              <th style="text-align:center">Gia công</th>
-              <th style="text-align:center">Tín hiệu thị trường</th>
-              <th style="text-align:right">Hot rate</th>
-              <th style="text-align:right">Avg price</th>
-              <th style="text-align:right">Đề xuất</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr style="background:rgba(201,100,66,0.04)">
-              <td><strong>baby romper</strong></td>
-              <td style="text-align:center">✂️ 🧵</td>
-              <td style="text-align:center"><span class="rating-pill">🔥 Popular now</span></td>
-              <td style="text-align:right;color:var(--terracotta);font-weight:500">71%</td>
-              <td style="text-align:right">$58</td>
-              <td style="text-align:right;color:#5a7a5e;font-weight:500">Ưu tiên cao nhất</td>
-            </tr>
-            <tr style="background:rgba(201,100,66,0.04)">
-              <td><strong>baby onesie / bodysuit</strong></td>
-              <td style="text-align:center">✂️ 🧵</td>
-              <td style="text-align:center"><span class="rating-pill">🔥 100% hot rate</span></td>
-              <td style="text-align:right;color:var(--terracotta);font-weight:500">67–100%</td>
-              <td style="text-align:right">$62</td>
-              <td style="text-align:right;color:#5a7a5e;font-weight:500">Ưu tiên cao nhất</td>
-            </tr>
-            <tr style="background:rgba(201,100,66,0.04)">
-              <td><strong>baby blanket</strong></td>
-              <td style="text-align:center">✂️ 🧵</td>
-              <td style="text-align:center"><span class="rating-pill">📈 Bestseller</span></td>
-              <td style="text-align:right;color:var(--terracotta);font-weight:500">50%</td>
-              <td style="text-align:right">$92</td>
-              <td style="text-align:right;color:#5a7a5e;font-weight:500">Margin cao</td>
-            </tr>
-            <tr style="background:rgba(201,100,66,0.04)">
-              <td><strong>keepsake album (vải)</strong></td>
-              <td style="text-align:center">✂️ 🧵</td>
-              <td style="text-align:center"><span class="rating-pill">🔥 100% hot rate</span></td>
-              <td style="text-align:right;color:var(--terracotta);font-weight:500">100%</td>
-              <td style="text-align:right">$110</td>
-              <td style="text-align:right;color:#5a7a5e;font-weight:500">Premium · thêu tên</td>
-            </tr>
-            <tr>
-              <td><strong>denim jacket</strong></td>
-              <td style="text-align:center">✂️ 🧵</td>
-              <td style="text-align:center"><span class="rating-pill">🔥 Popular now</span></td>
-              <td style="text-align:right;color:var(--terracotta);font-weight:500">100%</td>
-              <td style="text-align:right">$66</td>
-              <td style="text-align:right;color:var(--olive)">1 listing · explore</td>
-            </tr>
-            <tr>
-              <td><strong>name pillow</strong></td>
-              <td style="text-align:center">✂️ 🧵</td>
-              <td style="text-align:center"><span class="rating-pill">🔥 Popular now</span></td>
-              <td style="text-align:right;color:var(--terracotta);font-weight:500">100%</td>
-              <td style="text-align:right">$62</td>
-              <td style="text-align:right;color:var(--olive)">1 listing · explore</td>
-            </tr>
-            <tr>
-              <td><strong>diaper caddy basket</strong></td>
-              <td style="text-align:center">✂️</td>
-              <td style="text-align:center"><span class="rating-pill">🔥 Popular now</span></td>
-              <td style="text-align:right;color:var(--terracotta);font-weight:500">100%</td>
-              <td style="text-align:right">$45</td>
-              <td style="text-align:right;color:var(--olive)">Emerging · ít cạnh tranh</td>
-            </tr>
-            <tr>
-              <td><strong>milestone blanket</strong></td>
-              <td style="text-align:center">✂️ 🧵</td>
-              <td style="text-align:center"><span class="rating-pill">⭐ Emerging</span></td>
-              <td style="text-align:right">0%</td>
-              <td style="text-align:right">$138</td>
-              <td style="text-align:right;color:var(--olive)">Giá cao · 1 listing</td>
-            </tr>
-            <tr>
-              <td><strong>embroidered album</strong></td>
-              <td style="text-align:center">🧵</td>
-              <td style="text-align:center"><span class="rating-pill">⭐ Niche</span></td>
-              <td style="text-align:right">0%</td>
-              <td style="text-align:right">$133</td>
-              <td style="text-align:right;color:var(--olive)">Core skill · cần push</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div style="margin-top:20px;padding:14px 16px;background:var(--warm-sand);border-radius:8px">
-          <p style="font-family:var(--font-sans);font-size:0.88rem;color:var(--charcoal);line-height:1.60">
-            <strong>Lưu ý:</strong> Jewelry dish (9 badges) và ring dish (8 badges) dẫn đầu thị trường về hot rate
-            nhưng là sản phẩm gốm sứ — <strong>ngoài năng lực gia công</strong>. Tập trung vào baby romper,
-            baby onesie/bodysuit và baby blanket là lựa chọn tối ưu nhất trong năng lực hiện tại.
-          </p>
-        </div>
       </div>
 
     </section>
@@ -1661,7 +1349,7 @@
     });
   </script>
 
-  <!-- ── Market Research Charts ───────────────────── -->
+  <!-- ── Charts / Intelligence / Research JS removed — now in standalone report files ── -->
   <script>
     Chart.defaults.font.family = "system-ui, -apple-system, 'Segoe UI', Arial, sans-serif";
     Chart.defaults.color = '#87867f';
@@ -1673,294 +1361,12 @@
     Chart.defaults.plugins.tooltip.cornerRadius    = 8;
     Chart.defaults.plugins.tooltip.padding         = 10;
 
-    const TC  = '#c96442';
-    const CO  = '#d97757';
-    const LT  = '#e8b99d';
-    const WS  = '#e8e6dc';
-    const CH  = '#4d4c48';
-    const ST  = '#87867f';
-
-    const SCALE_X_CLEAN = { grid: { display: false }, border: { display: false } };
-    const SCALE_Y_CLEAN = { grid: { color: '#f0eee6' }, border: { display: false } };
-    const SCALE_Y_GRID  = { grid: { display: false }, border: { display: false } };
-    const SCALE_X_GRID  = { grid: { color: '#f0eee6' }, border: { display: false } };
-
-    function usd(v) { return '$' + v.toFixed(0); }
-
-    function initCharts() {
-
-      // 01 — Thị phần donut (top 8 + others)
-      new Chart(document.getElementById('chartMarketShare'), {
-        type: 'doughnut',
-        data: {
-          labels: ['jewelry dish','ring dish','photo album','baby romper',
-                   'name sign','keepsake plaque','baby blanket','baby book','Khác'],
-          datasets: [{
-            data: [7.8, 6.7, 5.0, 3.9, 3.9, 3.9, 3.3, 2.8, 62.7],
-            backgroundColor: [TC, CO, LT, CH, '#b0aea5', WS, ST, '#3d3d3a', '#dedc01'].map((c,i)=>i===8?'#e0ddd4':c),
-            borderWidth: 2, borderColor: '#faf9f5', hoverOffset: 6
-          }]
-        },
-        options: {
-          cutout: '60%',
-          plugins: {
-            legend: { position: 'right', labels: { font: { size: 11 } } },
-            tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}%` } }
-          },
-          maintainAspectRatio: false
-        }
-      });
-
-      // 01 — Listing count bar (top 12)
-      new Chart(document.getElementById('chartListingCount'), {
-        type: 'bar',
-        data: {
-          labels: ['jewelry dish','ring dish','photo album','baby romper',
-                   'name sign','keepsake plaque','baby blanket','baby book',
-                   'trinket dish','night light','birth ann. sign','baby bodysuit'],
-          datasets: [{
-            label: 'Listings',
-            data: [14, 12, 9, 7, 7, 7, 6, 5, 5, 4, 4, 3],
-            backgroundColor: [TC,TC,CO,CO,LT,LT,WS,WS,ST,ST,CH,CH],
-            borderRadius: 4, borderSkipped: false
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          plugins: { legend: { display: false } },
-          scales: { x: SCALE_X_GRID, y: SCALE_Y_GRID },
-          maintainAspectRatio: false
-        }
-      });
-
-      // 02 — Hot ranking stacked (Popular now + Bestseller)
-      new Chart(document.getElementById('chartHotRanking'), {
-        type: 'bar',
-        data: {
-          labels: ['jewelry dish','ring dish','baby romper','baby book',
-                   'baby blanket','photo album','trinket dish','night light',
-                   'flower bracelet','keepsake album','musical carousel','baby onesie','storybook'],
-          datasets: [
-            {
-              label: 'Popular now',
-              data: [6, 8, 4, 2, 1, 3, 3, 1, 2, 2, 2, 2, 0],
-              backgroundColor: TC, borderRadius: 4, borderSkipped: false
-            },
-            {
-              label: 'Bestseller',
-              data: [3, 0, 1, 2, 2, 0, 0, 1, 0, 0, 0, 0, 2],
-              backgroundColor: CH, borderRadius: 4, borderSkipped: false
-            }
-          ]
-        },
-        options: {
-          indexAxis: 'y',
-          plugins: { legend: { position: 'bottom' } },
-          scales: { x: SCALE_X_GRID, y: SCALE_Y_GRID },
-          maintainAspectRatio: false
-        }
-      });
-
-      // 02 — Hot rate % per product (products with ≥2 listings)
-      new Chart(document.getElementById('chartHotRate'), {
-        type: 'bar',
-        data: {
-          labels: ['musical carousel','flower bracelet','baby onesie','keepsake album',
-                   'storybook','baby book','baby romper','ring dish',
-                   'jewelry dish','baby bodysuit','baby blanket','trinket dish'],
-          datasets: [{
-            label: 'Hot rate %',
-            data: [100, 100, 100, 100, 100, 80, 71, 67, 64, 67, 50, 60],
-            backgroundColor: ctx => {
-              const v = ctx.raw;
-              if (v === 100) return CH;
-              if (v >= 67)  return TC;
-              if (v >= 50)  return CO;
-              return LT;
-            },
-            borderRadius: 4, borderSkipped: false
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x}% listings có badge` } }
-          },
-          scales: {
-            x: { ...SCALE_X_GRID, max: 110, ticks: { callback: v => v + '%' } },
-            y: SCALE_Y_GRID
-          },
-          maintainAspectRatio: false
-        }
-      });
-
-      // 02 — Tag hot rate
-      new Chart(document.getElementById('chartTagHotRate'), {
-        type: 'bar',
-        data: {
-          labels: ['keepsake','baby girl gift','baby keepsake','birth announcement'],
-          datasets: [
-            {
-              label: 'Hot rate %',
-              data: [65.6, 56.7, 45.8, 17.5],
-              backgroundColor: [TC, TC, CO, LT],
-              borderRadius: 6, borderSkipped: false, yAxisID: 'y'
-            },
-            {
-              label: 'Avg reviews',
-              data: [811, 6342, 4300, 2697],
-              backgroundColor: 'transparent',
-              borderColor: CH, borderWidth: 2,
-              type: 'line', tension: 0.3,
-              pointBackgroundColor: CH, pointRadius: 5,
-              yAxisID: 'y2'
-            }
-          ]
-        },
-        options: {
-          plugins: { legend: { position: 'bottom' } },
-          scales: {
-            x: SCALE_X_CLEAN,
-            y: { ...SCALE_Y_CLEAN, ticks: { callback: v => v + '%' }, max: 80 },
-            y2: {
-              position: 'right',
-              grid: { display: false }, border: { display: false },
-              ticks: { callback: v => v >= 1000 ? (v/1000).toFixed(1)+'k' : v }
-            }
-          },
-          maintainAspectRatio: false
-        }
-      });
-
-      // 03 — Price range floating bar
-      new Chart(document.getElementById('chartPriceRange'), {
-        type: 'bar',
-        data: {
-          labels: ['birth announcement','baby girl gift','baby keepsake','keepsake'],
-          datasets: [
-            {
-              label: 'Min → Median',
-              data: [[16.12,69.45],[8.59,60.73],[6.28,59.06],[4.41,14.49]],
-              backgroundColor: LT, borderRadius: 4, borderSkipped: false
-            },
-            {
-              label: 'Median → Max',
-              data: [[69.45,323.53],[60.73,279.85],[59.06,178.79],[14.49,57.85]],
-              backgroundColor: TC, borderRadius: 4, borderSkipped: false
-            }
-          ]
-        },
-        options: {
-          indexAxis: 'y',
-          plugins: {
-            legend: { position: 'bottom' },
-            tooltip: {
-              callbacks: {
-                label: ctx => {
-                  const [lo, hi] = ctx.raw;
-                  return ` $${lo.toFixed(0)} – $${hi.toFixed(0)}`;
-                }
-              }
-            }
-          },
-          scales: {
-            x: { ...SCALE_X_GRID, ticks: { callback: v => '$'+v } },
-            y: SCALE_Y_GRID
-          },
-          maintainAspectRatio: false
-        }
-      });
-
-      // 03 — Discount depth
-      new Chart(document.getElementById('chartDiscount'), {
-        type: 'bar',
-        data: {
-          labels: ['1–20%','21–40%','41–60%','60%+'],
-          datasets: [{
-            label: 'Listings',
-            data: [22, 57, 66, 35],
-            backgroundColor: [LT, CO, TC, CH],
-            borderRadius: 6, borderSkipped: false
-          }]
-        },
-        options: {
-          plugins: { legend: { display: false } },
-          scales: { x: SCALE_X_CLEAN, y: SCALE_Y_CLEAN },
-          maintainAspectRatio: false
-        }
-      });
-
-      // 04 — Emerging (high rating, low reviews)
-      new Chart(document.getElementById('chartEmerging'), {
-        type: 'bar',
-        data: {
-          labels: ['ring dish','jewelry dish','photo album','baby book',
-                   'trinket dish','birth ann. sign','birth stats sign','tooth fairy box'],
-          datasets: [{
-            label: 'Avg reviews',
-            data: [81, 138, 112, 249, 341, 36, 146, 334],
-            backgroundColor: TC, borderRadius: 4, borderSkipped: false
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x} avg reviews` } }
-          },
-          scales: { x: SCALE_X_GRID, y: SCALE_Y_GRID },
-          maintainAspectRatio: false
-        }
-      });
-
-      // 04 — Established demand
-      new Chart(document.getElementById('chartEstablished'), {
-        type: 'bar',
-        data: {
-          labels: ['baptism gift','time capsule box','baby book','ann. photo frame',
-                   'birth ann. sign','ballerina night light','christening gift',
-                   'baby sweater','night light','star map print'],
-          datasets: [{
-            label: 'Avg reviews',
-            data: [69400,54300,41250,32000,14900,14800,13900,13300,13200,11700],
-            backgroundColor: CH, borderRadius: 4, borderSkipped: false
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x.toLocaleString()} avg reviews` } }
-          },
-          scales: {
-            x: { ...SCALE_X_GRID, ticks: { callback: v => v>=1000?(v/1000).toFixed(0)+'k':v } },
-            y: SCALE_Y_GRID
-          },
-          maintainAspectRatio: false
-        }
-      });
-    }
 
 
     // Init Performance Hub on load (active by default)
     loadListingsDashboard();
     window._imprRendered = true;
 
-    let chartsInitialized = false;
-    document.querySelectorAll('.hub-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        if (tab.dataset.tab === 'research' && !chartsInitialized) {
-          chartsInitialized = true;
-          requestAnimationFrame(initCharts);
-        }
-        if (tab.dataset.tab === 'intelligence' && !window._scaleupRendered) {
-          window._scaleupRendered = true;
-          requestAnimationFrame(initScaleupChart);
-          renderScaleupTable('all');
-        }
-      });
-    });
 
     // ── Performance Hub pill toggle ───────────────
     document.querySelectorAll('.perf-pill').forEach(pill => {
@@ -2373,134 +1779,6 @@
       document.getElementById(id).addEventListener('change', renderImprTable);
     });
 
-    // ── Listing Scale Up ──────────────────────────
-    const SEWABLE_PRODUCTS = [
-      // tier S — scale up immediately
-      {name:'baby bodysuit',        tier:'S', hot:43,  n:30, price:41,  reviews:22192, rating:4.85, portfolio:false, action:'Bắt đầu ngay — kỹ năng y hệt onesie, demand lớn nhất nhóm chưa khai thác'},
-      {name:'keepsake album',       tier:'S', hot:100, n:2,  price:110, reviews:4630,  rating:4.90, portfolio:false, action:'Album bìa vải thêu tên — kỹ năng lõi, giá cao, 100% hot'},
-      {name:'name pillow',          tier:'S', hot:100, n:1,  price:62,  reviews:1183,  rating:4.90, portfolio:false, action:'Gối thêu tên — đơn giản, demand có chiều sâu'},
-      {name:'sweatshirt (thêu)',    tier:'S', hot:100, n:1,  price:83,  reviews:807,   rating:4.90, portfolio:false, action:'Áo thêu tên — giá tốt $83, 100% hot, kỹ năng có sẵn'},
-      // tier A — recommended
-      {name:'baby romper',          tier:'A', hot:60,  n:15, price:51,  reviews:8191,  rating:4.83, portfolio:true,  action:'Đang có — tăng thêm listing, hot rate 60% cần đẩy mạnh'},
-      {name:'denim jacket (thêu)',  tier:'A', hot:100, n:1,  price:66,  reviews:167,   rating:4.70, portfolio:false, action:'Áo jeans thêu tên — 100% hot, thị trường mới nổi'},
-      {name:'plush toy',            tier:'A', hot:100, n:2,  price:67,  reviews:119,   rating:4.70, portfolio:false, action:'Thú bông vải — 100% hot, cần thiết kế pattern riêng'},
-      {name:'baby lovey',           tier:'A', hot:67,  n:3,  price:25,  reviews:165,   rating:4.70, portfolio:false, action:'Lovey nhỏ (vải + thú nhồi) — hot 67%, entry dễ'},
-      {name:'baby sweater',         tier:'A', hot:50,  n:2,  price:30,  reviews:13300, rating:4.95, portfolio:false, action:'Áo len đan/may — 50% hot, 13k reviews = demand lớn, margin thấp'},
-      {name:'matching family shirts',tier:'A',hot:100, n:1,  price:28,  reviews:null,  rating:4.70, portfolio:false, action:'Áo gia đình thêu — 100% hot, thị trường mới nổi'},
-      {name:'diaper caddy basket',  tier:'A', hot:100, n:2,  price:45,  reviews:148,   rating:4.80, portfolio:false, action:'Giỏ vải đựng tã — 100% hot, cần kỹ năng đan/dệt'},
-      {name:'baby hamper',          tier:'A', hot:100, n:1,  price:127, reviews:null,  rating:4.80, portfolio:false, action:'Giỏ quà vải cao cấp $127 — premium segment, 100% hot'},
-      // tier B — maintain / monitor
-      {name:'baby blanket',         tier:'B', hot:42,  n:53, price:59,  reviews:3764,  rating:4.81, portfolio:true,  action:'Đang có — maintain, CTR cần cải thiện'},
-      {name:'baby onesie',          tier:'B', hot:31,  n:26, price:57,  reviews:11627, rating:4.90, portfolio:true,  action:'Đang có — ROAS yếu, cần review giá quảng cáo'},
-      {name:'photo album (vải)',    tier:'B', hot:33,  n:9,  price:118, reviews:4693,  rating:4.88, portfolio:false, action:'Nếu bìa vải — 33% hot, giá cao $118, đánh giá kỹ trước khi làm'},
-      {name:'baby comforter',       tier:'B', hot:100, n:2,  price:23,  reviews:39,    rating:4.40, portfolio:false, action:'100% hot nhưng $23 thấp — margin khó, theo dõi thêm'},
-      {name:'storage basket',       tier:'B', hot:50,  n:2,  price:18,  reviews:234,   rating:4.70, portfolio:false, action:'$18 margin thấp — không ưu tiên trừ khi volume lớn'},
-      // tier C — emerging / watch
-      {name:'woven blanket',        tier:'C', hot:0,   n:4,  price:106, reviews:622,   rating:4.93, portfolio:false, action:'Hot rate 0% nhưng rating 4.93, giá $106 — chờ signal hot'},
-      {name:'milestone blanket',    tier:'C', hot:0,   n:2,  price:138, reviews:306,   rating:4.40, portfolio:false, action:'Premium $138, chưa hot — emerging window sớm'},
-      {name:'teddy bear',           tier:'C', hot:100, n:1,  price:71,  reviews:4,     rating:4.80, portfolio:false, action:'100% hot nhưng 4 reviews — quá sớm, theo dõi 3 tháng'},
-      {name:'embroidery hoop',      tier:'C', hot:0,   n:2,  price:81,  reviews:8,     rating:5.00, portfolio:false, action:'Rating 5.0, thị trường niche — chuyên biệt, xem xét dài hạn'},
-      {name:'baby shoes',           tier:'C', hot:0,   n:1,  price:67,  reviews:12,    rating:5.00, portfolio:false, action:'Rating 5.0, 12 reviews — quá sớm, cần pattern giày vải'},
-    ];
-
-    const TIER_META = {
-      S: { label: 'Tier S',    cls: 'badge-qw',   desc: 'Làm ngay' },
-      A: { label: 'Tier A',    cls: 'chip-ok',    desc: 'Khuyến nghị' },
-      B: { label: 'Tier B',    cls: 'chip-neu',   desc: 'Theo dõi' },
-      C: { label: 'Emerging',  cls: 'badge-roas', desc: 'Mới nổi' },
-    };
-
-    function renderScaleupTable(filter) {
-      const body = document.getElementById('scaleupTableBody');
-      const data = filter === 'all' ? SEWABLE_PRODUCTS : SEWABLE_PRODUCTS.filter(d => d.tier === filter);
-      body.innerHTML = data.map(d => {
-        const tm = TIER_META[d.tier];
-        const hotChip = d.hot >= 67
-          ? `<span class="metric-chip chip-ok">${d.hot}%</span>`
-          : d.hot >= 30
-          ? `<span class="metric-chip chip-neu">${d.hot}%</span>`
-          : `<span class="metric-chip chip-warn">${d.hot}%</span>`;
-        const revStr = d.reviews == null ? '—' : d.reviews >= 1000 ? (d.reviews/1000).toFixed(1)+'k' : String(d.reviews);
-        const portBadge = d.portfolio
-          ? `<span class="metric-chip chip-ok" style="font-size:0.70rem">✓ ada</span>`
-          : `<span style="font-size:0.75rem;color:var(--stone)">—</span>`;
-        return `<tr>
-          <td style="font-weight:500;color:var(--charcoal)">${d.name}</td>
-          <td style="text-align:center"><span class="impr-badge ${tm.cls}">${tm.label}</span></td>
-          <td style="text-align:center">${hotChip}</td>
-          <td style="text-align:right;font-variant-numeric:tabular-nums">$${d.price}</td>
-          <td style="text-align:right;font-variant-numeric:tabular-nums;color:${(d.reviews||0)>=1000?'#4a8c60':'var(--charcoal)'}">${revStr}</td>
-          <td style="text-align:center;color:var(--stone)">${d.n}</td>
-          <td style="text-align:center">${portBadge}</td>
-          <td style="font-size:0.80rem;color:var(--olive);line-height:1.4">${d.action}</td>
-        </tr>`;
-      }).join('');
-    }
-
-    function initScaleupChart() {
-      const ctx = document.getElementById('scaleupBubble');
-      if (!ctx) return;
-      // Bubble: x=price, y=hot_rate, r=scaled reviews
-      const scaleR = v => Math.max(5, Math.min(26, Math.sqrt(v || 30) * 0.55));
-      const notOwned = SEWABLE_PRODUCTS.filter(d => !d.portfolio);
-      const owned    = SEWABLE_PRODUCTS.filter(d =>  d.portfolio);
-      new Chart(ctx, {
-        type: 'bubble',
-        data: {
-          datasets: [
-            {
-              label: 'Chưa làm',
-              data: notOwned.map(d => ({ x: d.price, y: d.hot, r: scaleR(d.reviews), name: d.name, tier: d.tier })),
-              backgroundColor: 'rgba(201,100,66,0.55)',
-              borderColor: 'rgba(201,100,66,0.85)',
-              borderWidth: 1.5,
-            },
-            {
-              label: 'Đang có',
-              data: owned.map(d => ({ x: d.price, y: d.hot, r: scaleR(d.reviews), name: d.name, tier: d.tier })),
-              backgroundColor: 'rgba(74,140,96,0.55)',
-              borderColor: 'rgba(74,140,96,0.85)',
-              borderWidth: 1.5,
-            }
-          ]
-        },
-        options: {
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'bottom' },
-            tooltip: {
-              callbacks: {
-                label: ctx => {
-                  const d = ctx.raw;
-                  return ` ${d.name} — hot ${d.y}%, $${d.x}, ${d.tier}`;
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              title: { display: true, text: 'Avg price ($)', color: '#87867f', font: { size: 11 } },
-              ...SCALE_X_CLEAN,
-              min: 0, max: 145
-            },
-            y: {
-              title: { display: true, text: 'Hot rate (%)', color: '#87867f', font: { size: 11 } },
-              ...SCALE_Y_CLEAN,
-              min: 0, max: 115,
-              ticks: { callback: v => v + '%' }
-            }
-          }
-        }
-      });
-    }
-
-    document.getElementById('scaleupFilters').addEventListener('click', e => {
-      const btn = e.target.closest('.impr-filter');
-      if (!btn) return;
-      document.querySelectorAll('#scaleupFilters .impr-filter').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderScaleupTable(btn.dataset.sf);
-    });
   </script>
 
   <!-- ── Internal Import ─────────────────────────────── -->
