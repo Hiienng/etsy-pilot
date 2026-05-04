@@ -29,4 +29,4 @@ jobs:
       - name: Run ETL
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: python data/crawler/etl_listings.py
+        run: python data/etl/etl_listings.py

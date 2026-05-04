@@ -27,7 +27,7 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
 # Screenshot settings
 SCREENSHOT_DIR = "screenshots"
-RAW_DATA_DIR = "/Users/hienem/Downloads/hienprojects/nguyenphamdieuhien.online/data/raw"
+RAW_DATA_DIR = str(Path(__file__).parents[2] / "data" / "raw")
 OUTPUT_DIR = "output"
 SCROLL_PAUSE_SEC = 2
 MAX_SCROLLS = 5  # Số lần cuộn xuống mỗi trang
