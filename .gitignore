@@ -52,3 +52,4 @@ npm-debug.log*
 *.temp
 ~*
 logs/
+etsy_star_engine_crawler/output/

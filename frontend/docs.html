@@ -217,8 +217,8 @@
 <body>
 
 <nav class="nav">
-  <a href="/" class="nav-brand">Etsy - Internal portal<span>.</span></a>
-  <a href="/" class="nav-back">← Back</a>
+  <a href="index.html" class="nav-brand">Etsy - Internal portal<span>.</span></a>
+  <a href="index.html" class="nav-back">← Back</a>
   <span class="nav-title">Docs</span>
 </nav>
 
@@ -234,19 +234,19 @@
 
 <script>
   const DOCS = [
-    { label: 'Flow 01 — Performance Hub',        file: 'docs/01_performance_hub.md' },
-    { label: 'Flow 02 — Listing Improvement',    file: 'docs/02_listing_improvement.md' },
-    { label: 'Flow 03 — Listing Scale-up',       file: 'docs/03_listing_scaleup.md' },
-    { label: 'Flow 04 — Internal Import',        file: 'docs/04_internal_import.md' },
-    { label: 'Flow 05 — Research Hub',           file: 'docs/05_research_hub.md' },
-    { label: 'Flow 06 — Listings CRUD',          file: 'docs/06_listings_crud.md' },
-    { label: 'Performance Hub Rules',            file: 'docs/PERFORMANCE_HUB_RULES.md' },
-    { label: 'Research Hub Rules',               file: 'docs/RESEARCH_HUB_RULES.md' },
-    { label: 'Plan — Internal Ads Pipeline',     file: 'docs/PLAN_INTERNAL_ADS_PIPELINE.md' },
-    { label: 'Technical Doc',                    file: 'docs/TECHNICAL_DOC.md' },
-    { label: 'Operation Workflow',               file: 'docs/OPERATION_WORKFLOW.md' },
-    { label: 'Etsy POD Listing Guide 2026',      file: 'docs/Etsy_POD_Listing_Guide_2026.docx',      isDocx: true },
-    { label: 'Star Engine Data Modeling',        file: 'docs/etsy_star_engine_data_modeling.docx',   isDocx: true },
+    { label: 'Flow 01 — Performance Hub',        file: '../docs/01_performance_hub.md' },
+    { label: 'Flow 02 — Listing Improvement',    file: '../docs/02_listing_improvement.md' },
+    { label: 'Flow 03 — Listing Scale-up',       file: '../docs/03_listing_scaleup.md' },
+    { label: 'Flow 04 — Internal Import',        file: '../docs/04_internal_import.md' },
+    { label: 'Flow 05 — Research Hub',           file: '../docs/05_research_hub.md' },
+    { label: 'Flow 06 — Listings CRUD',          file: '../docs/06_listings_crud.md' },
+    { label: 'Performance Hub Rules',            file: '../docs/PERFORMANCE_HUB_RULES.md' },
+    { label: 'Research Hub Rules',               file: '../docs/RESEARCH_HUB_RULES.md' },
+    { label: 'Plan — Internal Ads Pipeline',     file: '../docs/PLAN_INTERNAL_ADS_PIPELINE.md' },
+    { label: 'Technical Doc',                    file: '../docs/TECHNICAL_DOC.md' },
+    { label: 'Operation Workflow',               file: '../docs/OPERATION_WORKFLOW.md' },
+    { label: 'Etsy POD Listing Guide 2026',      file: '../docs/Etsy_POD_Listing_Guide_2026.docx',      isDocx: true },
+    { label: 'Star Engine Data Modeling',        file: '../docs/etsy_star_engine_data_modeling.docx',   isDocx: true },
   ];
 
   const sidebar = document.getElementById('sidebar');
@@ -254,7 +254,7 @@
 
   // Group: Flows, Rules & Plans, Reference
   const groups = [
-    { label: 'Flows',          items: DOCS.filter(d => d.file.match(/^docs\/0/)) },
+    { label: 'Flows',          items: DOCS.filter(d => d.file.startsWith('../docs/0')) },
     { label: 'Rules & Plans',  items: DOCS.filter(d => d.file.match(/RULES|PLAN/)) },
     { label: 'Technical',      items: DOCS.filter(d => d.file.match(/TECHNICAL|OPERATION/)) },
     { label: 'Reference',      items: DOCS.filter(d => d.isDocx) },
