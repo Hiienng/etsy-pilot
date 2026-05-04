@@ -1039,7 +1039,7 @@
                   <th style="width:10%">ID</th>
                   <th>Sản phẩm</th>
                   <th>VM</th>
-                  <th>Import date</th>
+
                   <th style="text-align:center">CTR</th>
                   <th style="text-align:center">CR</th>
                   <th style="text-align:center">ROAS</th>
@@ -1467,8 +1467,6 @@
       const idCell = d.url
         ? `<a href="${d.url}" target="_blank" rel="noopener" title="Mở listing trên Etsy ↗" style="font-family:var(--font-mono);font-size:0.82rem;color:var(--terracotta);text-decoration:underline;text-underline-offset:2px">${d.listing_id}</a>`
         : `<span style="font-family:var(--font-mono);font-size:0.82rem;color:var(--charcoal)">${d.listing_id || '—'}</span>`;
-      const importDate = d.period || '—';
-
       // Main row luôn có caret (kể cả listing chỉ 1 kỳ) — khi sổ xuống sẽ hiện details + các kỳ khác.
       const toggleCell = isMain
         ? `<td style="text-align:center;cursor:pointer;user-select:none" onclick="imprToggle('${groupKey}', this)" title="Xem chi tiết scenario + lịch sử kỳ import"><span class="impr-caret" style="font-size:0.82rem;color:var(--terracotta);display:inline-block;transition:transform 0.15s">▸</span></td>`
@@ -1481,7 +1479,7 @@
         <td>${idCell}</td>
         <td><span class="metric-chip chip-neu" style="font-size:0.70rem">${d.product || ''}</span></td>
         <td style="font-family:var(--font-mono);font-size:0.78rem;color:var(--stone)">${d.no_vm || 'nan'}</td>
-        <td style="font-family:var(--font-mono);font-size:0.78rem;color:var(--charcoal);white-space:nowrap">${importDate}</td>
+
         <td style="text-align:center">${ctrChip}</td>
         <td style="text-align:center">${crChip}</td>
         <td style="text-align:center">${roasChip}</td>
@@ -1668,7 +1666,7 @@
       const extras = withExtras ? (_imprListingTable(d) + _imprKeywordTable(d.keywords) + (d._olderPeriods || '')) : '';
 
       return `<tr class="impr-sub-row impr-sub-${groupKey}" style="display:none">
-        <td colspan="10" style="padding:0;border-top:1px solid var(--border-cream);border-bottom:2px solid var(--border-cream);background:var(--warm-sand)">
+        <td colspan="9" style="padding:0;border-top:1px solid var(--border-cream);border-bottom:2px solid var(--border-cream);background:var(--warm-sand)">
           <div style="position:sticky;left:0;background:var(--warm-sand);padding:14px 16px 18px;box-sizing:border-box">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
               <span style="display:inline-block;width:3px;height:14px;background:var(--terracotta);border-radius:2px;flex-shrink:0"></span>
