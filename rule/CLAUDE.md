@@ -19,7 +19,6 @@ nguyenphamdieuhien.online/
 │   ├── raw/           ← File gốc, KHÔNG sửa
 │   └── processed/     ← Output sau transform
 ├── docs/              ← Design system, specs
-├── .env.example       ← Template env, KHÔNG chứa secret thật
 └── .gitignore
 ```
 

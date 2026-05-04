@@ -244,6 +244,7 @@
     { label: 'Research Hub Rules',               file: 'docs/RESEARCH_HUB_RULES.md' },
     { label: 'Plan — Internal Ads Pipeline',     file: 'docs/PLAN_INTERNAL_ADS_PIPELINE.md' },
     { label: 'Technical Doc',                    file: 'docs/TECHNICAL_DOC.md' },
+    { label: 'Operation Workflow',               file: 'docs/OPERATION_WORKFLOW.md' },
     { label: 'Etsy POD Listing Guide 2026',      file: 'docs/Etsy_POD_Listing_Guide_2026.docx',      isDocx: true },
     { label: 'Star Engine Data Modeling',        file: 'docs/etsy_star_engine_data_modeling.docx',   isDocx: true },
   ];
@@ -255,7 +256,7 @@
   const groups = [
     { label: 'Flows',          items: DOCS.filter(d => d.file.match(/^docs\/0/)) },
     { label: 'Rules & Plans',  items: DOCS.filter(d => d.file.match(/RULES|PLAN/)) },
-    { label: 'Technical',      items: DOCS.filter(d => d.file.match(/TECHNICAL/)) },
+    { label: 'Technical',      items: DOCS.filter(d => d.file.match(/TECHNICAL|OPERATION/)) },
     { label: 'Reference',      items: DOCS.filter(d => d.isDocx) },
   ];
 
