@@ -1399,12 +1399,11 @@
 
     async function loadListingsDashboard() {
       try {
-        const res = await fetch('/data/processed/performance_dashboard.json');
+        const res = await fetch('/api/v1/performance/listings');
         if (res.ok) {
           LISTINGS = await res.json();
           renderImprTable();
         }
-        // 404 = file chưa có → giữ nguyên empty state
       } catch (e) { console.warn('[dashboard] load failed', e); }
     }
 
