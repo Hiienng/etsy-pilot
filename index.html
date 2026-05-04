@@ -2259,7 +2259,7 @@
         </div>
       </div>`;
 
-      const extras = withExtras ? (_imprListingTable(d) + _imprKeywordTable(d.keywords)) : '';
+      const extras = withExtras ? (_imprListingTable(d) + _imprKeywordTable(d.keywords) + (d._olderPeriods || '')) : '';
 
       return `<tr class="impr-sub-row impr-sub-${groupKey}" style="display:none">
         <td colspan="10" style="padding:0;border-top:1px solid var(--border-cream);border-bottom:2px solid var(--border-cream);background:var(--warm-sand)">
@@ -2285,14 +2285,45 @@
         const latest = group[0];
         const older  = group.slice(1);
         const key = (latest.listing_id || '').replace(/[^a-zA-Z0-9]/g, '');
+        // Các kỳ cũ: gộp vào trong detail row của kỳ mới nhất dưới dạng accordion.
+        if (older.length) {
+          const olderHtml = older.map(d => {
+            const items = [
+              ['Nguyên nhân', d.scenario_cause],
+              ['Sửa listing', d.scenario_fix_listing],
+              ['Sửa ads',     d.scenario_fix_ads],
+            ].filter(([, v]) => v);
+            const _sectionStyle = {
+              'Nguyên nhân': { bg:'rgba(181,51,51,0.05)',  border:'rgba(181,51,51,0.18)',  label:'#b53333' },
+              'Sửa listing': { bg:'rgba(74,140,96,0.05)',  border:'rgba(74,140,96,0.18)',  label:'#4a8c60' },
+              'Sửa ads':     { bg:'rgba(120,100,60,0.05)', border:'rgba(120,100,60,0.18)', label:'#7a6428' },
+            };
+            const body = items.map(([label, v]) => {
+              const s = _sectionStyle[label] || {};
+              return `<div style="margin-bottom:6px;border-radius:4px;border:1px solid ${s.border};overflow:hidden">
+                <div style="background:${s.bg};padding:3px 8px;border-bottom:1px solid ${s.border}">
+                  <span style="font-family:var(--font-sans);font-size:0.64rem;font-weight:700;color:${s.label};letter-spacing:0.07em;text-transform:uppercase">${label}</span>
+                </div>
+                <div style="padding:6px 8px;font-family:var(--font-sans);font-size:0.76rem;color:var(--charcoal);line-height:1.6;background:var(--parchment)">${_imprEsc(v)}</div>
+              </div>`;
+            }).join('');
+            const act = d.scenario_action || 'improve';
+            const ac = ACTION_CLS[act] || ACTION_CLS.improve;
+            return `<details style="margin-top:4px;border:1px solid var(--border-cream);border-radius:6px;overflow:hidden">
+              <summary style="cursor:pointer;list-style:none;padding:6px 10px;background:var(--parchment);display:flex;align-items:center;gap:8px;font-family:var(--font-sans);font-size:0.72rem;color:var(--stone)">
+                <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--charcoal)">${_imprEsc(d.period || '—')}</span>
+                <span class="action-badge ${ac.cls}" style="font-size:0.64rem">${ac.label}</span>
+              </summary>
+              <div style="padding:8px 10px;background:var(--warm-sand)">${body || '<em style="font-size:0.76rem;color:var(--stone)">Không có scenario mapping.</em>'}</div>
+            </details>`;
+          }).join('');
+          latest._olderPeriods = `<div style="margin-top:14px">
+            <div style="font-family:var(--font-sans);font-size:0.72rem;font-weight:600;color:var(--stone);letter-spacing:0.02em;text-transform:uppercase;margin-bottom:6px">Kỳ trước</div>
+            ${olderHtml}
+          </div>`;
+        }
         let out = _imprMetricRow(latest, { isMain: true, groupKey: key });
-        // Details của kỳ latest — kèm LISTING sub-table + KEYWORDS.
         out += _imprDetailRow(latest, key, true);
-        // Các kỳ cũ hơn: metric + detail text (không lặp LISTING/KEYWORDS).
-        older.forEach(d => {
-          out += _imprMetricRow(d, { isMain: false, groupKey: key });
-          out += _imprDetailRow(d, key, false);
-        });
         return out;
       }).join('');
       document.getElementById('imprTableBody').innerHTML = html || '<tr><td colspan="9" style="text-align:center;color:var(--stone);padding:24px">Không có listing nào.</td></tr>';
