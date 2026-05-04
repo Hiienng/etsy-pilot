@@ -48,6 +48,11 @@ async def health():
 
 
 
+# Serve processed data files (performance_dashboard.json, etc.)
+_data_processed_dir = Path(__file__).resolve().parents[2] / "data" / "processed"
+if _data_processed_dir.exists():
+    app.mount("/data/processed", StaticFiles(directory=str(_data_processed_dir)), name="data_processed")
+
 # Serve frontend static files (index.html, css/, js/) — must be AFTER API routes
 _frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
 if (_frontend_dir / "index.html").exists():
