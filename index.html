@@ -2133,11 +2133,11 @@
     function _imprFmtBool(v) { return v === true ? '✓' : v === false ? '—' : '—'; }
 
     // Bảng LISTING: internal listing row + top-N reference rows.
-    // 13 cols: ID | Sản phẩm | Import date | CTR | CR | ROAS | Price | Discount | Rating | #review | badge | freeship | rank
+    // 12 cols: ID | Sản phẩm | CTR | CR | ROAS | Price | Discount | Rating | #review | badge | freeship | rank
     function _imprListingTable(d) {
-      const headCells = ['ID','Sản phẩm','Import date','CTR','CR','ROAS','Price','Discount','Rating','#review','badge','freeship','rank'];
+      const headCells = ['ID','Sản phẩm','CTR','CR','ROAS','Price','Discount','Rating','#review','badge','freeship','rank'];
       const head = `<thead><tr style="font-family:var(--font-sans);font-size:0.70rem;color:var(--stone);text-transform:uppercase;letter-spacing:0.04em">
-        ${headCells.map((h, i) => `<th style="text-align:${i >= 3 ? 'right' : 'left'};padding:4px 8px;font-weight:600;white-space:nowrap">${h}</th>`).join('')}
+        ${headCells.map((h, i) => `<th style="text-align:${i >= 2 ? 'right' : 'left'};padding:4px 8px;font-weight:600;white-space:nowrap">${h}</th>`).join('')}
       </tr></thead>`;
 
       // Internal listing row — có đủ metrics + own market data.
@@ -2151,7 +2151,6 @@
             : `<span style="font-family:var(--font-mono);font-size:0.76rem;font-weight:600">${d.listing_id || '—'}</span>`}
         </td>
         <td style="padding:4px 8px"><span class="metric-chip chip-neu" style="font-size:0.68rem">${d.product || '—'}</span></td>
-        <td style="padding:4px 8px;font-family:var(--font-mono);white-space:nowrap">${_imprEsc(d.period || '—')}</td>
         <td style="padding:4px 8px;text-align:right">${ctrChip}</td>
         <td style="padding:4px 8px;text-align:right">${crChip}</td>
         <td style="padding:4px 8px;text-align:right">${roasChip}</td>
@@ -2173,7 +2172,6 @@
             : `<span style="font-family:var(--font-mono);font-size:0.76rem">${r.reference_listing_id}</span>`}
         </td>
         <td style="padding:4px 8px">${r.ref_product_type ? `<span class="metric-chip chip-neu" style="font-size:0.68rem">${_imprEsc(r.ref_product_type)}</span>` : '—'}</td>
-        <td style="padding:4px 8px;font-family:var(--font-mono);white-space:nowrap">${_imprEsc(r.ref_import_date || '—')}</td>
         <td style="padding:4px 8px;text-align:right;color:var(--stone)">—</td>
         <td style="padding:4px 8px;text-align:right;color:var(--stone)">—</td>
         <td style="padding:4px 8px;text-align:right;color:var(--stone)">—</td>

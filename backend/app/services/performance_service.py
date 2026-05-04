@@ -255,15 +255,13 @@ async def get_dashboard_listings(db: AsyncSession, market_db: AsyncSession) -> l
     if listing_ids:
         try:
             mkt_sql = text("""
-                SELECT DISTINCT ON (id)
-                    id, price, discount, rating, review_count, badge, free_shipping, is_ad, tag_ranking
+                SELECT listing_id, price, discount, rating, review_count, badge, free_shipping, is_ad, tag_ranking
                 FROM market_listing
-                WHERE id = ANY(:ids)
-                ORDER BY id, import_date DESC
+                WHERE listing_id = ANY(:ids)
             """)
             mkt_result = await market_db.execute(mkt_sql, {"ids": listing_ids})
             for row in mkt_result.mappings().all():
-                market_map[row["id"]] = dict(row)
+                market_map[row["listing_id"]] = dict(row)
         except Exception:
             pass  # ETSY_MARKET_DB chưa set hoặc market_listing chưa tồn tại — bỏ qua, trả — về null
 
